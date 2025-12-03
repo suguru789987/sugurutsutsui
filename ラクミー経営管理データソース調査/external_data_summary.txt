@@ -1,0 +1,101 @@
+=== 外部連携データ項目サマリー ===
+
+【ZTOTAL (USENレジPOS)】
+テーブル名: ZTOTAL (TTOTAL)
+マッピング可能項目:
+  - 21,フリー１集計コード
+  - 22,フリー１集計名称
+  - 23,フリー２集計コード
+  - 24,フリー２集計名称
+  - 25,フリー３集計コード
+  - 26,フリー３集計名称
+  - 130,課税１   種別
+  - 131,課税１   税率
+  - 132,課税２   種別
+  - 133,課税２   税率
+  - 134,課税３   種別
+  - 135,課税３   税率
+  - 136,課税４   種別
+  - 137,課税４   税率
+  - 138,課税５   種別
+  - 139,課税５   税率
+  - 197,課税１対象金額
+  - 198,課税１税額
+  - 199,課税２対象金額
+  - 200,課税２税額
+  - 201,課税３対象金額
+  - 202,課税３税額
+  - 203,課税４対象金額
+  - 204,課税４税額
+  - 205,課税５対象金額
+  - 206,課税５税額
+
+【インフォマート】
+テーブル名: trade_total, tax_excluded_total, detail_list, member_name_partner
+主要カラム:
+member_name_self,string (自社会員名),
+member_name_partner,string (取引先名),
+trade_subtotal,string (合計 商品本体),
+prod_total_tax_excluded_total,string (合計 税抜き商品本体),
+prod_tax_total,string (合計 外内計商品消費税),
+shipping_tax_excluded,string (合計 税抜き送料本体),
+trade_total,string (総合計),
+fc_trade_subtotal,string (FC合計 商品本体),
+fc_prod_total_tax_excluded_total,string (FC合計 税抜き商品本体),
+fc_prod_tax_total,string (FC合計 外内計商品消費税),
+fc_trade_total,string (FC総合計),
+trade_subtotal_normal,string (合計 商品本体（標準）),
+trade_subtotal_reduced,string (合計 商品本体（軽減）),
+trade_tax_free_total,string (合計 商品本体（非課税）),
+fc_trade_subtotal_normal,string (FC合計 商品本体（標準）),
+fc_trade_subtotal_reduced,string (FC合計 商品本体（軽減）),
+fc_trade_tax_free_total,string (FC合計 商品本体（非課税）),
+tax_excluded_total_std_rate,string (伝票税抜金額（標準）),
+tax_excluded_total_rds_rate,string (伝票税抜金額（軽減）),
+tax_excluded_total_tax_free,string (伝票非課税金額),
+
+【KOT (King of Time)】
+主要グループ:
+,,
+King of Time API 項目一覧（タブ区切り）,,
+グループ,物理名,論理名
+スケジュール申請データ,adminComment,管理者コメント
+スケジュール申請データ,applicant.key,申請者識別キー
+スケジュール申請データ,applicant.type,申請者種別
+スケジュール申請データ,currentFlow,現在の承認フローレベル
+スケジュール申請データ,date,対象日
+スケジュール申請データ,employeeKey,従業員識別キー
+スケジュール申請データ,flow.administratorKeys,管理者識別キー
+スケジュール申請データ,flow.level,承認フローレベル
+スケジュール申請データ,lastModifiedAdministratorKey,最終更新管理者識別キー
+スケジュール申請データ,message,申請メッセージ
+スケジュール申請データ,month,月
+スケジュール申請データ,requestKey,申請識別キー
+スケジュール申請データ,requestedDate,申請日
+スケジュール申請データ,status,申請ステータス
+スケジュール申請データ,year,年
+フレックスタイム集計,flexBasicWorkMinute,フレックス基準内労働時間（分）
+フレックスタイム集計,flexFixedWorkLackMinute,フレックス所定労働不足時間（分）
+
+【ジョブカン】
+主要グループ:
+,,
+カスタマイズ集計項目実績,custom_setting_id,設定ID
+カスタマイズ集計項目実績,date,年月日
+カスタマイズ集計項目実績,employee_id,従業員ID
+カスタマイズ集計項目実績,number,数字
+カスタマイズ集計項目実績,time,時間
+グループ,物理名,論理名
+ジョブカン API 項目一覧（タブ区切り）,,
+健康管理時間,client_id,企業ID
+健康管理時間,date,年月日
+健康管理時間,employee_id,従業員ID
+健康管理時間,health_check_time,健康管理時間
+共通パラメータ,count,1リクエストの取得項目数
+共通パラメータ,date,指定日
+共通パラメータ,employee_id,従業員ID
+共通パラメータ,end_date,サマリー終了日
+共通パラメータ,from_last_record_update,最終更新日の期間指定開始日
+共通パラメータ,last_id,従業員最終ID
+共通パラメータ,start_date,サマリー開始日
+共通パラメータ,to_last_record_update,最終更新日期間指定終了日

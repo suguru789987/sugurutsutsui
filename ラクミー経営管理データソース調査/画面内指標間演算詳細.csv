@@ -1,0 +1,102 @@
+画面区分,画面タイトル,指標名,演算式,演算に使用する指標（画面タイトル.指標名）,演算式詳細（テーブル.カラム）
+会社,主要KPI指標,坪月商,売上÷坪数,当月実績.売上税抜 ÷ 店舗マスタ.坪数,ZTOTAL.sales_excluded ÷ shops.floor_area
+会社,主要KPI指標,営業利益率,営業利益÷売上×100,当月実績.営業利益 ÷ 当月実績.売上税抜 × 100,(ZTOTAL.sales_excluded - trade_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value) ÷ ZTOTAL.sales_excluded × 100
+会社,主要KPI指標,家賃比率,家賃÷売上×100,月次費用入力.地代家賃 ÷ 当月実績.売上税抜 × 100,monthly_costs.value(費目=家賃) ÷ ZTOTAL.sales_excluded × 100
+会社,主要KPI指標,ROI,営業利益÷投資×100,当月実績.営業利益 ÷ 予算設定.予算金額 × 100,(ZTOTAL.sales_excluded - trade_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value) ÷ monthly_budgets.value × 100
+会社,当月実績,営業利益,売上-仕入-人件費-経費,当月実績.売上税抜 - 当月実績.FD仕入額 - 当月実績.人件費 - 当月実績.その他経費,ZTOTAL.sales_excluded - trade_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value
+会社,当月実績,売上税抜,SUM,-,SUM(ZTOTAL.sales_excluded)
+会社,当月実績,FD仕入額,SUM,-,SUM(trade_total.total_tax_excluded)
+会社,当月実績,人件費,SUM,-,SUM(labor_costs_logs.labor_costs)
+会社,当月実績,その他経費,SUM,-,SUM(monthly_costs.value)
+会社,当月実績,FD仕入率,仕入÷売上×100,当月実績.FD仕入額 ÷ 当月実績.売上税抜 × 100,trade_total.total_tax_excluded ÷ ZTOTAL.sales_excluded × 100
+会社,当月実績,人件費率,人件費÷売上×100,当月実績.人件費 ÷ 当月実績.売上税抜 × 100,labor_costs_logs.labor_costs ÷ ZTOTAL.sales_excluded × 100
+会社,当月実績,FL率,(F+L)÷売上×100,(当月実績.FD仕入額 + 当月実績.人件費) ÷ 当月実績.売上税抜 × 100,(trade_total.total_tax_excluded + labor_costs_logs.labor_costs) ÷ ZTOTAL.sales_excluded × 100
+会社,店舗別サマリー,営業利益,売上-仕入-人件費-経費,店舗別サマリー.売上税抜 - 店舗別サマリー.FD仕入額 - 店舗別サマリー.人件費 - 店舗別サマリー.その他経費,ZTOTAL.sales_excluded - trade_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value
+会社,店舗別サマリー,売上達成率,実績÷目標×100,店舗別サマリー.売上税抜 ÷ 予算設定.売上目標 × 100,ZTOTAL.sales_excluded ÷ monthly_budgets.value × 100
+会社,店舗別サマリー,売上進捗率,累計÷目標×100,店舗別サマリー.売上税抜累計 ÷ 予算設定.売上目標 × 100,SUM(ZTOTAL.sales_excluded) ÷ monthly_budgets.value × 100
+会社,店舗別サマリー,FD仕入率,仕入÷売上×100,店舗別サマリー.FD仕入額 ÷ 店舗別サマリー.売上税抜 × 100,trade_total.total_tax_excluded ÷ ZTOTAL.sales_excluded × 100
+会社,店舗別サマリー,人件費率,人件費÷売上×100,店舗別サマリー.人件費 ÷ 店舗別サマリー.売上税抜 × 100,labor_costs_logs.labor_costs ÷ ZTOTAL.sales_excluded × 100
+会社,年間予実対比,営業利益,売上-仕入-人件費-経費,年間予実対比.売上税抜 - 年間予実対比.FD仕入額 - 年間予実対比.人件費額 - 年間予実対比.その他経費,ZTOTAL.sales_excluded - tax_excluded_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value
+会社,年間予実対比,客単価,売上÷客数,年間予実対比.売上税抜 ÷ 年間予実対比.客数,ZTOTAL.sales_excluded ÷ ZTOTAL.customers
+会社,年間予実対比,客単価(ランチ),売上÷客数(11-15時),年間予実対比.ランチ売上税抜 ÷ 年間予実対比.ランチ客数,SUM(TTOTAL.sales_excluded WHERE settlement_time 11:00-15:00) / SUM(TTOTAL.customers WHERE settlement_time 11:00-15:00)
+会社,年間予実対比,客単価(ディナー),売上÷客数(17-23時),年間予実対比.ディナー売上税抜 ÷ 年間予実対比.ディナー客数,SUM(TTOTAL.sales_excluded WHERE settlement_time 17:00-23:00) / SUM(TTOTAL.customers WHERE settlement_time 17:00-23:00)
+会社,進捗分析,利益進捗率,営業利益累計÷目標利益×100,当月実績.営業利益累計 ÷ 予算設定.月次目標利益 × 100,(ZTOTAL.sales_excluded - trade_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value) ÷ monthly_budgets.profit_target × 100
+会社,進捗分析,売上進捗率,売上累計÷目標×100,当月実績.売上税抜累計 ÷ 予算設定.売上目標 × 100,SUM(ZTOTAL.sales_excluded) ÷ monthly_budgets.value × 100
+会社,進捗分析,達成率,実績÷目標×100,当月実績.売上税抜 ÷ 予算設定.売上目標 × 100,ZTOTAL.sales_excluded ÷ monthly_budgets.value × 100
+会社,ABC分析,売上構成比率,商品÷総売上×100,ABC分析.商品別売上税抜 ÷ ABC分析.総売上税抜 × 100,TITEM.sales_excluded ÷ SUM(TITEM.sales_excluded) × 100
+会社,ABC分析,販売点数構成比率,商品数÷総数×100,ABC分析.商品別販売点数 ÷ ABC分析.総販売点数 × 100,TITEM.quantity ÷ SUM(TITEM.quantity) × 100
+会社,ABC分析,価格,売上÷数量,ABC分析.売上税抜 ÷ ABC分析.販売点数,TITEM.sales_excluded ÷ TITEM.quantity
+会社,時間帯別売上分析,客単価税抜,売上÷客数,時間帯別売上分析.売上税抜 ÷ 時間帯別売上分析.客数,ZTOTAL.sales_excluded ÷ ZTOTAL.customers
+会社,曜日別売上分析,平均売上税抜,AVG曜日別,曜日別売上分析.売上税抜合計 ÷ 曜日別売上分析.日数,AVG(ZTOTAL.sales_excluded) GROUP BY 曜日
+会社,曜日別売上分析,平均客数,AVG曜日別,曜日別売上分析.客数合計 ÷ 曜日別売上分析.日数,AVG(ZTOTAL.customers) GROUP BY 曜日
+会社,月次レポート,原価率,原価÷売上×100,月次レポート.原価金額 ÷ 月次レポート.売上合計税抜 × 100,tax_excluded_total.total_tax_excluded ÷ ZTOTAL.sales_excluded × 100
+会社,仕入別分析,比率,仕入先÷総仕入×100,仕入別分析.仕入先別金額税抜 ÷ 仕入別分析.総仕入金額税抜 × 100,tax_excluded_total.total_tax_excluded ÷ SUM(tax_excluded_total.total_tax_excluded) × 100
+会社,商品仕入単価,単価,金額÷数量,商品仕入単価.金額税抜 ÷ 商品仕入単価.数量,detail_list.price ÷ detail_list.num
+会社,平均単価推移,平均単価,金額÷数量,平均単価推移.仕入金額税抜 ÷ 平均単価推移.数量,SUM(detail_list.price) ÷ SUM(detail_list.num)
+会社,予実対比,ヘルプ人件費,受入-送出,予実対比.ヘルプ受入人件費 - 予実対比.ヘルプ送出人件費,labor_costs_logs.help_costs - labor_costs_logs.help_costs_minus
+会社,支払種別売上分析,売上比率,支払÷総売上×100,支払種別売上分析.支払別売上税込 ÷ 支払種別売上分析.総売上税込 × 100,TTEND.sales ÷ SUM(TTEND.sales) × 100
+店舗,主要KPI指標,坪月商,売上÷坪数,当月実績.売上税抜 ÷ 店舗マスタ.坪数,ZTOTAL.sales_excluded ÷ shops.floor_area
+店舗,主要KPI指標,営業利益率,営業利益÷売上×100,当月実績.営業利益 ÷ 当月実績.売上税抜 × 100,(ZTOTAL.sales_excluded - trade_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value) ÷ ZTOTAL.sales_excluded × 100
+店舗,主要KPI指標,家賃比率,家賃÷売上×100,月次費用入力.地代家賃 ÷ 当月実績.売上税抜 × 100,monthly_costs.value(費目=家賃) ÷ ZTOTAL.sales_excluded × 100
+店舗,主要KPI指標,ROI,営業利益÷投資×100,当月実績.営業利益 ÷ 予算設定.予算金額 × 100,(ZTOTAL.sales_excluded - trade_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value) ÷ monthly_budgets.value × 100
+店舗,当月実績,営業利益,売上-仕入-人件費-経費,当月実績.売上税抜 - 当月実績.FD仕入額 - 当月実績.人件費 - 当月実績.その他経費,ZTOTAL.sales_excluded - trade_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value
+店舗,当月実績,売上税抜,SUM,-,SUM(ZTOTAL.sales_excluded)
+店舗,当月実績,FD仕入額,SUM,-,SUM(trade_total.total_tax_excluded)
+店舗,当月実績,人件費,SUM,-,SUM(labor_costs_logs.labor_costs)
+店舗,当月実績,その他経費,SUM,-,SUM(monthly_costs.value)
+店舗,当月実績,FD仕入率,仕入÷売上×100,当月実績.FD仕入額 ÷ 当月実績.売上税抜 × 100,trade_total.total_tax_excluded ÷ ZTOTAL.sales_excluded × 100
+店舗,当月実績,人件費率,人件費÷売上×100,当月実績.人件費 ÷ 当月実績.売上税抜 × 100,labor_costs_logs.labor_costs ÷ ZTOTAL.sales_excluded × 100
+店舗,当月実績,FL率,(F+L)÷売上×100,(当月実績.FD仕入額 + 当月実績.人件費) ÷ 当月実績.売上税抜 × 100,(trade_total.total_tax_excluded + labor_costs_logs.labor_costs) ÷ ZTOTAL.sales_excluded × 100
+店舗,感度分析,客単価税抜,売上÷客数,感度分析.売上税抜 ÷ 感度分析.客数,ZTOTAL.sales_excluded ÷ ZTOTAL.customers
+店舗,感度分析,変動費単価,変動費÷客数,感度分析.変動費 ÷ 感度分析.客数,tax_excluded_total.total_tax_excluded ÷ ZTOTAL.customers
+店舗,感度分析,変動費率,変動費÷売上×100,感度分析.変動費 ÷ 感度分析.売上税抜 × 100,tax_excluded_total.total_tax_excluded ÷ ZTOTAL.sales_excluded × 100
+店舗,感度分析,粗利単価,(売上-原価)÷客数,(感度分析.売上税抜 - 感度分析.変動費) ÷ 感度分析.客数,(ZTOTAL.sales_excluded - tax_excluded_total.total_tax_excluded) ÷ ZTOTAL.customers
+店舗,感度分析,粗利率,(売上-原価)÷売上×100,(感度分析.売上税抜 - 感度分析.変動費) ÷ 感度分析.売上税抜 × 100,(ZTOTAL.sales_excluded - tax_excluded_total.total_tax_excluded) ÷ ZTOTAL.sales_excluded × 100
+店舗,感度分析,粗利,売上-変動費,感度分析.売上税抜 - 感度分析.変動費,ZTOTAL.sales_excluded - tax_excluded_total.total_tax_excluded
+店舗,利益進捗分析,利益進捗率,営業利益累計÷目標利益×100,当月実績.営業利益累計 ÷ 予算一覧.月次目標利益 × 100,(ZTOTAL.sales_excluded - trade_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value) ÷ monthly_budgets.profit_target × 100
+店舗,利益進捗分析,利益達成率,営業利益÷目標利益×100,当月実績.営業利益 ÷ 予算一覧.月次目標利益 × 100,(ZTOTAL.sales_excluded - trade_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value) ÷ monthly_budgets.profit_target × 100
+店舗,売上進捗分析,売上進捗率,売上累計÷目標×100,当月実績.売上税抜累計 ÷ 予算一覧.売上目標 × 100,ZTOTAL.sales_excluded ÷ monthly_budgets.value × 100
+店舗,年間予実対比,営業利益,売上-仕入-人件費-経費,年間予実対比.売上税抜 - 年間予実対比.FD仕入額 - 年間予実対比.人件費額 - 年間予実対比.その他経費,ZTOTAL.sales_excluded - tax_excluded_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value
+店舗,年間予実対比,客単価,売上÷客数,年間予実対比.売上税抜 ÷ 年間予実対比.客数,ZTOTAL.sales_excluded ÷ ZTOTAL.customers
+店舗,年間予実対比（サマリー）,客単価(ランチ),売上÷客数(11-15時),年間予実対比.ランチ売上税抜 ÷ 年間予実対比.ランチ客数,SUM(TTOTAL.sales_excluded WHERE settlement_time 11:00-15:00) / SUM(TTOTAL.customers WHERE settlement_time 11:00-15:00)
+店舗,年間予実対比（サマリー）,客単価(ディナー),売上÷客数(17-23時),年間予実対比.ディナー売上税抜 ÷ 年間予実対比.ディナー客数,SUM(TTOTAL.sales_excluded WHERE settlement_time 17:00-23:00) / SUM(TTOTAL.customers WHERE settlement_time 17:00-23:00)
+店舗,FD分析,FD仕入率,仕入÷売上×100,FD分析.FD仕入額 ÷ FD分析.売上 × 100,tax_excluded_total.total_tax_excluded ÷ ZTOTAL.sales_excluded × 100
+店舗,FD分析,FD原価率,原価÷売上×100,FD分析.FD原価 ÷ FD分析.売上 × 100,tax_excluded_total.total_tax_excluded ÷ ZTOTAL.sales_excluded × 100
+店舗,FD仕入率トレンド,FD仕入率トレンド,仕入÷売上×100,FD仕入率トレンド.FD仕入額 ÷ FD仕入率トレンド.売上税抜 × 100,tax_excluded_total.total_tax_excluded ÷ ZTOTAL.sales_excluded × 100
+店舗,FD仕入率トレンド,フード仕入比率,フード仕入÷フード売上×100,FD仕入率トレンド.フード仕入 ÷ FD売上構成比.フード売上合計 × 100,tax_excluded_total.total_tax_excluded[フード] ÷ TITEM.sales_excluded[フード] × 100
+店舗,FD仕入率トレンド,ドリンク仕入比率,ドリンク仕入÷ドリンク売上×100,FD仕入率トレンド.ドリンク仕入 ÷ FD売上構成比.ドリンク売上合計 × 100,tax_excluded_total.total_tax_excluded[ドリンク] ÷ TITEM.sales_excluded[ドリンク] × 100
+店舗,FD売上構成比,FD売上構成比,FD÷総売上×100,FD売上構成比.FD売上 ÷ FD売上構成比.総売上 × 100,TITEM.sales_excluded ÷ SUM(TITEM.sales_excluded) × 100
+店舗,ABC分析,売上構成比率,商品÷総売上×100,ABC分析.商品別売上税抜 ÷ ABC分析.総売上税抜 × 100,TITEM.sales_excluded ÷ SUM(TITEM.sales_excluded) × 100
+店舗,ABC分析,販売点数構成比率,商品数÷総数×100,ABC分析.商品別販売点数 ÷ ABC分析.総販売点数 × 100,TITEM.quantity ÷ SUM(TITEM.quantity) × 100
+店舗,ABC分析,価格,売上÷数量,ABC分析.売上税抜 ÷ ABC分析.販売点数,TITEM.sales_excluded ÷ TITEM.quantity
+店舗,時間帯別売上分析,客単価税抜,売上÷客数,時間帯別売上分析.売上税抜 ÷ 時間帯別売上分析.客数,ZTOTAL.sales_excluded ÷ ZTOTAL.customers
+店舗,曜日別売上分析,平均売上税抜,AVG曜日別,曜日別売上分析.売上税抜合計 ÷ 曜日別売上分析.日数,AVG(ZTOTAL.sales_excluded) GROUP BY 曜日
+店舗,曜日別売上分析,平均客数,AVG曜日別,曜日別売上分析.客数合計 ÷ 曜日別売上分析.日数,AVG(ZTOTAL.customers) GROUP BY 曜日
+店舗,月次レポート,原価金額,前月在庫+仕入-当月在庫,月次レポート.FD前月在庫高 + 月次レポート.FD当月仕入 - 月次レポート.FD当月在庫高,前月在庫 + 当月仕入 - 当月在庫
+店舗,月次レポート,原価率,原価÷売上×100,月次レポート.原価金額 ÷ 月次レポート.売上合計税抜 × 100,tax_excluded_total.total_tax_excluded ÷ ZTOTAL.sales_excluded × 100
+店舗,月次集計,客単価税抜,売上÷客数,月次集計.売上税抜 ÷ 月次集計.客数,ZTOTAL.sales_excluded ÷ ZTOTAL.customers
+店舗,月次集計,変動費単価,変動費÷客数,月次集計.変動費 ÷ 月次集計.客数,tax_excluded_total.total_tax_excluded ÷ ZTOTAL.customers
+店舗,月次集計,変動費率,変動費÷売上×100,月次集計.変動費 ÷ 月次集計.売上税抜 × 100,tax_excluded_total.total_tax_excluded ÷ ZTOTAL.sales_excluded × 100
+店舗,月次集計,仕入費率,仕入÷売上×100,月次集計.仕入額 ÷ 月次集計.売上税抜 × 100,tax_excluded_total.total_tax_excluded ÷ ZTOTAL.sales_excluded × 100
+店舗,月次集計,PA人件費率,PA人件費÷売上×100,月次集計.PA人件費 ÷ 月次集計.売上税抜 × 100,head_office_employee_working_records.daily_cost ÷ ZTOTAL.sales_excluded × 100
+店舗,月次集計,粗利単価,(売上-原価)÷客数,(月次集計.売上税抜 - 月次集計.変動費) ÷ 月次集計.客数,(ZTOTAL.sales_excluded - tax_excluded_total.total_tax_excluded) ÷ ZTOTAL.customers
+店舗,月次集計,粗利率,(売上-原価)÷売上×100,(月次集計.売上税抜 - 月次集計.変動費) ÷ 月次集計.売上税抜 × 100,(ZTOTAL.sales_excluded - tax_excluded_total.total_tax_excluded) ÷ ZTOTAL.sales_excluded × 100
+店舗,月次集計,粗利,売上-変動費,月次集計.売上税抜 - 月次集計.変動費,ZTOTAL.sales_excluded - tax_excluded_total.total_tax_excluded
+店舗,仕入先分析,比率,仕入先÷総仕入×100,仕入先分析.仕入先別金額税抜 ÷ 仕入先分析.総仕入金額税抜 × 100,tax_excluded_total.total_tax_excluded ÷ SUM(tax_excluded_total.total_tax_excluded) × 100
+店舗,商品仕入単価,単価,金額÷数量,商品仕入単価.金額税抜 ÷ 商品仕入単価.数量,detail_list.price ÷ detail_list.num
+店舗,商品別仕入分析,比率,商品÷総仕入×100,商品別仕入分析.商品別金額税抜 ÷ 商品別仕入分析.総仕入金額税抜 × 100,detail_list.price ÷ SUM(detail_list.price) × 100
+店舗,商品別売上分析,商品単価税抜,売上÷数量,商品別売上分析.売上合計税抜 ÷ 商品別売上分析.販売数量,TITEM.sales_excluded ÷ TITEM.quantity
+店舗,商品別売上分析,商品単価税込,売上÷数量,商品別売上分析.売上合計税込 ÷ 商品別売上分析.販売数量,TITEM.sales ÷ TITEM.quantity
+店舗,平均単価推移,平均単価,金額÷数量,平均単価推移.仕入金額税抜 ÷ 平均単価推移.数量,SUM(detail_list.price) ÷ SUM(detail_list.num)
+店舗,流入分析,テーブル回転数,組数÷総卓数,流入分析.総組数 ÷ 店舗マスタ.総卓数,ZTOTAL.customers ÷ shops.total_tables
+店舗,流入分析,テーブル稼働率,予約卓÷総卓×100,流入分析.予約卓数 ÷ 店舗マスタ.総卓数 × 100,予約卓数 ÷ shops.total_tables × 100
+店舗,流入分析,予約客単価,予約売上÷予約客数,流入分析.予約売上 ÷ 流入分析.予約客数,予約売上 ÷ 予約客数
+店舗,流入分析,ウォークイン売上,総売上-予約売上,流入分析.総売上 - 流入分析.予約売上,ZTOTAL.sales_excluded - 予約売上
+店舗,流入分析,ウォークイン客数,総客数-予約客数,流入分析.客数 - 流入分析.予約客数,ZTOTAL.customers - 予約客数
+店舗,流入分析,ウォークイン客単価,WI売上÷WI客数,流入分析.ウォークイン売上 ÷ 流入分析.ウォークイン客数,ウォークイン売上 ÷ ウォークイン客数
+店舗,予実対比,ヘルプ人件費,受入-送出,予実対比.ヘルプ受入人件費 - 予実対比.ヘルプ送出人件費,labor_costs_logs.help_costs - labor_costs_logs.help_costs_minus
+店舗,支払種別売上分析,売上比率,支払÷総売上×100,支払種別売上分析.支払別売上税込 ÷ 支払種別売上分析.総売上税込 × 100,TTEND.sales ÷ SUM(TTEND.sales) × 100
+店舗,小口現金管理,残高,前残高+入金-出金,小口現金管理.前残高 + 小口現金管理.入金額 - 小口現金管理.出勤額,前残高 + 入金額 - 出勤額
+店舗,棚卸し,小計,数量×単価,棚卸し.在庫数量 × 棚卸し.商品単価,在庫数量 × 商品単価
+店舗,費目別仕入分析,比率,費目÷総仕入×100,費目別仕入分析.費目別金額税抜 ÷ 費目別仕入分析.総費用 × 100,monthly_costs.value ÷ SUM(monthly_costs.value) × 100
+店舗,月次費用入力,比率,自動計算,月次費用入力.金額 ÷ 当月実績.売上税抜 × 100,monthly_costs.value ÷ ZTOTAL.sales_excluded × 100

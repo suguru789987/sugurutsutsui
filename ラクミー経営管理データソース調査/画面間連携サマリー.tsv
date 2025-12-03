@@ -1,0 +1,38 @@
+画面区分	画面タイトル	指標名	演算ロジック	演算式詳細（テーブル.カラム）	入力元画面	出力先画面	計算に使用する他指標
+会社	主要KPI指標	坪月商	売上÷坪数	ZTOTAL.sales_excluded ÷ shops.floor_area	-	-	売上税抜(ZTOTAL)
+会社	主要KPI指標	営業利益率	営業利益÷売上×100	(ZTOTAL.sales_excluded - trade_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value) ÷ ZTOTAL.sales_excluded × 100	-	-	売上税抜, FD仕入額, 人件費, 経費
+会社	主要KPI指標	家賃比率	家賃÷売上×100	monthly_costs.value(費目=家賃) ÷ ZTOTAL.sales_excluded × 100	-	-	家賃(monthly_costs), 売上税抜(ZTOTAL)
+会社	主要KPI指標	ROI	営業利益÷投資×100	(ZTOTAL.sales_excluded - trade_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value) ÷ monthly_budgets.value × 100	-	-	営業利益, 予算(monthly_budgets)
+会社	当月実績	営業利益	売上-仕入-人件費-経費	ZTOTAL.sales_excluded - trade_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value	-	店舗別サマリー,年間予実対比	売上税抜, FD仕入額, 人件費, その他経費
+会社	当月実績	売上税抜	SUM	SUM(ZTOTAL.sales_excluded)	-	店舗別サマリー,ABC分析,日次推移,日次レポート	-
+会社	当月実績	FD仕入率	仕入÷売上×100	trade_total.total_tax_excluded ÷ ZTOTAL.sales_excluded × 100	-	店舗別サマリー	FD仕入額(trade_total), 売上税抜(ZTOTAL)
+会社	当月実績	人件費率	人件費÷売上×100	labor_costs_logs.labor_costs ÷ ZTOTAL.sales_excluded × 100	-	店舗別サマリー	人件費(labor_costs_logs), 売上税抜(ZTOTAL)
+会社	当月実績	FL率	(F+L)÷売上×100	(trade_total.total_tax_excluded + labor_costs_logs.labor_costs) ÷ ZTOTAL.sales_excluded × 100	-	-	FD仕入額, 人件費, 売上税抜
+会社	店舗別サマリー	営業利益	売上-仕入-人件費-経費	ZTOTAL.sales_excluded - trade_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value	当月実績	当月実績,年間予実対比	売上税抜, FD仕入額, 人件費, その他経費
+会社	店舗別サマリー	売上達成率	実績÷目標×100	ZTOTAL.sales_excluded ÷ monthly_budgets.value × 100	-	-	売上税抜(ZTOTAL), 売上目標(monthly_budgets)
+会社	店舗別サマリー	売上進捗率	累計÷目標×100	SUM(ZTOTAL.sales_excluded) ÷ monthly_budgets.value × 100	-	進捗分析	売上税抜累計, 売上目標
+会社	年間予実対比	営業利益	売上-仕入-人件費-経費	ZTOTAL.sales_excluded - tax_excluded_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value	当月実績,店舗別サマリー	当月実績,店舗別サマリー	売上税抜, FD仕入額, 人件費, その他経費
+会社	年間予実対比	客単価(ランチ)	売上÷客数(11-15時)	SUM(TTOTAL.sales_excluded WHERE settlement_time 11:00-15:00) / SUM(TTOTAL.customers WHERE settlement_time 11:00-15:00)	-	-	売上税抜(TTOTAL), 客数(TTOTAL), 会計日時フィルタ
+会社	年間予実対比	客単価(ディナー)	売上÷客数(17-23時)	SUM(TTOTAL.sales_excluded WHERE settlement_time 17:00-23:00) / SUM(TTOTAL.customers WHERE settlement_time 17:00-23:00)	-	-	売上税抜(TTOTAL), 客数(TTOTAL), 会計日時フィルタ
+会社	進捗分析	利益進捗率	営業利益累計÷目標利益×100	(ZTOTAL.sales_excluded - trade_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value) ÷ monthly_budgets.profit_target × 100	-	-	営業利益, 目標利益(monthly_budgets)
+会社	進捗分析	売上進捗率	売上累計÷目標×100	SUM(ZTOTAL.sales_excluded) ÷ monthly_budgets.value × 100	店舗別サマリー	店舗別サマリー	売上税抜累計, 売上目標
+店舗	主要KPI指標	坪月商	売上÷坪数	ZTOTAL.sales_excluded ÷ shops.floor_area	-	-	売上税抜(ZTOTAL)
+店舗	主要KPI指標	営業利益率	営業利益÷売上×100	(ZTOTAL.sales_excluded - trade_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value) ÷ ZTOTAL.sales_excluded × 100	-	-	売上税抜, FD仕入額, 人件費, 経費
+店舗	主要KPI指標	家賃比率	家賃÷売上×100	monthly_costs.value(費目=家賃) ÷ ZTOTAL.sales_excluded × 100	-	-	家賃(monthly_costs), 売上税抜(ZTOTAL)
+店舗	主要KPI指標	ROI	営業利益÷投資×100	(ZTOTAL.sales_excluded - trade_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value) ÷ monthly_budgets.value × 100	-	-	営業利益, 予算(monthly_budgets)
+店舗	当月実績	営業利益	売上-仕入-人件費-経費	ZTOTAL.sales_excluded - trade_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value	-	年間予実対比	売上税抜, FD仕入額, 人件費, その他経費
+店舗	当月実績	売上税抜	SUM	SUM(ZTOTAL.sales_excluded)	-	ABC分析,感度分析,日次レポート	-
+店舗	当月実績	FD仕入率	仕入÷売上×100	trade_total.total_tax_excluded ÷ ZTOTAL.sales_excluded × 100	-	FD分析	FD仕入額(trade_total), 売上税抜(ZTOTAL)
+店舗	当月実績	FL率	(F+L)÷売上×100	(trade_total.total_tax_excluded + labor_costs_logs.labor_costs) ÷ ZTOTAL.sales_excluded × 100	-	-	FD仕入額, 人件費, 売上税抜
+店舗	感度分析	客単価税抜	売上÷客数	ZTOTAL.sales_excluded ÷ ZTOTAL.customers	-	時間帯別売上分析,月次集計	売上税抜(ZTOTAL), 客数(ZTOTAL)
+店舗	感度分析	変動費単価	変動費÷客数	tax_excluded_total.total_tax_excluded ÷ ZTOTAL.customers	-	月次集計	変動費(tax_excluded_total), 客数(ZTOTAL)
+店舗	感度分析	変動費率	変動費÷売上×100	tax_excluded_total.total_tax_excluded ÷ ZTOTAL.sales_excluded × 100	-	月次集計	変動費(tax_excluded_total), 売上税抜(ZTOTAL)
+店舗	感度分析	粗利単価	(売上-原価)÷客数	(ZTOTAL.sales_excluded - tax_excluded_total.total_tax_excluded) ÷ ZTOTAL.customers	-	月次集計	売上税抜, 原価(tax_excluded_total), 客数
+店舗	感度分析	粗利率	(売上-原価)÷売上×100	(ZTOTAL.sales_excluded - tax_excluded_total.total_tax_excluded) ÷ ZTOTAL.sales_excluded × 100	-	月次集計	売上税抜, 原価(tax_excluded_total)
+店舗	利益進捗分析	利益進捗率	営業利益累計÷目標利益×100	(ZTOTAL.sales_excluded - trade_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value) ÷ monthly_budgets.profit_target × 100	-	-	営業利益, 目標利益(monthly_budgets)
+店舗	利益進捗分析	利益達成率	営業利益÷目標利益×100	(ZTOTAL.sales_excluded - trade_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value) ÷ monthly_budgets.profit_target × 100	-	-	営業利益, 目標利益(monthly_budgets)
+店舗	年間予実対比	営業利益	売上-仕入-人件費-経費	ZTOTAL.sales_excluded - tax_excluded_total.total_tax_excluded - labor_costs_logs.labor_costs - monthly_costs.value	当月実績	当月実績	売上税抜, FD仕入額, 人件費, その他経費
+店舗	予実対比	FD仕入	SUM	SUM(tax_excluded_total.total_tax_excluded)	-	-	-
+店舗	予実対比	人件費	SUM	SUM(labor_costs_logs.labor_costs)	-	店舗別人件費	-
+店舗	予実対比	PA人件費	SUM時給者	SUM(head_office_employee_working_records.daily_cost)	-	日次レポート	-
+店舗	予実対比	ヘルプ人件費	ヘルプ受入-ヘルプ送出	labor_costs_logs.help_costs - labor_costs_logs.help_costs_minus	-	店舗別人件費	ヘルプ受入(help_costs), ヘルプ送出(help_costs_minus)
