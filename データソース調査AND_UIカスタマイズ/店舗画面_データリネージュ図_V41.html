@@ -1,0 +1,2625 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>店舗画面 データリネージュ図 V41</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #4a90d9;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #555;
+            margin-top: 30px;
+            border-left: 4px solid #4a90d9;
+            padding-left: 10px;
+        }
+        h3 {
+            color: #666;
+            margin-top: 20px;
+        }
+        .summary {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .summary-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .summary-card.s { background: linear-gradient(135deg, #E53935 0%, #C62828 100%); }
+        .summary-card.a { background: linear-gradient(135deg, #FB8C00 0%, #EF6C00 100%); }
+        .summary-card.b { background: linear-gradient(135deg, #1E88E5 0%, #1565C0 100%); }
+        .summary-card.c { background: linear-gradient(135deg, #757575 0%, #616161 100%); }
+        .summary-card.d { background: linear-gradient(135deg, #BDBDBD 0%, #9E9E9E 100%); }
+        .summary-card h4 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+        }
+        .summary-card .number {
+            font-size: 32px;
+            font-weight: bold;
+        }
+        .mermaid {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        .legend {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .legend-item {
+            display: inline-block;
+            margin-right: 15px;
+            padding: 5px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+        }
+        .external { background-color: #e3f2fd; border: 2px solid #2196f3; }
+        .internal { background-color: #e8f5e9; border: 2px solid #4caf50; }
+        .screen { background-color: #fff3e0; border: 2px solid #ff9800; }
+        .input { background-color: #fce4ec; border: 2px solid #e91e63; }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 15px;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 13px;
+        }
+        th {
+            background-color: #4a90d9;
+            color: white;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #e3f2fd;
+        }
+        .importance-s { color: #E53935; font-weight: bold; }
+        .importance-a { color: #FB8C00; font-weight: bold; }
+        .importance-b { color: #1E88E5; }
+        .importance-c { color: #757575; }
+        .importance-d { color: #BDBDBD; }
+        .section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .screen-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .screen-tag {
+            background-color: #fff3e0;
+            border: 1px solid #ff9800;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .screen-tag.input {
+            background-color: #fce4ec;
+            border-color: #e91e63;
+        }
+    </style>
+</head>
+<body>
+    <h1>店舗画面 データリネージュ図 V41</h1>
+    <p>作成日: 2025年12月09日 | 経営重要度: 店長視点 | 総指標数: 556指標</p>
+
+    <div class="summary">
+        <h3>経営重要度サマリー</h3>
+        <div class="summary-grid">
+            <div class="summary-card s">
+                <h4>S: 最重要（日次確認必須）</h4>
+                <div class="number">53</div>
+            </div>
+            <div class="summary-card a">
+                <h4>A: 重要（週次確認推奨）</h4>
+                <div class="number">88</div>
+            </div>
+            <div class="summary-card b">
+                <h4>B: 標準（月次確認）</h4>
+                <div class="number">35</div>
+            </div>
+            <div class="summary-card c">
+                <h4>C: 参考（必要時確認）</h4>
+                <div class="number">319</div>
+            </div>
+            <div class="summary-card d">
+                <h4>D: 補助（設定/入力）</h4>
+                <div class="number">61</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="legend">
+        <strong>凡例:</strong>
+        <span class="legend-item external">外部データソース (POS/インフォマート/KOT)</span>
+        <span class="legend-item internal">内部データソース (マスタ/設定)</span>
+        <span class="legend-item screen">表示画面</span>
+        <span class="legend-item input">設定入力画面</span>
+    </div>
+
+    <h2>1. 全体概要図</h2>
+    <div class="mermaid">
+flowchart LR
+    subgraph EXT[外部データソース]
+        direction TB
+        ZTOTAL[(ZTOTAL<br/>POS売上日次)]
+        TITEM[(TITEM<br/>POS商品別)]
+        TTEND[(TTEND<br/>POS支払別)]
+        INFOMART[(インフォマート<br/>仕入データ)]
+        LABOR[(KOT/ジョブカン<br/>人件費)]
+    end
+
+    subgraph INT[内部データソース]
+        direction TB
+        BUDGETS[(monthly_budgets<br/>予算マスタ)]
+        COSTS[(monthly_costs<br/>費用マスタ)]
+        SHOPS[(shops<br/>店舗マスタ)]
+        INVENTORY[(shop_inventories<br/>棚卸マスタ)]
+    end
+
+    subgraph DISPLAY[表示画面]
+        direction TB
+        KPI[主要KPI指標<br/>営業利益率/FL率/坪月商]
+        MONTHLY[当月実績<br/>売上/仕入率/人件費率]
+        SHOP_SUMMARY[店舗別サマリー<br/>営業利益/達成率]
+        ANALYSIS[各種分析画面<br/>ABC/時間帯/曜日別]
+    end
+
+    subgraph INPUT[設定入力画面]
+        direction TB
+        BUDGET_INPUT[予算設定]
+        COST_INPUT[月次費用入力]
+        MASTER_INPUT[費目マスタ]
+    end
+
+    ZTOTAL --> MONTHLY
+    ZTOTAL --> SHOP_SUMMARY
+    TITEM --> ANALYSIS
+    TTEND --> ANALYSIS
+    INFOMART --> MONTHLY
+    LABOR --> MONTHLY
+
+    BUDGETS --> KPI
+    COSTS --> KPI
+    SHOPS --> KPI
+
+    MONTHLY --> KPI
+    SHOP_SUMMARY --> KPI
+
+    BUDGET_INPUT --> BUDGETS
+    COST_INPUT --> COSTS
+    </div>
+
+    <h2>2. 画面一覧</h2>
+    <div class="section">
+        <h3>表示画面 (37画面)</h3>
+        <div class="screen-list">
+            <span class="screen-tag">ABC分析</span>
+            <span class="screen-tag">FD仕入率トレンド</span>
+            <span class="screen-tag">FD分析</span>
+            <span class="screen-tag">FD分析(仕入率/原価率)</span>
+            <span class="screen-tag">FD分析(売上構成比)</span>
+            <span class="screen-tag">FD売上構成比</span>
+            <span class="screen-tag">主要KPI指標</span>
+            <span class="screen-tag">主要KPI指標(ダッシュボード上部)</span>
+            <span class="screen-tag">予実対比</span>
+            <span class="screen-tag">予実対比(一覧)</span>
+            <span class="screen-tag">予算一覧</span>
+            <span class="screen-tag">予算一覧(予算構成)</span>
+            <span class="screen-tag">予算一覧(予算設定値)</span>
+            <span class="screen-tag">仕入先分析</span>
+            <span class="screen-tag">利益進捗分析</span>
+            <span class="screen-tag">商品仕入単価</span>
+            <span class="screen-tag">商品別仕入分析</span>
+            <span class="screen-tag">商品別売上分析</span>
+            <span class="screen-tag">売上進捗分析</span>
+            <span class="screen-tag">平均単価推移</span>
+            <span class="screen-tag">年間予実対比</span>
+            <span class="screen-tag">年間予実対比(サマリー)</span>
+            <span class="screen-tag">年間予実対比(予実対比)</span>
+            <span class="screen-tag">店舗ラベル別サマリー</span>
+            <span class="screen-tag">店舗別サマリー</span>
+            <span class="screen-tag">店舗別人件費</span>
+            <span class="screen-tag">当月実績</span>
+            <span class="screen-tag">従業員別勤務実績</span>
+            <span class="screen-tag">感度分析</span>
+            <span class="screen-tag">支払種別売上分析</span>
+            <span class="screen-tag">日次レポート</span>
+            <span class="screen-tag">時間帯別売上分析</span>
+            <span class="screen-tag">曜日別売上分析</span>
+            <span class="screen-tag">月次レポート</span>
+            <span class="screen-tag">月次集計</span>
+            <span class="screen-tag">流入分析</span>
+            <span class="screen-tag">費目別仕入分析</span>
+        </div>
+        <h3>設定入力画面 (6画面)</h3>
+        <div class="screen-list">
+            <span class="screen-tag input">予算設定</span>
+            <span class="screen-tag input">小口現金管理</span>
+            <span class="screen-tag input">店舗間商品移動</span>
+            <span class="screen-tag input">月次費用入力</span>
+            <span class="screen-tag input">棚卸し</span>
+            <span class="screen-tag input">費目マスタ</span>
+        </div>
+    </div>
+
+    <h2>3. 外部連携グループ別データフロー</h2>
+
+    <div class="section">
+        <h3>POS売上（日別集計）</h3>
+        <p>外部テーブル: ZTOTAL → ラクミーテーブル: head_office_connected_service_sales_logs</p>
+        <table>
+            <tr>
+                <th>No</th>
+                <th>画面タイトル</th>
+                <th>指標名</th>
+                <th>経営重要度</th>
+                <th>独自度</th>
+                <th>演算ロジック</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>主要KPI指標</td>
+                <td>坪月商</td>
+                <td class="importance-b">B</td>
+                <td>L4a</td>
+                <td>売上÷坪数</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>主要KPI指標</td>
+                <td>家賃比率</td>
+                <td class="importance-b">B</td>
+                <td>L4a</td>
+                <td>家賃÷売上×100</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>主要KPI指標(ダッシュボード上部)</td>
+                <td>坪月商</td>
+                <td class="importance-b">B</td>
+                <td>L4a</td>
+                <td>売上÷坪数</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>主要KPI指標(ダッシュボード上部)</td>
+                <td>家賃比率</td>
+                <td class="importance-b">B</td>
+                <td>L4a</td>
+                <td>家賃÷売上×100</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>当月実績</td>
+                <td>営業利益</td>
+                <td class="importance-s">S</td>
+                <td>L4a</td>
+                <td>売上-仕入-人件費-経費</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>当月実績</td>
+                <td>FD仕入率</td>
+                <td class="importance-s">S</td>
+                <td>L1</td>
+                <td>仕入÷売上×100</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>当月実績</td>
+                <td>人件費率</td>
+                <td class="importance-s">S</td>
+                <td>L1</td>
+                <td>人件費÷売上×100</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>当月実績</td>
+                <td>FL率</td>
+                <td class="importance-s">S</td>
+                <td>L1</td>
+                <td>(F+L)÷売上×100</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>店舗別サマリー</td>
+                <td>売上達成率</td>
+                <td class="importance-a">A</td>
+                <td>L4a</td>
+                <td>実績÷目標×100</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>店舗別サマリー</td>
+                <td>営業利益</td>
+                <td class="importance-s">S</td>
+                <td>L4a</td>
+                <td>売上-仕入-人件費-経費</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td>店舗別サマリー</td>
+                <td>売上(税抜)</td>
+                <td class="importance-s">S</td>
+                <td>L0</td>
+                <td>SUM店舗別</td>
+            </tr>
+            <tr>
+                <td>12</td>
+                <td>店舗別サマリー</td>
+                <td>売上進捗率</td>
+                <td class="importance-b">B</td>
+                <td>L4a</td>
+                <td>累計÷目標×100</td>
+            </tr>
+            <tr>
+                <td>13</td>
+                <td>店舗別サマリー</td>
+                <td>FD仕入率</td>
+                <td class="importance-s">S</td>
+                <td>L1</td>
+                <td>仕入÷売上×100</td>
+            </tr>
+            <tr>
+                <td>14</td>
+                <td>店舗別サマリー</td>
+                <td>人件費率</td>
+                <td class="importance-s">S</td>
+                <td>L1</td>
+                <td>人件費÷売上×100</td>
+            </tr>
+            <tr>
+                <td>15</td>
+                <td>店舗ラベル別サマリー</td>
+                <td>売上達成率</td>
+                <td class="importance-a">A</td>
+                <td>L4a</td>
+                <td>実績÷目標×100</td>
+            </tr>
+            <tr>
+                <td>16</td>
+                <td>店舗ラベル別サマリー</td>
+                <td>営業利益</td>
+                <td class="importance-s">S</td>
+                <td>L4a</td>
+                <td>売上-仕入-人件費-経費</td>
+            </tr>
+            <tr>
+                <td>17</td>
+                <td>店舗ラベル別サマリー</td>
+                <td>売上(税抜)</td>
+                <td class="importance-s">S</td>
+                <td>L0</td>
+                <td>SUMラベル別</td>
+            </tr>
+            <tr>
+                <td>18</td>
+                <td>店舗ラベル別サマリー</td>
+                <td>売上進捗率</td>
+                <td class="importance-b">B</td>
+                <td>L4a</td>
+                <td>累計÷目標×100</td>
+            </tr>
+            <tr>
+                <td>19</td>
+                <td>店舗ラベル別サマリー</td>
+                <td>FD仕入率</td>
+                <td class="importance-s">S</td>
+                <td>L1</td>
+                <td>仕入÷売上×100</td>
+            </tr>
+            <tr>
+                <td>20</td>
+                <td>店舗ラベル別サマリー</td>
+                <td>人件費率</td>
+                <td class="importance-s">S</td>
+                <td>L1</td>
+                <td>人件費÷売上×100</td>
+            </tr>
+            <tr><td colspan="6">... 他 126 件</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h3>POS売上（商品別）</h3>
+        <p>外部テーブル: TITEM → ラクミーテーブル: head_office_item_sales_logs</p>
+        <table>
+            <tr>
+                <th>No</th>
+                <th>画面タイトル</th>
+                <th>指標名</th>
+                <th>経営重要度</th>
+                <th>独自度</th>
+                <th>演算ロジック</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>ABC分析</td>
+                <td>商品</td>
+                <td class="importance-d">D</td>
+                <td>L0</td>
+                <td>商品マスタ</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>ABC分析</td>
+                <td>売上構成比率</td>
+                <td class="importance-c">C</td>
+                <td>L1</td>
+                <td>商品÷総売上×100</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>ABC分析</td>
+                <td>販売点数</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUM商品別</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>ABC分析</td>
+                <td>販売点数構成比率</td>
+                <td class="importance-c">C</td>
+                <td>L1</td>
+                <td>商品数÷総数×100</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>ABC分析</td>
+                <td>価格</td>
+                <td class="importance-c">C</td>
+                <td>L1</td>
+                <td>売上÷数量</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>商品別売上分析</td>
+                <td>商品単価税込</td>
+                <td class="importance-c">C</td>
+                <td>L1</td>
+                <td>売上÷数量</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>商品別売上分析</td>
+                <td>販売数量</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUM商品別</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>商品別売上分析</td>
+                <td>売上合計税込</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUM商品別</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>FD分析(仕入率/原価率)</td>
+                <td>フード仕入率</td>
+                <td class="importance-c">C</td>
+                <td>L1</td>
+                <td>フード仕入÷フード売上×100</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>FD分析(仕入率/原価率)</td>
+                <td>ドリンク仕入率</td>
+                <td class="importance-c">C</td>
+                <td>L1</td>
+                <td>ドリンク仕入÷ドリンク売上×100</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td>FD分析(仕入率/原価率)</td>
+                <td>フード売上</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUMフード</td>
+            </tr>
+            <tr>
+                <td>12</td>
+                <td>FD分析(仕入率/原価率)</td>
+                <td>ドリンク売上</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUMドリンク</td>
+            </tr>
+            <tr>
+                <td>13</td>
+                <td>FD分析(売上構成比)</td>
+                <td>FD売上構成比</td>
+                <td class="importance-c">C</td>
+                <td>L1</td>
+                <td>FD÷総売上×100</td>
+            </tr>
+            <tr>
+                <td>14</td>
+                <td>FD分析(売上構成比)</td>
+                <td>フード売上合計</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUMフード</td>
+            </tr>
+            <tr>
+                <td>15</td>
+                <td>FD分析(売上構成比)</td>
+                <td>ドリンク売上合計</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUMドリンク</td>
+            </tr>
+            <tr>
+                <td>16</td>
+                <td>FD売上構成比</td>
+                <td>FD売上構成比</td>
+                <td class="importance-c">C</td>
+                <td>L1</td>
+                <td>FD÷総売上×100</td>
+            </tr>
+            <tr>
+                <td>17</td>
+                <td>FD売上構成比</td>
+                <td>フード売上合計</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUMフード</td>
+            </tr>
+            <tr>
+                <td>18</td>
+                <td>FD売上構成比</td>
+                <td>ドリンク売上合計</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUMドリンク</td>
+            </tr>
+            <tr>
+                <td>19</td>
+                <td>FD仕入率トレンド</td>
+                <td>フード仕入比率(6ヶ月)</td>
+                <td class="importance-c">C</td>
+                <td>L1</td>
+                <td>フード仕入÷フード売上×100</td>
+            </tr>
+            <tr>
+                <td>20</td>
+                <td>FD仕入率トレンド</td>
+                <td>ドリンク仕入比率(6ヶ月)</td>
+                <td class="importance-c">C</td>
+                <td>L1</td>
+                <td>ドリンク仕入÷ドリンク売上×100</td>
+            </tr>
+            <tr><td colspan="6">... 他 80 件</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h3>インフォマート（仕入）</h3>
+        <p>外部テーブル: インフォマート → ラクミーテーブル: infomart_transactions</p>
+        <table>
+            <tr>
+                <th>No</th>
+                <th>画面タイトル</th>
+                <th>指標名</th>
+                <th>経営重要度</th>
+                <th>独自度</th>
+                <th>演算ロジック</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>当月実績</td>
+                <td>営業利益</td>
+                <td class="importance-s">S</td>
+                <td>L4a</td>
+                <td>売上-仕入-人件費-経費</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>当月実績</td>
+                <td>FD仕入率</td>
+                <td class="importance-s">S</td>
+                <td>L1</td>
+                <td>仕入÷売上×100</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>当月実績</td>
+                <td>FL率</td>
+                <td class="importance-s">S</td>
+                <td>L1</td>
+                <td>(F+L)÷売上×100</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>店舗別サマリー</td>
+                <td>営業利益</td>
+                <td class="importance-s">S</td>
+                <td>L4a</td>
+                <td>売上-仕入-人件費-経費</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>店舗別サマリー</td>
+                <td>FD仕入率</td>
+                <td class="importance-s">S</td>
+                <td>L1</td>
+                <td>仕入÷売上×100</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>店舗ラベル別サマリー</td>
+                <td>営業利益</td>
+                <td class="importance-s">S</td>
+                <td>L4a</td>
+                <td>売上-仕入-人件費-経費</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>店舗ラベル別サマリー</td>
+                <td>FD仕入率</td>
+                <td class="importance-s">S</td>
+                <td>L1</td>
+                <td>仕入÷売上×100</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>仕入先分析</td>
+                <td>金額税抜</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUM仕入先別</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>仕入先分析</td>
+                <td>比率</td>
+                <td class="importance-c">C</td>
+                <td>L1</td>
+                <td>仕入先÷総仕入×100</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>FD分析</td>
+                <td>FD仕入率</td>
+                <td class="importance-s">S</td>
+                <td>L1</td>
+                <td>仕入÷売上×100</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td>FD分析</td>
+                <td>FD当月仕入</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUM月間</td>
+            </tr>
+            <tr>
+                <td>12</td>
+                <td>FD分析(仕入率/原価率)</td>
+                <td>フード仕入率</td>
+                <td class="importance-c">C</td>
+                <td>L1</td>
+                <td>フード仕入÷フード売上×100</td>
+            </tr>
+            <tr>
+                <td>13</td>
+                <td>FD分析(仕入率/原価率)</td>
+                <td>フード当月仕入</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUMフード</td>
+            </tr>
+            <tr>
+                <td>14</td>
+                <td>FD分析(仕入率/原価率)</td>
+                <td>ドリンク仕入率</td>
+                <td class="importance-c">C</td>
+                <td>L1</td>
+                <td>ドリンク仕入÷ドリンク売上×100</td>
+            </tr>
+            <tr>
+                <td>15</td>
+                <td>FD分析(仕入率/原価率)</td>
+                <td>ドリンク当月仕入</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUMドリンク</td>
+            </tr>
+            <tr>
+                <td>16</td>
+                <td>FD分析(仕入率/原価率)</td>
+                <td>FD仕入率</td>
+                <td class="importance-s">S</td>
+                <td>L1</td>
+                <td>仕入÷売上×100</td>
+            </tr>
+            <tr>
+                <td>17</td>
+                <td>FD分析(仕入率/原価率)</td>
+                <td>FD当月仕入</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUM月間</td>
+            </tr>
+            <tr>
+                <td>18</td>
+                <td>FD仕入率トレンド</td>
+                <td>FD仕入率トレンド(6ヶ月)</td>
+                <td class="importance-s">S</td>
+                <td>L1</td>
+                <td>仕入÷売上×100(直近6ヶ月推移)</td>
+            </tr>
+            <tr>
+                <td>19</td>
+                <td>FD仕入率トレンド</td>
+                <td>フード仕入比率(6ヶ月)</td>
+                <td class="importance-c">C</td>
+                <td>L1</td>
+                <td>フード仕入÷フード売上×100</td>
+            </tr>
+            <tr>
+                <td>20</td>
+                <td>FD仕入率トレンド</td>
+                <td>ドリンク仕入比率(6ヶ月)</td>
+                <td class="importance-c">C</td>
+                <td>L1</td>
+                <td>ドリンク仕入÷ドリンク売上×100</td>
+            </tr>
+            <tr><td colspan="6">... 他 60 件</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h3>勤怠（KOT/ジョブカン）</h3>
+        <p>外部テーブル: KOT/ジョブカン → ラクミーテーブル: head_office_connected_service_labor_costs_logs</p>
+        <table>
+            <tr>
+                <th>No</th>
+                <th>画面タイトル</th>
+                <th>指標名</th>
+                <th>経営重要度</th>
+                <th>独自度</th>
+                <th>演算ロジック</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>当月実績</td>
+                <td>営業利益</td>
+                <td class="importance-s">S</td>
+                <td>L4a</td>
+                <td>売上-仕入-人件費-経費</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>当月実績</td>
+                <td>人件費率</td>
+                <td class="importance-s">S</td>
+                <td>L1</td>
+                <td>人件費÷売上×100</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>当月実績</td>
+                <td>FL率</td>
+                <td class="importance-s">S</td>
+                <td>L1</td>
+                <td>(F+L)÷売上×100</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>店舗別サマリー</td>
+                <td>営業利益</td>
+                <td class="importance-s">S</td>
+                <td>L4a</td>
+                <td>売上-仕入-人件費-経費</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>店舗別サマリー</td>
+                <td>人件費率</td>
+                <td class="importance-s">S</td>
+                <td>L1</td>
+                <td>人件費÷売上×100</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>店舗ラベル別サマリー</td>
+                <td>営業利益</td>
+                <td class="importance-s">S</td>
+                <td>L4a</td>
+                <td>売上-仕入-人件費-経費</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>店舗ラベル別サマリー</td>
+                <td>人件費率</td>
+                <td class="importance-s">S</td>
+                <td>L1</td>
+                <td>人件費÷売上×100</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>予実対比</td>
+                <td>人件費</td>
+                <td class="importance-a">A</td>
+                <td>L0</td>
+                <td>SUM</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>予実対比</td>
+                <td>固定人件費</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUM月給者</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>予実対比(一覧)</td>
+                <td>人件費</td>
+                <td class="importance-a">A</td>
+                <td>L0</td>
+                <td>SUM</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td>予実対比(一覧)</td>
+                <td>固定人件費</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUM月給者</td>
+            </tr>
+            <tr>
+                <td>12</td>
+                <td>年間予実対比</td>
+                <td>人件費額</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUM年間</td>
+            </tr>
+            <tr>
+                <td>13</td>
+                <td>年間予実対比(サマリー)</td>
+                <td>人件費額</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUM年間</td>
+            </tr>
+            <tr>
+                <td>14</td>
+                <td>年間予実対比(予実対比)</td>
+                <td>FLコスト 計</td>
+                <td class="importance-c">C</td>
+                <td>L1</td>
+                <td>SUM</td>
+            </tr>
+            <tr>
+                <td>15</td>
+                <td>年間予実対比(予実対比)</td>
+                <td>人件費 計</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUM</td>
+            </tr>
+            <tr>
+                <td>16</td>
+                <td>年間予実対比(予実対比)</td>
+                <td>社員人件費</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUM月給者</td>
+            </tr>
+            <tr>
+                <td>17</td>
+                <td>年間予実対比(予実対比)</td>
+                <td>固定人件費</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUM月給者</td>
+            </tr>
+            <tr>
+                <td>18</td>
+                <td>予算一覧(予算構成)</td>
+                <td>FLコスト 計</td>
+                <td class="importance-c">C</td>
+                <td>L1</td>
+                <td>SUM</td>
+            </tr>
+            <tr>
+                <td>19</td>
+                <td>予算一覧(予算構成)</td>
+                <td>人件費 計</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUM</td>
+            </tr>
+            <tr>
+                <td>20</td>
+                <td>予算一覧(予算構成)</td>
+                <td>固定人件費</td>
+                <td class="importance-c">C</td>
+                <td>L0</td>
+                <td>SUM月給者</td>
+            </tr>
+            <tr><td colspan="6">... 他 12 件</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h3>ユーザー入力（予算設定）</h3>
+        <p>外部テーブル: 予算設定 → ラクミーテーブル: monthly_budgets</p>
+        <table>
+            <tr>
+                <th>No</th>
+                <th>画面タイトル</th>
+                <th>指標名</th>
+                <th>経営重要度</th>
+                <th>独自度</th>
+                <th>演算ロジック</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>主要KPI指標</td>
+                <td>ROI</td>
+                <td class="importance-b">B</td>
+                <td>L4b</td>
+                <td>営業利益÷投資×100</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>主要KPI指標(ダッシュボード上部)</td>
+                <td>ROI</td>
+                <td class="importance-b">B</td>
+                <td>L4b</td>
+                <td>営業利益÷投資×100</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>店舗別サマリー</td>
+                <td>売上目標</td>
+                <td class="importance-b">B</td>
+                <td>L3</td>
+                <td>マスタ参照</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>店舗別サマリー</td>
+                <td>売上達成率</td>
+                <td class="importance-a">A</td>
+                <td>L4a</td>
+                <td>実績÷目標×100</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>店舗別サマリー</td>
+                <td>売上進捗率</td>
+                <td class="importance-b">B</td>
+                <td>L4a</td>
+                <td>累計÷目標×100</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>店舗ラベル別サマリー</td>
+                <td>売上目標</td>
+                <td class="importance-b">B</td>
+                <td>L3</td>
+                <td>マスタ参照</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>店舗ラベル別サマリー</td>
+                <td>売上達成率</td>
+                <td class="importance-a">A</td>
+                <td>L4a</td>
+                <td>実績÷目標×100</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>店舗ラベル別サマリー</td>
+                <td>売上進捗率</td>
+                <td class="importance-b">B</td>
+                <td>L4a</td>
+                <td>累計÷目標×100</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>利益進捗分析</td>
+                <td>利益進捗率</td>
+                <td class="importance-b">B</td>
+                <td>L4b</td>
+                <td>営業利益累計÷目標利益×100</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>利益進捗分析</td>
+                <td>利益進捗率比較(前月)</td>
+                <td class="importance-b">B</td>
+                <td>L4b</td>
+                <td>営業利益÷目標利益×100(前月比)</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td>利益進捗分析</td>
+                <td>利益進捗率比較(前々月)</td>
+                <td class="importance-b">B</td>
+                <td>L4b</td>
+                <td>営業利益÷目標利益×100(前々月比)</td>
+            </tr>
+            <tr>
+                <td>12</td>
+                <td>利益進捗分析</td>
+                <td>利益達成率</td>
+                <td class="importance-a">A</td>
+                <td>L4b</td>
+                <td>営業利益÷目標利益×100</td>
+            </tr>
+            <tr>
+                <td>13</td>
+                <td>売上進捗分析</td>
+                <td>売上進捗率</td>
+                <td class="importance-b">B</td>
+                <td>L4a</td>
+                <td>売上累計÷目標×100</td>
+            </tr>
+            <tr>
+                <td>14</td>
+                <td>売上進捗分析</td>
+                <td>売上進捗率比較(前月)</td>
+                <td class="importance-b">B</td>
+                <td>L4a</td>
+                <td>売上÷目標(前月比)</td>
+            </tr>
+            <tr>
+                <td>15</td>
+                <td>売上進捗分析</td>
+                <td>売上進捗率比較(前々月)</td>
+                <td class="importance-b">B</td>
+                <td>L4a</td>
+                <td>売上÷目標(前々月比)</td>
+            </tr>
+            <tr>
+                <td>16</td>
+                <td>売上進捗分析</td>
+                <td>売上達成率</td>
+                <td class="importance-a">A</td>
+                <td>L4a</td>
+                <td>売上÷目標×100</td>
+            </tr>
+            <tr>
+                <td>17</td>
+                <td>予算一覧</td>
+                <td>月次目標利益</td>
+                <td class="importance-b">B</td>
+                <td>L3</td>
+                <td>マスタ参照</td>
+            </tr>
+            <tr>
+                <td>18</td>
+                <td>予算一覧</td>
+                <td>目標FD仕入費率</td>
+                <td class="importance-b">B</td>
+                <td>L3</td>
+                <td>マスタ参照</td>
+            </tr>
+            <tr>
+                <td>19</td>
+                <td>予算一覧</td>
+                <td>目標PA人件費率</td>
+                <td class="importance-s">S</td>
+                <td>L3</td>
+                <td>マスタ参照</td>
+            </tr>
+            <tr>
+                <td>20</td>
+                <td>予算一覧</td>
+                <td>目標客単価</td>
+                <td class="importance-a">A</td>
+                <td>L3</td>
+                <td>マスタ参照</td>
+            </tr>
+            <tr><td colspan="6">... 他 19 件</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h3>ユーザー入力（費用設定）</h3>
+        <p>外部テーブル: 費用設定 → ラクミーテーブル: monthly_costs</p>
+        <table>
+            <tr>
+                <th>No</th>
+                <th>画面タイトル</th>
+                <th>指標名</th>
+                <th>経営重要度</th>
+                <th>独自度</th>
+                <th>演算ロジック</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>主要KPI指標</td>
+                <td>家賃比率</td>
+                <td class="importance-b">B</td>
+                <td>L4a</td>
+                <td>家賃÷売上×100</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>主要KPI指標(ダッシュボード上部)</td>
+                <td>家賃比率</td>
+                <td class="importance-b">B</td>
+                <td>L4a</td>
+                <td>家賃÷売上×100</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>当月実績</td>
+                <td>営業利益</td>
+                <td class="importance-s">S</td>
+                <td>L4a</td>
+                <td>売上-仕入-人件費-経費</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>店舗別サマリー</td>
+                <td>営業利益</td>
+                <td class="importance-s">S</td>
+                <td>L4a</td>
+                <td>売上-仕入-人件費-経費</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>店舗ラベル別サマリー</td>
+                <td>営業利益</td>
+                <td class="importance-s">S</td>
+                <td>L4a</td>
+                <td>売上-仕入-人件費-経費</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>費目別仕入分析</td>
+                <td>金額税抜</td>
+                <td class="importance-c">C</td>
+                <td>L3</td>
+                <td>SUM費目別</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>費目別仕入分析</td>
+                <td>比率</td>
+                <td class="importance-c">C</td>
+                <td>L4a</td>
+                <td>費目÷総仕入×100</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>感度分析</td>
+                <td>固定費</td>
+                <td class="importance-c">C</td>
+                <td>L3</td>
+                <td>SUM</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>予実対比</td>
+                <td>その他経費</td>
+                <td class="importance-c">C</td>
+                <td>L3</td>
+                <td>SUM経費</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>予実対比</td>
+                <td>地代家賃</td>
+                <td class="importance-c">C</td>
+                <td>L3</td>
+                <td>費目=家賃</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td>予実対比</td>
+                <td>資材費</td>
+                <td class="importance-c">C</td>
+                <td>L3</td>
+                <td>費目=資材費</td>
+            </tr>
+            <tr>
+                <td>12</td>
+                <td>予実対比</td>
+                <td>水道光熱費</td>
+                <td class="importance-c">C</td>
+                <td>L3</td>
+                <td>費目=水道光熱費</td>
+            </tr>
+            <tr>
+                <td>13</td>
+                <td>予実対比</td>
+                <td>減価償却費</td>
+                <td class="importance-c">C</td>
+                <td>L3</td>
+                <td>費目=減価償却費</td>
+            </tr>
+            <tr>
+                <td>14</td>
+                <td>予実対比</td>
+                <td>販促費</td>
+                <td class="importance-c">C</td>
+                <td>L3</td>
+                <td>費目=販促費</td>
+            </tr>
+            <tr>
+                <td>15</td>
+                <td>予実対比(一覧)</td>
+                <td>その他経費</td>
+                <td class="importance-c">C</td>
+                <td>L3</td>
+                <td>SUM経費</td>
+            </tr>
+            <tr>
+                <td>16</td>
+                <td>予実対比(一覧)</td>
+                <td>地代家賃</td>
+                <td class="importance-c">C</td>
+                <td>L3</td>
+                <td>費目=家賃</td>
+            </tr>
+            <tr>
+                <td>17</td>
+                <td>予実対比(一覧)</td>
+                <td>資材費</td>
+                <td class="importance-c">C</td>
+                <td>L3</td>
+                <td>費目=資材費</td>
+            </tr>
+            <tr>
+                <td>18</td>
+                <td>予実対比(一覧)</td>
+                <td>営業利益</td>
+                <td class="importance-s">S</td>
+                <td>L4a</td>
+                <td>売上-仕入-人件費-経費</td>
+            </tr>
+            <tr>
+                <td>19</td>
+                <td>年間予実対比</td>
+                <td>営業利益</td>
+                <td class="importance-s">S</td>
+                <td>L4a</td>
+                <td>売上-仕入-人件費-経費</td>
+            </tr>
+            <tr>
+                <td>20</td>
+                <td>年間予実対比(サマリー)</td>
+                <td>営業利益</td>
+                <td class="importance-s">S</td>
+                <td>L4a</td>
+                <td>売上-仕入-人件費-経費</td>
+            </tr>
+            <tr><td colspan="6">... 他 65 件</td></tr>
+        </table>
+    </div>
+
+    <h2>4. 経営重要度別 指標一覧</h2>
+
+    <div class="section">
+        <h3 class="importance-s">S: 最重要（日次確認必須） (53指標)</h3>
+        <table>
+            <tr>
+                <th>No</th>
+                <th>画面タイトル</th>
+                <th>指標名</th>
+                <th>データソース区分</th>
+                <th>独自度</th>
+                <th>インプット元</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>主要KPI指標</td>
+                <td>営業利益率</td>
+                <td>計算項目</td>
+                <td>L4b</td>
+                <td>当月実績.営業利益, 当月実績.売上税抜, 予実対比.FD仕入, 予実対比.人件費, 予実対比.その</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>主要KPI指標(ダッシュボード上部)</td>
+                <td>営業利益率</td>
+                <td>計算項目</td>
+                <td>L4b</td>
+                <td>当月実績.営業利益, 当月実績.売上税抜, 予実対比.FD仕入, 予実対比.人件費, 予実対比.その</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>当月実績</td>
+                <td>営業利益</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>当月実績.売上税抜, 予実対比.FD仕入, 予実対比.人件費, 予実対比.その他経費</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>当月実績</td>
+                <td>FD仕入率</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>予実対比.FD仕入, 当月実績.売上税抜</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>当月実績</td>
+                <td>人件費率</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>予実対比.人件費, 当月実績.売上税抜</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>当月実績</td>
+                <td>FL率</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>予実対比.FD仕入, 予実対比.人件費, 当月実績.売上税抜</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>店舗別サマリー</td>
+                <td>営業利益</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>店舗別サマリー.売上税抜, 予実対比.FD仕入, 予実対比.人件費, 予実対比.その他経費</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>店舗別サマリー</td>
+                <td>売上(税抜)</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]ZTOTAL.sales_excluded</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>店舗別サマリー</td>
+                <td>FD仕入率</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>予実対比.FD仕入, 店舗別サマリー.売上税抜</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>店舗別サマリー</td>
+                <td>人件費率</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>予実対比.人件費, 店舗別サマリー.売上税抜</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td>店舗ラベル別サマリー</td>
+                <td>営業利益</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>店舗ラベル別サマリー.売上税抜, 予実対比.FD仕入, 予実対比.人件費, 予実対比.その他経費</td>
+            </tr>
+            <tr>
+                <td>12</td>
+                <td>店舗ラベル別サマリー</td>
+                <td>売上(税抜)</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]ZTOTAL.sales_excluded</td>
+            </tr>
+            <tr>
+                <td>13</td>
+                <td>店舗ラベル別サマリー</td>
+                <td>FD仕入率</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>予実対比.FD仕入, 店舗ラベル別サマリー.売上税抜</td>
+            </tr>
+            <tr>
+                <td>14</td>
+                <td>店舗ラベル別サマリー</td>
+                <td>人件費率</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>予実対比.人件費, 店舗ラベル別サマリー.売上税抜</td>
+            </tr>
+            <tr>
+                <td>15</td>
+                <td>FD分析</td>
+                <td>FD仕入率</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>予実対比.FD仕入, 当月実績.売上税抜</td>
+            </tr>
+            <tr>
+                <td>16</td>
+                <td>FD分析</td>
+                <td>売上</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]ZTOTAL.sales_excluded</td>
+            </tr>
+            <tr>
+                <td>17</td>
+                <td>FD分析(仕入率/原価率)</td>
+                <td>FD仕入率</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>予実対比.FD仕入, 当月実績.売上税抜</td>
+            </tr>
+            <tr>
+                <td>18</td>
+                <td>FD分析(仕入率/原価率)</td>
+                <td>売上</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]ZTOTAL.sales_excluded</td>
+            </tr>
+            <tr>
+                <td>19</td>
+                <td>FD仕入率トレンド</td>
+                <td>FD仕入率トレンド(6ヶ月)</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>予実対比.FD仕入, 当月実績.売上税抜</td>
+            </tr>
+            <tr>
+                <td>20</td>
+                <td>FD仕入率トレンド</td>
+                <td>FD仕入率トレンド(12ヶ月)</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>予実対比.FD仕入, 当月実績.売上税抜</td>
+            </tr>
+            <tr>
+                <td>21</td>
+                <td>FD仕入率トレンド</td>
+                <td>FD仕入率トレンド</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>予実対比.FD仕入, 当月実績.売上税抜</td>
+            </tr>
+            <tr>
+                <td>22</td>
+                <td>予実対比(一覧)</td>
+                <td>営業利益</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>23</td>
+                <td>年間予実対比</td>
+                <td>営業利益</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>当月実績.売上税抜, 予実対比.FD仕入, 予実対比.人件費, 予実対比.その他経費</td>
+            </tr>
+            <tr>
+                <td>24</td>
+                <td>年間予実対比(サマリー)</td>
+                <td>営業利益</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>当月実績.売上税抜, 予実対比.FD仕入, 予実対比.人件費, 予実対比.その他経費</td>
+            </tr>
+            <tr>
+                <td>25</td>
+                <td>年間予実対比(予実対比)</td>
+                <td>営業利益</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>26</td>
+                <td>月次集計</td>
+                <td>PA人件費率</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>予実対比.PA人件費, 当月実績.売上税抜</td>
+            </tr>
+            <tr>
+                <td>27</td>
+                <td>月次集計</td>
+                <td>売上(税抜)</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]ZTOTAL.sales_excluded</td>
+            </tr>
+            <tr>
+                <td>28</td>
+                <td>月次レポート</td>
+                <td>売上(税抜)</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]ZTOTAL.sales_excluded</td>
+            </tr>
+            <tr>
+                <td>29</td>
+                <td>月次レポート</td>
+                <td>売上(税抜)</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]ZTOTAL.sales_excluded</td>
+            </tr>
+            <tr>
+                <td>30</td>
+                <td>日次レポート</td>
+                <td>売上税込</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]ZTOTAL.sales</td>
+            </tr>
+            <tr><td colspan="6">... 他 23 件</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h3 class="importance-a">A: 重要（週次確認推奨） (88指標)</h3>
+        <table>
+            <tr>
+                <th>No</th>
+                <th>画面タイトル</th>
+                <th>指標名</th>
+                <th>データソース区分</th>
+                <th>独自度</th>
+                <th>インプット元</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>店舗別サマリー</td>
+                <td>売上達成率</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>店舗別サマリー.売上税抜, 予算設定.予算金額</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>店舗ラベル別サマリー</td>
+                <td>売上達成率</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>店舗ラベル別サマリー.売上税抜, 予算設定.予算金額</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>時間帯別売上分析</td>
+                <td>客数</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]ZTOTAL.customers</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>曜日別売上分析</td>
+                <td>平均客数</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>時間帯別売上分析.客数</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>曜日別売上分析</td>
+                <td>平均客数(税抜)</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>時間帯別売上分析.客数</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>利益進捗分析</td>
+                <td>利益達成率</td>
+                <td>計算項目</td>
+                <td>L4b</td>
+                <td>当月実績.営業利益, 予算設定.予算金額</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>売上進捗分析</td>
+                <td>売上達成率</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>当月実績.売上税抜, 予算設定.予算金額</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>感度分析</td>
+                <td>客数</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]ZTOTAL.customers</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>FD分析</td>
+                <td>FD原価率</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>月次レポート.原価金額, 当月実績.売上税抜</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>FD分析(仕入率/原価率)</td>
+                <td>フード原価率</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>月次レポート.原価金額, 予実対比.フード売上</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td>FD分析(仕入率/原価率)</td>
+                <td>ドリンク原価率</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>月次レポート.原価金額, 予実対比.ドリンク売上</td>
+            </tr>
+            <tr>
+                <td>12</td>
+                <td>FD分析(仕入率/原価率)</td>
+                <td>FD原価率</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>月次レポート.原価金額, 当月実績.売上税抜</td>
+            </tr>
+            <tr>
+                <td>13</td>
+                <td>流入分析</td>
+                <td>予約客数</td>
+                <td>予約システム</td>
+                <td>L0</td>
+                <td>予約連携.customers</td>
+            </tr>
+            <tr>
+                <td>14</td>
+                <td>流入分析</td>
+                <td>予約客単価</td>
+                <td>計算項目</td>
+                <td>L4b</td>
+                <td>流入分析.予約売上, 流入分析.予約客数</td>
+            </tr>
+            <tr>
+                <td>15</td>
+                <td>流入分析</td>
+                <td>ウォークイン客数</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>感度分析.客数, 流入分析.予約客数</td>
+            </tr>
+            <tr>
+                <td>16</td>
+                <td>流入分析</td>
+                <td>ウォークイン客単価</td>
+                <td>計算項目</td>
+                <td>L4b</td>
+                <td>流入分析.ウォークイン売上, 流入分析.ウォークイン客数, 流入分析.ウォークイン売上, 流入分析.</td>
+            </tr>
+            <tr>
+                <td>17</td>
+                <td>流入分析</td>
+                <td>予約客数トレンド</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>流入分析.予約客数</td>
+            </tr>
+            <tr>
+                <td>18</td>
+                <td>流入分析</td>
+                <td>ウォークイン客数トレンド</td>
+                <td>計算項目</td>
+                <td>L4b</td>
+                <td>流入分析.ウォークイン客数</td>
+            </tr>
+            <tr>
+                <td>19</td>
+                <td>流入分析</td>
+                <td>客数</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]ZTOTAL.customers</td>
+            </tr>
+            <tr>
+                <td>20</td>
+                <td>予実対比</td>
+                <td>FD仕入</td>
+                <td>インフォマート（仕入）</td>
+                <td>L0</td>
+                <td>[外部]tax_excluded_total.total_tax_excluded</td>
+            </tr>
+            <tr>
+                <td>21</td>
+                <td>予実対比</td>
+                <td>人件費</td>
+                <td>KOT（勤怠・人件費）</td>
+                <td>L0</td>
+                <td>[外部]labor_costs_logs.labor_costs</td>
+            </tr>
+            <tr>
+                <td>22</td>
+                <td>予実対比(一覧)</td>
+                <td>FD仕入</td>
+                <td>インフォマート（仕入）</td>
+                <td>L0</td>
+                <td>[外部]tax_excluded_total.total_tax_excluded</td>
+            </tr>
+            <tr>
+                <td>23</td>
+                <td>予実対比(一覧)</td>
+                <td>人件費</td>
+                <td>KOT（勤怠・人件費）</td>
+                <td>L0</td>
+                <td>[外部]labor_costs_logs.labor_costs</td>
+            </tr>
+            <tr>
+                <td>24</td>
+                <td>年間予実対比</td>
+                <td>客単価</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>当月実績.売上税抜, 感度分析.客数</td>
+            </tr>
+            <tr>
+                <td>25</td>
+                <td>年間予実対比(サマリー)</td>
+                <td>客単価(ランチ)</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>時間帯別売上分析.ランチ売上税抜, 時間帯別売上分析.客数</td>
+            </tr>
+            <tr>
+                <td>26</td>
+                <td>年間予実対比(サマリー)</td>
+                <td>客単価(ディナー)</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>時間帯別売上分析.ディナー売上税抜, 時間帯別売上分析.客数</td>
+            </tr>
+            <tr>
+                <td>27</td>
+                <td>年間予実対比(サマリー)</td>
+                <td>客単価</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>当月実績.売上税抜, 感度分析.客数</td>
+            </tr>
+            <tr>
+                <td>28</td>
+                <td>月次集計</td>
+                <td>客数</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]ZTOTAL.customers</td>
+            </tr>
+            <tr>
+                <td>29</td>
+                <td>月次レポート</td>
+                <td>原価率</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>月次レポート.原価金額, 当月実績.売上税抜</td>
+            </tr>
+            <tr>
+                <td>30</td>
+                <td>日次レポート</td>
+                <td>仕入税抜</td>
+                <td>インフォマート（仕入）</td>
+                <td>L0</td>
+                <td>[外部]tax_excluded_total.total_tax_excluded</td>
+            </tr>
+            <tr><td colspan="6">... 他 58 件</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h3 class="importance-b">B: 標準（月次確認） (35指標)</h3>
+        <table>
+            <tr>
+                <th>No</th>
+                <th>画面タイトル</th>
+                <th>指標名</th>
+                <th>データソース区分</th>
+                <th>独自度</th>
+                <th>インプット元</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>主要KPI指標</td>
+                <td>坪月商</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>当月実績.売上税抜, 店舗マスタ.坪数</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>主要KPI指標</td>
+                <td>家賃比率</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>月次費用入力.金額, 当月実績.売上税抜</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>主要KPI指標</td>
+                <td>ROI</td>
+                <td>計算項目</td>
+                <td>L4b</td>
+                <td>当月実績.営業利益, 予算設定.予算金額</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>主要KPI指標(ダッシュボード上部)</td>
+                <td>坪月商</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>当月実績.売上税抜, 店舗マスタ.坪数</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>主要KPI指標(ダッシュボード上部)</td>
+                <td>家賃比率</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>月次費用入力.金額, 当月実績.売上税抜</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>主要KPI指標(ダッシュボード上部)</td>
+                <td>ROI</td>
+                <td>計算項目</td>
+                <td>L4b</td>
+                <td>当月実績.営業利益, 予算設定.予算金額</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>店舗別サマリー</td>
+                <td>売上目標</td>
+                <td>予算設定（入力）</td>
+                <td>L3</td>
+                <td>[入力]monthly_budgets.profit</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>店舗別サマリー</td>
+                <td>売上進捗率</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>店舗別サマリー.売上税抜, 店舗別サマリー.売上目標</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>店舗ラベル別サマリー</td>
+                <td>売上目標</td>
+                <td>予算設定（入力）</td>
+                <td>L3</td>
+                <td>[入力]monthly_budgets.profit</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>店舗ラベル別サマリー</td>
+                <td>売上進捗率</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>店舗ラベル別サマリー.売上税抜, 予算設定.予算金額</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td>利益進捗分析</td>
+                <td>利益進捗率</td>
+                <td>計算項目</td>
+                <td>L4b</td>
+                <td>当月実績.営業利益, 予算設定.予算金額</td>
+            </tr>
+            <tr>
+                <td>12</td>
+                <td>利益進捗分析</td>
+                <td>利益進捗率比較(前月)</td>
+                <td>計算項目</td>
+                <td>L4b</td>
+                <td>当月実績.営業利益, 予算設定.予算金額</td>
+            </tr>
+            <tr>
+                <td>13</td>
+                <td>利益進捗分析</td>
+                <td>利益進捗率比較(前々月)</td>
+                <td>計算項目</td>
+                <td>L4b</td>
+                <td>当月実績.営業利益, 予算設定.予算金額</td>
+            </tr>
+            <tr>
+                <td>14</td>
+                <td>売上進捗分析</td>
+                <td>売上進捗率</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>当月実績.売上税抜, 予算設定.予算金額</td>
+            </tr>
+            <tr>
+                <td>15</td>
+                <td>売上進捗分析</td>
+                <td>売上進捗率比較(前月)</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>当月実績.売上税抜, 予算設定.予算金額</td>
+            </tr>
+            <tr>
+                <td>16</td>
+                <td>売上進捗分析</td>
+                <td>売上進捗率比較(前々月)</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>当月実績.売上税抜, 予算設定.予算金額</td>
+            </tr>
+            <tr>
+                <td>17</td>
+                <td>予算一覧</td>
+                <td>月次目標利益</td>
+                <td>予算設定（入力）</td>
+                <td>L3</td>
+                <td>[入力]monthly_budgets.profit</td>
+            </tr>
+            <tr>
+                <td>18</td>
+                <td>予算一覧</td>
+                <td>目標FD仕入費率</td>
+                <td>予算設定（入力）</td>
+                <td>L3</td>
+                <td>[入力]monthly_budgets.ratio（予算入力）</td>
+            </tr>
+            <tr>
+                <td>19</td>
+                <td>予算一覧(予算設定値)</td>
+                <td>月次目標利益</td>
+                <td>予算設定（入力）</td>
+                <td>L3</td>
+                <td>[入力]monthly_budgets.profit</td>
+            </tr>
+            <tr>
+                <td>20</td>
+                <td>予算一覧(予算設定値)</td>
+                <td>目標FD仕入費率</td>
+                <td>予算設定（入力）</td>
+                <td>L3</td>
+                <td>[入力]monthly_budgets.ratio（予算入力）</td>
+            </tr>
+            <tr>
+                <td>21</td>
+                <td>主要KPI指標</td>
+                <td>利益進捗率</td>
+                <td>計算項目</td>
+                <td>L4b</td>
+                <td>利益進捗分析.利益進捗率</td>
+            </tr>
+            <tr>
+                <td>22</td>
+                <td>主要KPI指標</td>
+                <td>売上進捗率</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>売上進捗分析.売上進捗率</td>
+            </tr>
+            <tr>
+                <td>23</td>
+                <td>当月実績</td>
+                <td>坪月商</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>主要KPI指標.坪月商</td>
+            </tr>
+            <tr>
+                <td>24</td>
+                <td>当月実績</td>
+                <td>家賃比率</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>主要KPI指標.家賃比率</td>
+            </tr>
+            <tr>
+                <td>25</td>
+                <td>当月実績</td>
+                <td>ROI</td>
+                <td>計算項目</td>
+                <td>L4b</td>
+                <td>主要KPI指標.ROI</td>
+            </tr>
+            <tr>
+                <td>26</td>
+                <td>当月実績</td>
+                <td>利益進捗率</td>
+                <td>計算項目</td>
+                <td>L4b</td>
+                <td>利益進捗分析.利益進捗率</td>
+            </tr>
+            <tr>
+                <td>27</td>
+                <td>当月実績</td>
+                <td>売上進捗率</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>売上進捗分析.売上進捗率</td>
+            </tr>
+            <tr>
+                <td>28</td>
+                <td>時間帯別売上分析</td>
+                <td>坪月商</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>主要KPI指標.坪月商</td>
+            </tr>
+            <tr>
+                <td>29</td>
+                <td>時間帯別売上分析</td>
+                <td>家賃比率</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>主要KPI指標.家賃比率</td>
+            </tr>
+            <tr>
+                <td>30</td>
+                <td>時間帯別売上分析</td>
+                <td>ROI</td>
+                <td>計算項目</td>
+                <td>L4b</td>
+                <td>主要KPI指標.ROI</td>
+            </tr>
+            <tr><td colspan="6">... 他 5 件</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h3 class="importance-c">C: 参考（必要時確認） (319指標)</h3>
+        <table>
+            <tr>
+                <th>No</th>
+                <th>画面タイトル</th>
+                <th>指標名</th>
+                <th>データソース区分</th>
+                <th>独自度</th>
+                <th>インプット元</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>ABC分析</td>
+                <td>売上構成比率</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>ABC分析.売上税抜, 当月実績.売上税抜</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>ABC分析</td>
+                <td>販売点数</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]TITEM.quantity</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>ABC分析</td>
+                <td>販売点数構成比率</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>ABC分析.販売点数</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>ABC分析</td>
+                <td>価格</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>ABC分析.売上税抜, ABC分析.販売点数</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>商品別売上分析</td>
+                <td>商品単価税込</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>商品別売上分析.売上合計税込, 商品別売上分析.販売数量</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>商品別売上分析</td>
+                <td>販売数量</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]TITEM.quantity</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>商品別売上分析</td>
+                <td>売上合計税込</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]TITEM.sales</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>曜日別売上分析</td>
+                <td>曜日</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]ZTOTAL.date</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>支払種別売上分析</td>
+                <td>売上税込</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]TTEND.sales</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>支払種別売上分析</td>
+                <td>売上比率</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>支払種別売上分析.売上税込, 当月実績.売上税抜</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td>支払種別売上分析</td>
+                <td>クレジットカード合計売上</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]TTEND.sales</td>
+            </tr>
+            <tr>
+                <td>12</td>
+                <td>支払種別売上分析</td>
+                <td>QR決済合計売上</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]TTEND.sales</td>
+            </tr>
+            <tr>
+                <td>13</td>
+                <td>支払種別売上分析</td>
+                <td>MUGENファミリーカード合計売上</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]TTEND.sales</td>
+            </tr>
+            <tr>
+                <td>14</td>
+                <td>支払種別売上分析</td>
+                <td>売掛合計売上</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]TTEND.sales</td>
+            </tr>
+            <tr>
+                <td>15</td>
+                <td>支払種別売上分析</td>
+                <td>交通系IC合計売上</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]TTEND.sales</td>
+            </tr>
+            <tr>
+                <td>16</td>
+                <td>仕入先分析</td>
+                <td>仕入れ先</td>
+                <td>インフォマート（仕入）</td>
+                <td>L0</td>
+                <td>[外部]member_name_partner.client_name</td>
+            </tr>
+            <tr>
+                <td>17</td>
+                <td>仕入先分析</td>
+                <td>金額税抜</td>
+                <td>インフォマート（仕入）</td>
+                <td>L0</td>
+                <td>[外部]tax_excluded_total.total_tax_excluded</td>
+            </tr>
+            <tr>
+                <td>18</td>
+                <td>仕入先分析</td>
+                <td>比率</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>仕入先分析.金額税抜</td>
+            </tr>
+            <tr>
+                <td>19</td>
+                <td>商品別仕入分析</td>
+                <td>仕入先</td>
+                <td>インフォマート（仕入）</td>
+                <td>L0</td>
+                <td>[外部]member_name_partner.client_name</td>
+            </tr>
+            <tr>
+                <td>20</td>
+                <td>商品別仕入分析</td>
+                <td>金額税抜</td>
+                <td>インフォマート（仕入）</td>
+                <td>L0</td>
+                <td>[外部]detail_list.price</td>
+            </tr>
+            <tr>
+                <td>21</td>
+                <td>商品別仕入分析</td>
+                <td>比率</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>商品別仕入分析.金額税抜</td>
+            </tr>
+            <tr>
+                <td>22</td>
+                <td>費目別仕入分析</td>
+                <td>金額税抜</td>
+                <td>計算項目</td>
+                <td>L3</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>23</td>
+                <td>費目別仕入分析</td>
+                <td>比率</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>費目別仕入分析.金額税抜</td>
+            </tr>
+            <tr>
+                <td>24</td>
+                <td>商品仕入単価</td>
+                <td>金額税抜</td>
+                <td>インフォマート（仕入）</td>
+                <td>L0</td>
+                <td>[外部]detail_list.price</td>
+            </tr>
+            <tr>
+                <td>25</td>
+                <td>商品仕入単価</td>
+                <td>数量</td>
+                <td>インフォマート（仕入）</td>
+                <td>L0</td>
+                <td>[外部]detail_list.num</td>
+            </tr>
+            <tr>
+                <td>26</td>
+                <td>商品仕入単価</td>
+                <td>単価</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>商品仕入単価.金額税抜, 商品仕入単価.数量</td>
+            </tr>
+            <tr>
+                <td>27</td>
+                <td>平均単価推移</td>
+                <td>数量</td>
+                <td>インフォマート（仕入）</td>
+                <td>L0</td>
+                <td>[外部]detail_list.num</td>
+            </tr>
+            <tr>
+                <td>28</td>
+                <td>平均単価推移</td>
+                <td>平均単価</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>平均単価推移.仕入金額税抜, 平均単価推移.数量</td>
+            </tr>
+            <tr>
+                <td>29</td>
+                <td>平均単価推移</td>
+                <td>平均単価推移</td>
+                <td>計算項目</td>
+                <td>L4b</td>
+                <td>平均単価推移.平均単価</td>
+            </tr>
+            <tr>
+                <td>30</td>
+                <td>感度分析</td>
+                <td>変動費単価</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>感度分析.変動費, 感度分析.客数</td>
+            </tr>
+            <tr><td colspan="6">... 他 289 件</td></tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h3 class="importance-d">D: 補助（設定/入力） (61指標)</h3>
+        <table>
+            <tr>
+                <th>No</th>
+                <th>画面タイトル</th>
+                <th>指標名</th>
+                <th>データソース区分</th>
+                <th>独自度</th>
+                <th>インプット元</th>
+            </tr>
+            <tr>
+                <td>1</td>
+                <td>ABC分析</td>
+                <td>商品</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]TITEM.item_name</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>支払種別売上分析</td>
+                <td>支払方法</td>
+                <td>POS（売上・客数）</td>
+                <td>L0</td>
+                <td>[外部]TTEND.head_office_payment_method_id</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>商品別仕入分析</td>
+                <td>商品</td>
+                <td>インフォマート（仕入）</td>
+                <td>L0</td>
+                <td>[外部]detail_list.item_name</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>費目別仕入分析</td>
+                <td>費目</td>
+                <td>店舗マスタ（設定）</td>
+                <td>L2</td>
+                <td>[マスタ]monthly_cost_items.name</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>商品仕入単価</td>
+                <td>アイテム</td>
+                <td>インフォマート（仕入）</td>
+                <td>L0</td>
+                <td>[外部]detail_list.item_name</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>平均単価推移</td>
+                <td>仕入商品ラベル</td>
+                <td>インフォマート（仕入）</td>
+                <td>L0</td>
+                <td>[外部]detail_list.item_name</td>
+            </tr>
+            <tr>
+                <td>7</td>
+                <td>流入分析</td>
+                <td>総卓数</td>
+                <td>店舗マスタ（設定）</td>
+                <td>L2</td>
+                <td>店舗マスタ.total_tables, [マスタ]shops.total_tables</td>
+            </tr>
+            <tr>
+                <td>8</td>
+                <td>年間予実対比(予実対比)</td>
+                <td>IT費用</td>
+                <td>計算項目</td>
+                <td>L3</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>9</td>
+                <td>従業員別勤務実績</td>
+                <td>費用データ</td>
+                <td>KOT（勤怠・人件費）</td>
+                <td>L0</td>
+                <td>[外部]working_records.working_cost</td>
+            </tr>
+            <tr>
+                <td>10</td>
+                <td>ABC分析</td>
+                <td>商品名</td>
+                <td>計算項目</td>
+                <td>L0</td>
+                <td>商品別仕入分析.商品</td>
+            </tr>
+            <tr>
+                <td>11</td>
+                <td>商品別仕入分析</td>
+                <td>アイテム</td>
+                <td>計算項目</td>
+                <td>L0</td>
+                <td>商品仕入単価.アイテム</td>
+            </tr>
+            <tr>
+                <td>12</td>
+                <td>棚卸し</td>
+                <td>棚卸商品</td>
+                <td>費用・棚卸（入力）</td>
+                <td>L3</td>
+                <td>棚卸マスタ.item_name</td>
+            </tr>
+            <tr>
+                <td>13</td>
+                <td>棚卸し</td>
+                <td>在庫数量</td>
+                <td>費用・棚卸（入力）</td>
+                <td>L3</td>
+                <td>棚卸マスタ.quantity</td>
+            </tr>
+            <tr>
+                <td>14</td>
+                <td>棚卸し</td>
+                <td>商品単価</td>
+                <td>費用・棚卸（入力）</td>
+                <td>L3</td>
+                <td>棚卸マスタ.unit_price</td>
+            </tr>
+            <tr>
+                <td>15</td>
+                <td>棚卸し</td>
+                <td>小計</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>棚卸し.在庫数量, 棚卸し.商品単価</td>
+            </tr>
+            <tr>
+                <td>16</td>
+                <td>小口現金管理</td>
+                <td>費目</td>
+                <td>店舗マスタ（設定）</td>
+                <td>L2</td>
+                <td>[マスタ]monthly_cost_items.name</td>
+            </tr>
+            <tr>
+                <td>17</td>
+                <td>予算設定</td>
+                <td>対象年月</td>
+                <td>費用・棚卸（入力）</td>
+                <td>L3</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>18</td>
+                <td>予算設定</td>
+                <td>予算金額</td>
+                <td>費用・棚卸（入力）</td>
+                <td>L3</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>19</td>
+                <td>予算設定</td>
+                <td>予算比率</td>
+                <td>費用・棚卸（入力）</td>
+                <td>L3</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td>20</td>
+                <td>予算設定</td>
+                <td>FD仕入費率</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>予実対比.FD仕入, 当月実績.売上税抜</td>
+            </tr>
+            <tr>
+                <td>21</td>
+                <td>予算設定</td>
+                <td>変動費用予算</td>
+                <td>計算項目</td>
+                <td>L4b</td>
+                <td>感度分析.変動費, 予算設定.予算金額</td>
+            </tr>
+            <tr>
+                <td>22</td>
+                <td>予算設定</td>
+                <td>ランチ売上比</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>予実対比.フード売上ランチ, 予実対比.総売上</td>
+            </tr>
+            <tr>
+                <td>23</td>
+                <td>予算設定</td>
+                <td>フード売上比</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>予実対比.フード売上, 予実対比.総売上</td>
+            </tr>
+            <tr>
+                <td>24</td>
+                <td>予算設定</td>
+                <td>ドリンク売上比</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>予実対比.ドリンク売上, 予実対比.総売上</td>
+            </tr>
+            <tr>
+                <td>25</td>
+                <td>予算設定</td>
+                <td>その他売上比</td>
+                <td>計算項目</td>
+                <td>L1</td>
+                <td>予実対比.その他売上, 予実対比.総売上</td>
+            </tr>
+            <tr>
+                <td>26</td>
+                <td>予算設定</td>
+                <td>変動費</td>
+                <td>計算項目</td>
+                <td>L4b</td>
+                <td>感度分析.粗利, 予算設定.予算金額</td>
+            </tr>
+            <tr>
+                <td>27</td>
+                <td>予算設定</td>
+                <td>粗利</td>
+                <td>計算項目</td>
+                <td>L4b</td>
+                <td>感度分析.変動費, 予算設定.予算金額</td>
+            </tr>
+            <tr>
+                <td>28</td>
+                <td>予算設定</td>
+                <td>固定費用予算</td>
+                <td>計算項目</td>
+                <td>L4b</td>
+                <td>感度分析.変動費, 予算設定.予算金額</td>
+            </tr>
+            <tr>
+                <td>29</td>
+                <td>予算設定</td>
+                <td>日次目標値(税抜)</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>予算設定.予算金額</td>
+            </tr>
+            <tr>
+                <td>30</td>
+                <td>予算設定</td>
+                <td>日次目標客数</td>
+                <td>計算項目</td>
+                <td>L4a</td>
+                <td>-</td>
+            </tr>
+            <tr><td colspan="6">... 他 31 件</td></tr>
+        </table>
+    </div>
+
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+    </script>
+</body>
+</html>
