@@ -1,0 +1,156 @@
+ラクミー経営管理 UIカスタマイズ指標仕様書 - 会社画面
+バージョン: V42（修正版）
+作成日: 2025年12月10日
+最終更新: 2025年12月10日
+基準: データソース定義表V42（テーブルカラム検証済み）
+総指標数: 204指標
+
+■ 画面カテゴリ定義（V42準拠・修正版）
+順序,画面カテゴリ,役割,例
+①,設定入力画面,費用を設定（定義元）,月次費用入力、費目マスタ
+②,実績算出・分析画面,実績値を算出 + 予実対比を分析表示（定義元 + 分析）,予実対比、年間予実対比、月次レポート、進捗分析
+③,ダッシュボード表示画面,重要指標をモニタリング表示（参照先）,主要KPI指標、当月実績、店舗別サマリー、店舗ラベル別サマリー
+④,一覧表示画面,データを一覧形式で表示（表示専用）,店舗別人件費、従業員別勤務実績、商品仕入単価
+⑤,分析画面,詳細分析用の表示画面（表示専用）,時間帯別売上分析、ABC分析、FD分析、仕入別分析、商品別仕入分析
+
+■ 一覧表示画面の対象（V42修正版）
+画面タイトル,理由
+店舗別人件費,店舗ごとの人件費を一覧表示
+従業員別勤務実績,従業員ごとの勤務実績を一覧表示
+商品仕入単価,商品ごとの仕入単価を一覧表示
+
+■ データソース対応表（V42テーブル検証済み・修正版）
+データソース区分,ラクミーテーブル名,外部連携名,主要カラム,備考
+POS（売上・客数）,head_office_connected_service_sales_logs,ZTOTAL,sales_excluded / customers / sales_lunch_excluded / sales_dinner_excluded,日別売上集計
+POS（商品別）,head_office_item_sales_logs,TITEM,sales_excluded / quantity / item_name,商品別売上
+POS（支払方法別）,head_office_payment_method_sales_logs,TTEND,sales,支払方法別売上
+POS（伝票単位）,head_office_table_sales_logs,TTOTAL,sales / customers / table_number,伝票単位売上
+インフォマート（仕入）,infomart_transactions,-,total_tax_excluded / item_name / num,仕入取引データ（※infomart_ordersは誤り）
+KOT（店舗別人件費）,head_office_connected_service_labor_costs_logs,-,labor_costs / help_costs / help_costs_minus,店舗別人件費
+KOT（従業員別）,head_office_employee_working_records,-,daily_cost / working_data / is_help,従業員別勤務実績
+月次費用,monthly_costs,-,value / ratio / monthly_cost_item_id,費用データ
+店舗マスタ,shops,-,total_area_num / total_seat_num / total_table_num,店舗基本情報
+
+■ UIカスタマイズ指標一覧
+
+指標グループ名,期間フィルター,期間フィルター,他フィルター,画面カテゴリ(V42),指標カテゴリ名,指標列名１,指標列名2,指標列名3,指標列名4,指標列名5,指標列名6,指標列名7,指標列名8,指標列名9,データソース区分,ラクミーテーブル名.カラム名,演算ロジック
+メインKPI指標,月次,日次,,ダッシュボード表示画面,主要KPI指標,坪月商,営業利益率,家賃比率,ROI,利益進捗率,,,,,複数種類混在,shops.total_area_num / head_office_connected_service_sales_logs.sales_excluded / monthly_costs.value / monthly_budgets.profit,売上÷坪数、営業利益÷売上×100、家賃÷売上×100、営業利益÷予算×100
+ダッシュボード指標,月次,日次,,ダッシュボード表示画面,当月実績,営業利益,売上税抜,FD仕入率,人件費率,FL率,営業利益率,ROI,利益進捗率,,複数種類混在,計算項目,売上-仕入-人件費-経費
+,月次,日次,,ダッシュボード表示画面,店舗別サマリー,営業利益,売上税抜,売上目標,売上達成率,売上進捗率,FD仕入率,人件費率,ROI,利益進捗率,複数種類混在,head_office_connected_service_sales_logs.sales_excluded / monthly_budgets.profit,売上実績÷売上目標×100
+,月次,日次,,ダッシュボード表示画面,店舗ラベル別サマリー,営業利益,売上税抜,売上目標,売上達成率,売上進捗率,FD仕入率,人件費率,,,複数種類混在,data_labels経由で集計,店舗ラベル単位で集計
+売上分析,月次,日次,,分析画面,ABC分析,商品,売上税抜,売上構成比率,販売点数,販売点数構成比率,価格,,,,POS（商品別）,head_office_item_sales_logs.sales_excluded / quantity,商品別売上÷全体売上×100
+,月次,日次,,分析画面,商品別売上分析,商品単価税抜,商品単価税込,販売数量,売上税抜,売上税込,売上構成比率,販売点数構成比率,,,POS（商品別）,head_office_item_sales_logs.sales_excluded / sales / quantity,商品別集計
+,月次,,当月と前月のみ,分析画面,時間帯別売上分析,ランチ売上税抜,ディナー売上税抜,客数,客単価税抜,ROI,営業利益率,坪月商,家賃比率,,POS（売上・客数）,head_office_connected_service_sales_logs.sales_lunch_excluded / sales_dinner_excluded / customers,時間帯フィルタで集計
+,月次,日次,曜日選択,分析画面,曜日別売上分析,曜日,平均売上税抜,平均客数,,,,,,,,head_office_connected_service_sales_logs GROUP BY 曜日,曜日別平均
+,月次,日次,,分析画面,支払種別売上分析,支払方法,売上税込,売上比率,クレジットカード合計売上,QR決済合計売上,MUGENファミリーカード合計売上,売掛合計売上,交通系IC合計売上,,POS（支払方法別）,head_office_payment_method_sales_logs.sales,支払方法別集計
+仕入分析,月次,日次,,分析画面,仕入別分析,仕入れ先,金額税抜,比率,,,,,,,インフォマート（仕入）,infomart_transactions.total_tax_excluded,仕入先別集計
+,月次,日次,,分析画面,商品別仕入分析,アイテム,仕入れ先,仕入商品ラベル,商品,金額税抜,比率,,,,インフォマート（仕入）,infomart_transactions.total_tax_excluded / item_name,商品別仕入集計
+,月次,日次,,分析画面,費目別仕入分析,費目,金額税抜,比率,,,,,,,月次費用,monthly_costs.value / monthly_cost_items.name,費目別集計
+,月次,日次,,分析画面,商品仕入単価,アイテム,金額税抜,数量,単価,,,,,,インフォマート（仕入）,infomart_transactions.total_tax_excluded / num,金額÷数量
+,月次,,商品ラベル選択、直近6ヶ月/12ヶ月,分析画面,平均単価推移,仕入商品ラベル,仕入金額税抜,数量,平均単価,平均単価推移(6ヶ月),平均単価推移(12ヶ月),,,,インフォマート（仕入）,infomart_transactions GROUP BY month,月別平均単価
+詳細分析,月次,,当月と前月のみ、店舗ラベル（店舗名）,実績算出・分析画面,進捗分析,利益進捗率,売上進捗率,進捗率比較(前月),進捗率比較(前々月),達成率,,,,,計算項目,営業利益累計÷目標利益×100 / 売上累計÷目標×100,累計÷目標×100
+,月次,,当月と前月のみ、店舗ラベル（店舗名）,実績算出・分析画面,日次推移,売上税抜,仕入費,PA人件費,,,,,,,複数種類混在,head_office_connected_service_sales_logs / infomart_transactions / head_office_connected_service_labor_costs_logs,日別集計
+,月次,,当月と前月のみ、店舗ラベル（店舗名）,表示画面,利益率,目標利益率,,,,,,,,,,monthly_budgets参照,予算設定値を表示
+,月次,,当月と前月のみ、店舗ラベル（店舗名）,表示画面,仕入費率,目標仕入費率,,,,,,,,,,monthly_budgets.food_cost_rate,予算設定値を表示
+,月次,,当月と前月のみ、店舗ラベル（店舗名）,表示画面,PA人件費率,目標PA人件費率,,,,,,,,,,monthly_budgets.labor_cost_rate,予算設定値を表示
+,月次,,当月と前月のみ、店舗ラベル（店舗名）,表示画面,客数,当月客数,,,,,,,,,,head_office_connected_service_sales_logs.customers,SUM(customers)
+,月次,,当月と前月のみ、店舗ラベル（店舗名）,表示画面,客単価,当月客単価税抜,,,,,,,,,計算項目,売上税抜÷客数
+集計,月次,日次,店舗名,実績算出・分析画面,予実対比,総売上,フード売上,フード売上ランチ,フード売上ディナー,ドリンク売上,ドリンク売上ランチ,ドリンク売上ディナー,その他売上(サービス料等),その他売上ランチ,POS（売上・客数）/POS（商品別）,head_office_connected_service_sales_logs / head_office_item_sales_logs,カテゴリ別集計
+,月次,日次,店舗名,実績算出・分析画面,予実対比(続き),その他売上ディナー,割引値引き,FD仕入,フード仕入,ドリンク仕入,人件費,固定人件費,PA人件費,ヘルプ人件費,複数種類混在,infomart_transactions / head_office_connected_service_labor_costs_logs / monthly_costs,カテゴリ別集計
+,月次,日次,店舗名,実績算出・分析画面,予実対比(費用),地代家賃,水道光熱費,減価償却費,販促費,資材費,その他経費,,,,,monthly_costs.value,費目別集計
+,月次,日次,店舗名,実績算出・分析画面,予実対比(単価),価格,商品単価税抜,売上構成比率,売上税抜,,,,,,,head_office_item_sales_logs,商品単価情報
+,月次,,,実績算出・分析画面,年間予実対比,営業利益,FD仕入額,人件費額,客単価,客単価(ランチ),客単価(ディナー),総売上 計,フード売上 計,フード売上ランチ,複数種類混在,年間集計,月次データを年間集計
+,月次,,,実績算出・分析画面,年間予実対比(続き),フード売上ディナー,ドリンク売上 計,ドリンク売上ランチ,ドリンク売上ディナー,その他売上 計 (サービス料等),その他売上ランチ,その他売上ディナー,FLコスト 計,FD仕入 計,複数種類混在,年間集計,月次データを年間集計
+,月次,,,実績算出・分析画面,年間予実対比(費用),フード仕入,ドリンク仕入,人件費 計,固定人件費,PA人件費,ヘルプ人件費,その他経費 計,地代家賃,資材費,monthly_costs年間集計,年間集計,費目別年間集計
+,月次,,,実績算出・分析画面,年間予実対比(その他),ラクミー利用料,レジ利用料,借入金返済,水道光熱費,減価償却費,販促費,,,,,monthly_costs年間集計,年間集計,費目別年間集計
+,月次,,店舗名,実績算出・分析画面,月次レポート,店舗名,原価(金額),原価率,原価金額,対象前月在庫(金額),仕入総額,対象月在庫(金額),売上合計(税抜),,,計算項目,前月在庫+仕入-当月在庫,原価計算
+,月次,日次,店舗名,実績算出・分析画面,日次レポート,売上税込,売上税抜,仕入税込,仕入税抜,PA人件費,,,,,複数種類混在,head_office_connected_service_sales_logs / infomart_transactions / head_office_connected_service_labor_costs_logs,日次集計
+設定入力,月次,,,設定入力画面,予算設定,対象年月,予算金額,予算比率,売上目標,,,,,,,monthly_budgets / monthly_cost_entries,ユーザー入力
+,月次,,,設定入力画面,月次費用入力,費目,金額,比率,,,,,,,費用・棚卸（入力）,monthly_costs.value / monthly_cost_items.name,ユーザー入力
+,月次,,,設定入力画面,費目マスタ,費目名,変更不可フラグ,,,,,,,,店舗マスタ（設定）,monthly_cost_items.name / immutable,マスタ設定
+人件費,月次,日次,,分析画面,店舗別人件費,日付,人件費,ヘルプ人件費,ヘルプ人件費マイナス,,,,,,KOT（店舗別人件費）,head_office_connected_service_labor_costs_logs.labor_costs / help_costs / help_costs_minus,店舗別人件費
+従業員,月次,日次,,分析画面,従業員別勤務実績,従業員名,勤務日,勤務先店舗,ヘルプフラグ,勤怠データ,費用データ,日別人件費,,,KOT（従業員別）,head_office_employee_working_records.daily_cost / working_data / is_help,従業員別勤務実績
+
+■ V42で追加・変更された指標
+
+画面タイトル,V42での変更点,データソース
+主要KPI指標,利益進捗率を追加,進捗分析から参照
+当月実績,ROI、利益進捗率、営業利益率、坪月商、客単価税抜、家賃比率、平均売上税抜を追加,主要KPI指標から参照
+店舗別サマリー,ROI、利益進捗率、営業利益率、坪月商、客単価税抜、家賃比率、平均売上税抜を追加,主要KPI指標から参照
+時間帯別売上分析,ROI、営業利益率、坪月商、家賃比率を追加,主要KPI指標から参照
+商品別売上分析,売上構成比率、販売点数構成比率を追加,計算項目
+平均単価推移,平均単価推移(6ヶ月)、平均単価推移(12ヶ月)を分離,期間フィルタ
+
+■ テーブル・カラム対応表（検証済み・修正版）
+
+指標名,ラクミーテーブル,カラム名,型,備考
+売上税抜,head_office_connected_service_sales_logs,sales_excluded,int,ZTOTAL連携
+ランチ売上税抜,head_office_connected_service_sales_logs,sales_lunch_excluded,int,ZTOTAL連携
+ディナー売上税抜,head_office_connected_service_sales_logs,sales_dinner_excluded,int,ZTOTAL連携
+客数,head_office_connected_service_sales_logs,customers,int,ZTOTAL連携
+ランチ客数,head_office_connected_service_sales_logs,customers_lunch,int,ZTOTAL連携
+ディナー客数,head_office_connected_service_sales_logs,customers_dinner,int,ZTOTAL連携
+商品別売上税抜,head_office_item_sales_logs,sales_excluded,int,TITEM連携
+販売数量,head_office_item_sales_logs,quantity,int,TITEM連携
+仕入税抜,infomart_transactions,total_tax_excluded,int,インフォマート連携（※infomart_ordersは誤り）
+仕入数量,infomart_transactions,num,int,インフォマート連携
+人件費,head_office_connected_service_labor_costs_logs,labor_costs,int,KOT/ジョブカン連携
+ヘルプ人件費,head_office_connected_service_labor_costs_logs,help_costs,int,KOT/ジョブカン連携
+ヘルプ人件費マイナス,head_office_connected_service_labor_costs_logs,help_costs_minus,int,KOT/ジョブカン連携
+日別人件費,head_office_employee_working_records,daily_cost,int,従業員別
+勤怠データ,head_office_employee_working_records,working_data,json,従業員別
+ヘルプフラグ,head_office_employee_working_records,is_help,tinyint,従業員別
+予算金額,monthly_budgets,profit,int,ユーザー入力
+食材費比率,monthly_budgets,food_cost_rate,"decimal(5,1)",ユーザー入力（※ratioカラムは存在しない）
+PA人件費比率,monthly_budgets,labor_cost_rate,"decimal(5,1)",ユーザー入力
+客単価,monthly_budgets,sales_per_customer,int,ユーザー入力
+費用金額,monthly_costs,value,int,ユーザー入力
+費用比率,monthly_costs,ratio,float,ユーザー入力
+坪数,shops,total_area_num,"decimal(10,2)",店舗マスタ
+総席数,shops,total_seat_num,int,店舗マスタ（回転数計算用）
+総卓数,shops,total_table_num,int,店舗マスタ（テーブル回転数計算用）
+
+■ 月次レポート原価計算ロジック（検証済み）
+
+項目,計算式,データソース
+原価,前月在庫 + 当月仕入 - 当月在庫,inventories.total_cost / infomart_transactions.total_tax_excluded
+原価率,原価 ÷ 売上合計 × 100,計算項目
+前月在庫,前月末時点の棚卸総額,inventories.total_cost (前月date)
+当月仕入,当月のインフォマート仕入合計,SUM(infomart_transactions.total_tax_excluded)
+当月在庫,当月末時点の棚卸総額,inventories.total_cost (当月date)
+
+■ 修正履歴
+
+日付,修正内容
+2025-12-10,初版作成（V42準拠）
+2025-12-10,テーブルカラム名検証・修正（infomart_orders→infomart_transactions、working_records→head_office_employee_working_records等）
+
+■ 登録管理画面（V42追加 - 1210版準拠）
+指標グループ名,期間フィルター,期間フィルター,他フィルター,画面カテゴリ(V42),指標カテゴリ名,指標列名１,指標列名2,指標列名3,指標列名4,指標列名5,指標列名6,指標列名7,指標列名8,指標列名9,データソース区分,ラクミーテーブル名.カラム名,演算ロジック
+登録管理,,,,,ラベル設定（ラベル）,ラベルID,ラベル名,棚卸し,ステータスフラグ,,,,,,ラベルマスタ,labels.id / name / inventory_flag / status,マスタ設定
+,,,,,ラベル設定（店舗リスト）,店舗ID,店舗名,ラベル名,ステータスフラグ,,,,,,ラベルマスタ/店舗マスタ,data_labels.shop_id / shops.name / labels.name,店舗-ラベル紐付け
+,,,,,ラベル一覧,店舗ID,店舗名,ラベル名,,,,,,,ラベルマスタ/店舗マスタ,data_labels経由で集計,店舗-ラベル一覧表示
+,,,,,納品書管理,納品書ID,受付日付,納品日,店舗名,処理ステータス,発注先,,,,インフォマート（仕入）,infomart_transactions.id / registration_date / delivery_date / shops.name / status,納品書一覧
+,,,,,納品書詳細,納品書ID,発注者,受注者,処理ステータス,納品日,,,,,,infomart_transactions,infomart_transactions詳細データ,納品書詳細表示
+,,,,,小口現金,経費項目,経費コード,費目,税区分,,,,,,費目マスタ,monthly_cost_items参照,小口現金マスタ
+,,,,,棚卸詳細,実施日,仕入れ先,カテゴリ,ラベル,在庫数量,商品単価,小計,,,棚卸,inventories / inventory_items,棚卸詳細データ
+,,,,,店舗管理,店舗名,電話番号,郵便番号,都道府県,住所,建物,業種,業態,総卓数,店舗マスタ,shops基本情報,店舗設定
+,,,,,店舗管理(続き),総席数,坪数,家賃種別,家賃(金額),初期投資額,,,,,店舗マスタ,shops.total_seat_num / total_area_num / rent_type / rent / initial_investment,店舗設定
+,,,,,従業員管理,従業員コード,所属コード,店舗ID,店舗名,区分(月給時給),総支給額,所定労働時間,みなし残業時間,,従業員マスタ,employees基本情報,従業員設定
+,,,,,ユーザー,ラクミーID,氏名,電話番号,ユーザー識別(本部/一般),ステータス,,,,,ユーザーマスタ,users基本情報,ユーザー設定
+,,,,,店舗間商品移動,日付,移動元店舗,金額,移動先店舗,金額,,,,,在庫移動,stocking_transfers集計,本部視点での店舗間移動
+
+■ 登録管理画面 - データソース対応
+画面タイトル,ラクミーテーブル,主要カラム,画面カテゴリ
+ラベル設定（ラベル）,labels,id / name / inventory_flag / status,設定入力画面
+ラベル設定（店舗リスト）,data_labels / shops,shop_id / label_id,設定入力画面
+ラベル一覧,data_labels / shops / labels,-,一覧表示画面
+納品書管理,infomart_transactions,id / delivery_date / status / client_name,一覧表示画面
+納品書詳細,infomart_transactions,orderer_name / client_name / status / delivery_date,一覧表示画面
+小口現金,monthly_cost_items / petty_cashes,name / code / tax_type,設定入力画面
+棚卸詳細,inventories / inventory_items,date / client_name / category / num / price,一覧表示画面
+店舗管理,shops,name / phone_number / postal_code / prefecture / address / total_area_num / initial_investment,設定入力画面
+従業員管理,employees,code / shop_id / employee_type / total_payment / standard_working_hours,設定入力画面
+ユーザー,users,id / name / phone_number / user_type / status,設定入力画面
+店舗間商品移動,stocking_transfers,transfer_date / from_shop_id / to_shop_id / price_excluded_tax,一覧表示画面
+
