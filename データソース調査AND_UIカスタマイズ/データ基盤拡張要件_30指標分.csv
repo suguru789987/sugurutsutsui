@@ -1,0 +1,19 @@
+Phase,データ要件,新規テーブル/カラム,必須フィールド,対応指標数,対応指標No,推定工数,優先度
+Phase 2,シフト管理連携,shifts (新規テーブル),"store_id, user_id, planned_start_at, planned_end_at, actual_start_at, actual_end_at, position(社員/PA/ヘルプ), hourly_wage, date",10,"S-02, S-03, S-10, S-14, H-03, M-11, ST-33, ST-36, ST-37, HB-16",大(2-3ヶ月),高
+Phase 2,席数マスタ,stores.seat_count (既存テーブル拡張),"stores.seat_count (integer), stores.seat_area_sqm (floor area optional)",2,"S-05, ST-28",極小(1日),中
+Phase 2,レシピマスタ,menu_recipes + recipe_ingredients (2テーブル),"menu_recipes: id, product_id, name, serving_size
+recipe_ingredients: recipe_id, infomart_item_id, quantity, unit",1,"ST-16 (+△ ST-12, ST-14で精度向上)",中(1-2ヶ月),中
+Phase 2,レジ実金/現金精算,cash_reconciliations (新規),"store_id, date, pos_sales, actual_cash, variance, closed_by, closed_at",1,S-07,小(2週間),中
+Phase 2,廃棄・賄い記録,waste_logs + staff_meal_logs (2テーブル),"waste_logs: store_id, date, item_id, quantity, reason, cost
+staff_meal_logs: store_id, date, user_count, cost",2,"S-08, S-09",小(2週間),中
+Phase 2,入力タイムスタンプ,monthly_costs.submitted_at など既存テーブル拡張,各実績入力テーブルに submitted_at / submitted_by カラム追加,1,H-04,小(1週間),中
+Phase 2,発注締切マスタ,supplier_deadlines (新規),"supplier_id, day_of_week, deadline_time, delivery_day_offset",1,H-05,極小(1日),低
+Phase 3,クーポン/キャンペーン,campaigns + coupon_usage (2テーブル),"campaigns: id, store_id, start_date, end_date, budget, name
+coupon_usage: campaign_id, date, used_count, discount_total",3,"S-13, M-08, M-10",中(1ヶ月),中
+Phase 3,店舗監査,store_audits + audit_items (2テーブル),"store_audits: store_id, audit_date, auditor, total_score
+audit_items: audit_id, category, item, score",2,"H-07, M-12",中(1ヶ月),低
+Phase 3,顧客満足度,customer_surveys (新規),"store_id, survey_date, method(web/paper/mystery), score_dimensions(service/food/hygiene), overall_score",1,M-09,中(1ヶ月),低
+Phase 3,本部コスト,headquarters_costs (新規),"year_month, cost_category(人件費/家賃/IT/その他), amount",1,H-14,極小(1日),低
+Phase 4,会計システム連携,外部API連携(freee/マネーフォワード/弥生),balance_sheet月次取込 / P/L月次取込 / cash_flow月次取込,3,"E-05, E-06, E-10",大(3ヶ月+),中
+Phase 4,財務データ(借入・初期投資),store_investments + loans (2テーブル),"store_investments: store_id, investment_date, initial_cost, renovation_cost
+loans: id, principal, interest_rate, monthly_payment, start_date",2,"E-04, E-13",小(2週間),中
