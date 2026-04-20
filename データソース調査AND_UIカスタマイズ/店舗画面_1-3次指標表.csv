@@ -1,0 +1,775 @@
+次数,画面タイトル,画面タイプ,指標名,計算レイヤー,スコープ,指標タイプ,指標タイプ詳細（定義）,演算ロジック,演算式詳細,経営重要度,データソース区分,機能説明,ラクミーテーブル名.カラム名,依存先指標,被参照指標,V89No
+1次,ラベル一覧（仕入商品リスト）,一覧表示画面,商品ID,L0,-,マスタ参照表示,マスタから取得して表示,マスタ参照,infomart_items.id,D,商品マスタ（設定）,-,infomart_items.id,-,-,375
+1次,ラベル一覧（仕入商品リスト）,一覧表示画面,商品名,L0,-,マスタ参照表示,マスタから取得して表示,マスタ参照,infomart_items.name,D,商品マスタ（設定）,-,infomart_items.name,-,-,377
+1次,ラベル一覧（仕入商品リスト）,一覧表示画面,費目名,L0,-,マスタ参照表示,マスタから取得して表示,マスタ参照,monthly_cost_items.name,D,費目マスタ（設定）,-,monthly_cost_items.name,-,-,378
+1次,ラベル一覧（仕入商品リスト）,一覧表示画面,ラベル名,L0,-,マスタ参照表示,マスタから取得して表示,マスタ参照,item_labels.label_name,D,ラベルマスタ（設定）,-,item_labels.label_name,-,-,379
+1次,ラベル一覧（売上商品リスト）,一覧表示画面,発注先ID,L0,-,マスタ参照表示,マスタから取得して表示,マスタ参照,infomart_clients.id,D,発注先マスタ（設定）,-,infomart_clients.id,-,-,380
+1次,ラベル一覧（売上商品リスト）,一覧表示画面,発注先名,L0,-,マスタ参照表示,マスタから取得して表示,マスタ参照,infomart_clients.name,D,発注先マスタ（設定）,-,infomart_clients.name,-,-,381
+1次,ラベル一覧（売上商品リスト）,一覧表示画面,ラベル名,L0,-,マスタ参照表示,マスタから取得して表示,マスタ参照,sales_item_labels.label_name,D,ラベルマスタ（設定）,-,sales_item_labels.label_name,-,-,382
+1次,ラベル一覧（発注先リスト）,一覧表示画面,商品ID,L0,-,マスタ参照表示,マスタから取得して表示,マスタ参照,infomart_items.id,D,商品マスタ（設定）,-,infomart_items.id,-,-,383
+1次,ラベル一覧（発注先リスト）,一覧表示画面,商品名,L0,-,マスタ参照表示,マスタから取得して表示,マスタ参照,infomart_items.name,D,商品マスタ（設定）,-,infomart_items.name,-,-,384
+1次,ラベル一覧（発注先リスト）,一覧表示画面,ラベル名,L0,-,マスタ参照表示,マスタから取得して表示,マスタ参照,client_labels.label_name,D,ラベルマスタ（設定）,-,client_labels.label_name,-,-,385
+1次,ラベル設定（ラベル）,設定入力画面,ラベルID,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,labels.id,D,ラベルマスタ（設定）,仕入商品・売上商品・発注先にグルーピング用ラベル（タグ）を作成。仕入先分析・商品別分析のグルーピングおよび棚卸時のカテゴリ分けに使用,labels.id,-,-,1
+1次,ラベル設定（ラベル）,設定入力画面,ラベル名,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,labels.name,D,ラベルマスタ（設定）,仕入商品・売上商品・発注先にグルーピング用ラベルを作成。棚卸時のカテゴリ分けに使用,labels.name,-,-,2
+1次,ラベル設定（ラベル）,設定入力画面,棚卸,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,labels.is_inventory,D,ラベルマスタ（設定）,仕入商品・売上商品・発注先にグルーピング用ラベルを作成。棚卸時のカテゴリ分けに使用,labels.is_inventory,-,-,3
+1次,ラベル設定（ラベル）,設定入力画面,ステータスフラグ,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,labels.status,D,ラベルマスタ（設定）,仕入商品・売上商品・発注先にグルーピング用ラベルを作成。棚卸時のカテゴリ分けに使用,labels.status,-,-,4
+1次,ラベル設定（仕入商品リスト）,設定入力画面,ラベル名1,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,item_labels.label_id,D,ラベルマスタ（設定）,納品書詳細の仕入商品にラベルを紐付け。ラクミーアプリ棚卸でのカテゴリ選択・仕入先分析でのラベル別集計に活用,labels.name,納品書詳細.仕入商品,ラクミーアプリ.棚卸（ラベル選択）; 仕入先分析（ラベル別集計）,10
+1次,ラベル設定（仕入商品リスト）,設定入力画面,ラベル名2,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,item_labels.label_id,D,ラベルマスタ（設定）,納品書撮影で読み込んだ仕入商品にラベルを紐付け。棚卸時の在庫分類に活用,labels.name,-,-,11
+1次,ラベル設定（仕入商品リスト）,設定入力画面,ラベル名3,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,item_labels.label_id,D,ラベルマスタ（設定）,納品書撮影で読み込んだ仕入商品にラベルを紐付け。棚卸時の在庫分類に活用,labels.name,-,-,12
+1次,ラベル設定（仕入商品リスト）,設定入力画面,ラベル名4,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,item_labels.label_id,D,ラベルマスタ（設定）,納品書撮影で読み込んだ仕入商品にラベルを紐付け。棚卸時の在庫分類に活用,labels.name,-,-,13
+1次,ラベル設定（仕入商品リスト）,設定入力画面,ラベル名5,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,item_labels.label_id,D,ラベルマスタ（設定）,納品書撮影で読み込んだ仕入商品にラベルを紐付け。棚卸時の在庫分類に活用,labels.name,-,-,14
+1次,ラベル設定（仕入商品リスト）,設定入力画面,ラベル名6,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,item_labels.label_id,D,ラベルマスタ（設定）,納品書撮影で読み込んだ仕入商品にラベルを紐付け。棚卸時の在庫分類に活用,labels.name,-,-,15
+1次,ラベル設定（仕入商品リスト）,設定入力画面,ラベル名7,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,item_labels.label_id,D,ラベルマスタ（設定）,納品書撮影で読み込んだ仕入商品にラベルを紐付け。棚卸時の在庫分類に活用,labels.name,-,-,16
+1次,ラベル設定（仕入商品リスト）,設定入力画面,ラベル名8,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,item_labels.label_id,D,ラベルマスタ（設定）,納品書撮影で読み込んだ仕入商品にラベルを紐付け。棚卸時の在庫分類に活用,labels.name,-,-,17
+1次,ラベル設定（仕入商品リスト）,設定入力画面,ラベル名9,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,item_labels.label_id,D,ラベルマスタ（設定）,納品書撮影で読み込んだ仕入商品にラベルを紐付け。棚卸時の在庫分類に活用,labels.name,-,-,18
+1次,ラベル設定（仕入商品リスト）,設定入力画面,ラベル名10,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,item_labels.label_id,D,ラベルマスタ（設定）,納品書撮影で読み込んだ仕入商品にラベルを紐付け。棚卸時の在庫分類に活用,labels.name,-,-,19
+1次,ラベル設定（仕入商品リスト）,設定入力画面,商品ID,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,infomart_items.id,D,商品マスタ（設定）,仕入商品に仕入商品ラベル（グルーピングタグ）を紐付け。仕入先分析での仕入先ラベル別集計・棚卸時の在庫分類に活用,infomart_items.id,-,-,5
+1次,ラベル設定（仕入商品リスト）,設定入力画面,発注先,L0,-,マスタ参照表示,発注先マスタから発注先名を参照表示,マスタ参照,infomart_transactions.client_name,D,発注先マスタ（参照）,納品書撮影で読み込んだ仕入商品にラベルを紐付け。棚卸時の在庫分類に活用,infomart_transactions.client_name,[マスタ]infomart_clients.name,-,6
+1次,ラベル設定（仕入商品リスト）,設定入力画面,商品名,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,infomart_items.name,D,商品マスタ（設定）,納品書撮影で読み込んだ仕入商品にラベルを紐付け。棚卸時の在庫分類に活用,infomart_items.name,-,-,7
+1次,ラベル設定（仕入商品リスト）,設定入力画面,費目,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,monthly_cost_items.name,D,費目マスタ（設定）,納品書撮影で読み込んだ仕入商品にラベルを紐付け。棚卸時の在庫分類に活用,monthly_cost_items.name,-,-,8
+1次,ラベル設定（売上商品リスト）,設定入力画面,商品ID,L0,-,マスタ参照表示,POS商品マスタから商品IDを参照表示,マスタ参照,head_office_item_sales_logs.item_id,D,商品マスタ（参照）,POS連携の売上商品に売上商品ラベル（グルーピングタグ）を設定。商品別分析のグルーピングおよび売上計上先の変更に使用（例：席料をフードからその他に変更して計上）,head_office_item_sales_logs.item_id,[マスタ]head_office_item_sales_logs.item_id,-,20
+1次,ラベル設定（売上商品リスト）,設定入力画面,商品名,L0,-,マスタ参照表示,POS商品マスタから商品名を参照表示,マスタ参照,head_office_item_sales_logs.item_name,D,商品マスタ（参照）,POS連携の売上商品にラベルを設定。売上分析のグルーピングに使用,head_office_item_sales_logs.item_name,[マスタ]head_office_item_sales_logs.item_name,-,21
+1次,ラベル設定（売上商品リスト）,設定入力画面,商品ID（連携サービス）,L0,-,マスタ参照表示,POS商品マスタから連携サービス商品IDを参照表示,マスタ参照,head_office_item_sales_logs.external_item_id,D,商品マスタ（参照）,POS連携の売上商品にラベルを設定。売上分析のグルーピングに使用,head_office_item_sales_logs.external_item_id,[マスタ]head_office_item_sales_logs.external_item_id,-,22
+1次,ラベル設定（売上商品リスト）,設定入力画面,商品コード（連携サービス）,L0,-,マスタ参照表示,POS商品マスタから連携サービス商品コードを参照表示,マスタ参照,head_office_item_sales_logs.external_item_code,D,商品マスタ（参照）,POS連携の売上商品にラベルを設定。売上分析のグルーピングに使用,head_office_item_sales_logs.external_item_code,[マスタ]head_office_item_sales_logs.external_item_code,-,23
+1次,ラベル設定（売上商品リスト）,設定入力画面,ラベル名,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,sales_item_labels.label_name,D,ラベルマスタ（設定）,POS連携の売上商品にラベルを設定。売上分析のグルーピングに使用,sales_item_labels.label_name,-,-,24
+1次,ラベル設定（売上商品リスト）,設定入力画面,ステータスフラグ,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,sales_item_labels.status,D,ラベルマスタ（設定）,POS連携の売上商品にラベルを設定。売上分析のグルーピングに使用,sales_item_labels.status,-,-,25
+1次,ラベル設定（発注先リスト）,設定入力画面,発注先ID,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,infomart_clients.id,D,発注先マスタ（設定）,発注先に発注先ラベル（グルーピングタグ）を設定。仕入先分析での仕入先ラベル別集計に活用,infomart_clients.id,-,-,27
+1次,ラベル設定（発注先リスト）,設定入力画面,発注先名,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,infomart_clients.name,D,発注先マスタ（設定）,発注先にラベルを設定。仕入先分析のグルーピングに活用,infomart_clients.name,-,-,28
+1次,ラベル設定（発注先リスト）,設定入力画面,ラベル名,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,client_labels.label_name,D,ラベルマスタ（設定）,発注先にラベルを設定。仕入先分析のグルーピングに活用,client_labels.label_name,-,-,29
+1次,ラベル設定（発注先リスト）,設定入力画面,ステータスフラグ,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,infomart_clients.status,D,発注先マスタ（設定）,発注先にラベルを設定。仕入先分析のグルーピングに活用,infomart_clients.status,-,-,30
+1次,休業日設定,設定入力画面,定休日（曜日）,L0,-,ユーザー入力単独,休業日設定画面で定休日の曜日を選択入力,選択入力（曜日）,shop_holidays.day_of_week,B,予算設定（入力）,定休日・臨時休業日を設定。売上進捗率計算に使用,shop_holidays.day_of_week,ユーザー入力（休業日設定）,-,77
+1次,休業日設定,設定入力画面,日付指定,L0,-,ユーザー入力単独,休業日設定画面で個別の休業日を日付で指定入力,入力値（日付）,shop_holidays.holiday_date,B,予算設定（入力）,定休日・臨時休業日を設定。売上進捗率計算に使用,shop_holidays.holiday_date,ユーザー入力（休業日設定）,-,78
+1次,単月費用設定,設定入力画面,単月地代家賃,L0,-,ユーザー入力単独,親設定(地代家賃設定)の値を単月で上書き入力,親設定参照＋上書き,親設定の地代家賃額（固定賃料 or 変動賃料算出額）を単月実値で上書き,A,単月費用マスタ（設定）,親設定(地代家賃設定)の年間デフォルト値を、特定の単月で実値に上書きする。単月ごとの地代変動や特殊契約月に対応,monthly_rent_settings.rent_value,地代家賃設定.固定賃料; 地代家賃設定.地代家賃シミュレーション金額,月次予算設定.固定費用予算; 月次予算設定.変動費用予算,79a
+1次,単月費用設定,設定入力画面,対売上比（変動費用デフォルト値）,L0,-,ユーザー入力単独,単月費用設定画面で変動費用の対売上比率デフォルト値を入力,入力値（％）,monthly_cost_item_defaults.variable_cost_ratio,B,予算設定（入力）,単月の費用予算を設定,monthly_cost_item_defaults.variable_cost_ratio,ユーザー入力（単月費用設定）,予算設定.変動費用予算,80
+1次,単月費用設定,設定入力画面,金額（固定費用デフォルト値）,L0,-,ユーザー入力単独,単月費用設定画面で固定費用の金額デフォルト値を入力,入力値（金額）,monthly_cost_item_defaults.fixed_cost_amount,B,予算設定（入力）,単月の費用予算を設定,monthly_cost_item_defaults.fixed_cost_amount,ユーザー入力（単月費用設定）,予算設定.固定費用予算,81
+1次,地代家賃設定,設定入力画面,賃料体系,L0,-,ユーザー入力単独,ユーザーが選択（固定賃料/変動賃料/段階別歩合）,マスタ参照,入力値,S,賃料設定マスタ（設定）,店舗契約の賃料パターンを選択。固定賃料=固定費用予算、それ以外=変動費予算へ振分,rent_settings.rental_type,-,月次予算設定.固定費用予算; 月次予算設定.変動費用予算,P1
+1次,地代家賃設定,設定入力画面,売上上限（2段目）,L0,-,ユーザー入力単独,ユーザーが金額入力,入力値,入力値,B,賃料設定マスタ（設定）,段階別歩合の売上上限（2段目）,rent_settings.sales_upper_2,地代家賃設定.段階数,月次予算設定.変動費用予算,P10
+1次,地代家賃設定,設定入力画面,売上歩合率（2段目）,L0,-,ユーザー入力単独,ユーザーが%入力,入力値,入力値,B,賃料設定マスタ（設定）,段階別歩合の売上歩合率（2段目）,rent_settings.tier_rate_2,地代家賃設定.段階数,月次予算設定.変動費用予算,P11
+1次,地代家賃設定,設定入力画面,売上下限（3段目）,L0,-,ユーザー入力単独,自動,入力値,入力値,B,賃料設定マスタ（設定）,段階別歩合の売上下限（3段目）,rent_settings.sales_lower_3,地代家賃設定.売上上限（2段目）,月次予算設定.変動費用予算,P12
+1次,地代家賃設定,設定入力画面,売上上限（3段目）,L0,-,ユーザー入力単独,ユーザーが金額入力,入力値,入力値,B,賃料設定マスタ（設定）,段階別歩合の売上上限（3段目）,rent_settings.sales_upper_3,地代家賃設定.上限なし,月次予算設定.変動費用予算,P13
+1次,地代家賃設定,設定入力画面,売上歩合率（3段目）,L0,-,ユーザー入力単独,ユーザーが%入力,入力値,入力値,B,賃料設定マスタ（設定）,段階別歩合の売上歩合率（3段目）,rent_settings.tier_rate_3,地代家賃設定.段階数,月次予算設定.変動費用予算,P14
+1次,地代家賃設定,設定入力画面,上限なし（フラグ）,L0,-,ユーザー入力単独,最終段階の上限なしフラグ,フラグ,入力値,C,賃料設定マスタ（設定）,段階別歩合の最終段階で上限を設けない場合の制御フラグ,rent_settings.no_upper_limit,-,地代家賃設定.売上上限（3段目）,P15
+1次,地代家賃設定,設定入力画面,最低保証額,L0,-,ユーザー入力単独,ユーザーが金額入力（任意）,入力値,入力値,A,賃料設定マスタ（設定）,変動賃料・段階別歩合時の最低保証額。POS売上がない/少ない場合に適用,rent_settings.min_guarantee,地代家賃設定.賃料体系,月次予算設定.変動費用予算,P16
+1次,地代家賃設定,設定入力画面,売上閾値,L0,-,ユーザー入力単独,ユーザーが金額入力（任意）,入力値,入力値,C,賃料設定マスタ（設定）,変動賃料時の歩合計算適用閾値,rent_settings.sales_threshold,地代家賃設定.賃料体系,月次予算設定.変動費用予算,P17
+1次,地代家賃設定,設定入力画面,売上歩合対象率,L0,-,ユーザー入力単独,ユーザーが%入力（デフォ100%）,入力値,入力値,C,賃料設定マスタ（設定）,総売上のうち歩合計算対象となる割合（消費税抜き比率など用途想定）,rent_settings.sales_target_ratio,地代家賃設定.賃料体系,月次予算設定.変動費用予算,P18
+1次,地代家賃設定,設定入力画面,適用開始日,L0,-,ユーザー入力単独,ユーザーが日付入力（同日重複不可）,入力値,入力値,S,賃料設定マスタ（設定）,この賃料設定が適用される開始日。同じ適用開始日の設定は登録不可（履歴分割保存対応済/FIX-4）,rent_settings.applied_from,-,賃料設定履歴,P19
+1次,地代家賃設定,設定入力画面,条件選択,L0,-,ユーザー入力単独,合算（固定賃料+歩合額） or 最大値選択（固定賃料or歩合額）,マスタ参照,入力値,A,賃料設定マスタ（設定）,変動賃料・段階別歩合時のみ表示。合算or最大値選択で計算式が変わる,rent_settings.condition_type,地代家賃設定.賃料体系,地代家賃設定.地代家賃シミュレーション金額,P2
+1次,地代家賃設定,設定入力画面,月額売上予算（シミュレーション入力）,L0,-,ユーザー入力単独,ユーザーが金額入力（シミュ専用・保存されない）,入力値,入力値,C,シミュレーション入力,賃料体系に応じた地代家賃の試算用入力（永続化されない）,-,-,地代家賃設定.地代家賃シミュレーション金額,P20
+1次,地代家賃設定,設定入力画面,段階数,L0,-,ユーザー入力単独,ユーザー選択（デフォ3段階）,マスタ参照,入力値,B,賃料設定マスタ（設定）,賃料体系=段階別歩合時のみ表示。段階数に応じて入力欄を動的に生成,rent_settings.tier_count,地代家賃設定.賃料体系,地代家賃設定.売上下限; 地代家賃設定.売上上限; 地代家賃設定.売上歩合率,P3
+1次,地代家賃設定,設定入力画面,固定賃料,L0,-,ユーザー入力単独,ユーザーが金額入力,入力値,入力値,S,賃料設定マスタ（設定）,毎月固定の賃料額。賃料体系により加算先が変わる,rent_settings.fixed_rent,地代家賃設定.賃料体系,月次予算設定.固定費用予算; 月次予算設定.変動費用予算,P4
+1次,地代家賃設定,設定入力画面,歩合率,L0,-,ユーザー入力単独,ユーザーが%入力（0～100%）,入力値,入力値,A,賃料設定マスタ（設定）,売上に対する歩合率。変動賃料時に使用,rent_settings.commission_rate,地代家賃設定.賃料体系,月次予算設定.変動費用予算,P5
+1次,地代家賃設定,設定入力画面,売上下限（1段目）,L0,-,ユーザー入力単独,ユーザーが金額入力,入力値,入力値,B,賃料設定マスタ（設定）,段階別歩合の売上下限（1段目）,rent_settings.sales_lower_1,地代家賃設定.段階数,月次予算設定.変動費用予算,P6
+1次,地代家賃設定,設定入力画面,売上上限（1段目）,L0,-,ユーザー入力単独,ユーザーが金額入力,入力値,入力値,B,賃料設定マスタ（設定）,段階別歩合の売上上限（1段目）,rent_settings.sales_upper_1,地代家賃設定.段階数,月次予算設定.変動費用予算,P7
+1次,地代家賃設定,設定入力画面,売上歩合率（1段目）,L0,-,ユーザー入力単独,ユーザーが%入力,入力値,入力値,B,賃料設定マスタ（設定）,段階別歩合の売上歩合率（1段目）,rent_settings.tier_rate_1,地代家賃設定.段階数,月次予算設定.変動費用予算,P8
+1次,地代家賃設定,設定入力画面,売上下限（2段目）,L0,-,ユーザー入力単独,自動,入力値,入力値,B,賃料設定マスタ（設定）,段階別歩合の売上下限（2段目）,rent_settings.sales_lower_2,地代家賃設定.売上上限（1段目）,月次予算設定.変動費用予算,P9
+1次,売上構成比設定,設定入力画面,ランチ比率,L0,-,ユーザー入力単独,売上構成比設定画面でランチ売上比率を入力,入力値（％）,budget_sales_compositions.lunch_ratio,B,予算設定（入力）,ランチ/ディナー・フード/ドリンク/その他の売上構成比を設定,budget_sales_compositions.lunch_ratio,ユーザー入力（売上構成比設定）,予算設定.ランチ売上比,72
+1次,売上構成比設定,設定入力画面,ディナー比率,L0,-,ユーザー入力単独,売上構成比設定画面でディナー売上比率を入力,入力値（％）,budget_sales_compositions.dinner_ratio,B,予算設定（入力）,ランチ/ディナー・フード/ドリンク/その他の売上構成比を設定,budget_sales_compositions.dinner_ratio,ユーザー入力（売上構成比設定）,-,73
+1次,売上構成比設定,設定入力画面,フード構成比,L0,-,ユーザー入力単独,売上構成比設定画面でフード売上比率を入力,入力値（％）,budget_sales_compositions.food_ratio,B,予算設定（入力）,ランチ/ディナー・フード/ドリンク/その他の売上構成比を設定,budget_sales_compositions.food_ratio,ユーザー入力（売上構成比設定）,予算設定.フード売上比,74
+1次,売上構成比設定,設定入力画面,ドリンク構成比,L0,-,ユーザー入力単独,売上構成比設定画面でドリンク売上比率を入力,入力値（％）,budget_sales_compositions.drink_ratio,B,予算設定（入力）,ランチ/ディナー・フード/ドリンク/その他の売上構成比を設定,budget_sales_compositions.drink_ratio,ユーザー入力（売上構成比設定）,予算設定.ドリンク売上比,75
+1次,売上構成比設定,設定入力画面,その他構成比,L0,-,ユーザー入力単独,売上構成比設定画面でその他売上比率を入力,入力値（％）,budget_sales_compositions.other_ratio,B,予算設定（入力）,ランチ/ディナー・フード/ドリンク/その他の売上構成比を設定,budget_sales_compositions.other_ratio,ユーザー入力（売上構成比設定）,予算設定.その他売上比,76
+1次,売上経費入力（売上）,実績入力画面,店内売上（標準税率）税抜,L0,-,ユーザー入力単独,POS未連携店舗の店内売上を入力,-,-,A,head_office_connected_service_sales_logs（手入力・edited=1）,【ラクミーアプリ】POS未連携店舗向け。売上を手入力しラクミー経営管理に計上,head_office_connected_service_sales_logs.sales_excluded (edited=1),ユーザー入力,"集計（売上）, ラクミーウェブ.予実対比.総売上",776
+1次,売上経費入力（売上）,実績入力画面,店外売上（軽減税率）税抜,L0,-,ユーザー入力単独,テイクアウト売上を入力,-,-,B,head_office_connected_service_sales_logs（手入力・edited=1）,【ラクミーアプリ】POS未連携店舗向け。売上を手入力しラクミー経営管理に計上,head_office_connected_service_sales_logs.sales_tax_reduced (edited=1),ユーザー入力,"集計（売上）, ラクミーウェブ.予実対比.総売上",778
+1次,売上経費入力（売上）,実績入力画面,客数,L0,-,ユーザー入力単独,POS未連携店舗の客数を入力,-,-,B,head_office_connected_service_sales_logs（手入力・edited=1）,【ラクミーアプリ】POS未連携店舗向け。売上を手入力しラクミー経営管理に計上,head_office_connected_service_sales_logs.customers (edited=1),ユーザー入力,"集計（売上）, ラクミーウェブ.流入分析.客数",780
+1次,売上経費入力（経費）,実績入力画面,人件費（概算人件費集計）,L0,-,ユーザー入力単独,勤怠未連携店舗のPA人件費概算を入力,-,-,A,daily_costs（手入力・type=PA人件費）,【ラクミーアプリ】勤怠システム未連携店舗向け。概算人件費を入力しPA人件費に計上,daily_costs.value (type=PA人件費),ユーザー入力,"集計（費用）, ラクミーウェブ.予実対比.PA人件費",781
+1次,小口現金管理,実績入力画面,支払先,L0,-,ユーザー入力単独,設定画面での直接入力（費用/棚卸等）,入力値,petty_cashes.payment_destination,C,費用・棚卸（入力）,-,petty_cashes.payment_destination（小口現金入力）,-,-,82
+1次,小口現金管理,実績入力画面,経費項目,L0,-,ユーザー入力単独,設定画面での直接入力（費用/棚卸等）,入力値,petty_cashes.description,C,費用・棚卸（入力）,-,petty_cashes.description（小口現金入力）,-,-,83
+1次,小口現金管理,実績入力画面,出勤額,L0,-,ユーザー入力単独,設定画面での直接入力（費用/棚卸等）,入力値,petty_cashes.withdraw_tax_excluded_amount,C,費用・棚卸（入力）,-,petty_cashes.withdraw_tax_excluded_amount（小口現金入力）,-,小口現金管理.残高,84
+1次,小口現金管理,実績入力画面,入金額,L0,-,ユーザー入力単独,設定画面での直接入力（費用/棚卸等）,入力値,petty_cashes.deposit_amount,C,費用・棚卸（入力）,-,petty_cashes.deposit_amount（小口現金入力）,-,小口現金管理.残高,85
+1次,小口現金管理,実績入力画面,内容,L0,-,ユーザー入力単独,設定画面での直接入力（費用/棚卸等）,データ,petty_cashes.description,C,費用・棚卸（入力）,-,petty_cashes.description（小口現金入力）,-,-,87
+1次,小口現金管理,実績入力画面,経費コード,L0,-,ユーザー入力単独,設定画面での直接入力（費用/棚卸等）,費目参照,monthly_costs.cost_item_id,C,費用・棚卸（入力）,-,monthly_costs.cost_item_id（月次費用入力）,-,-,88
+1次,小口現金管理,実績入力画面,税区分,L0,-,ユーザー入力単独,設定画面での直接入力（費用/棚卸等）,データ,petty_cashes.chart_of_account_id,C,費用・棚卸（入力）,-,petty_cashes.chart_of_account_id（小口現金入力）,-,-,89
+1次,店舗管理,設定入力画面,店舗名,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,shops.name,B,店舗マスタ（設定）,店舗の基本情報設定。坪数・席数等はKPI計算に使用,shops.name,-,-,31
+1次,店舗管理,設定入力画面,電話番号,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,shops.phone_number,D,店舗マスタ（設定）,店舗の基本情報設定。坪数・席数等はKPI計算に使用,shops.phone_number,-,-,32
+1次,店舗管理,設定入力画面,郵便番号,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,shops.postal_code,D,店舗マスタ（設定）,店舗の基本情報設定。坪数・席数等はKPI計算に使用,shops.postal_code,-,-,33
+1次,店舗管理,設定入力画面,都道府県,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,shops.prefecture,D,店舗マスタ（設定）,店舗の基本情報設定。坪数・席数等はKPI計算に使用,shops.prefecture,-,-,34
+1次,店舗管理,設定入力画面,住所,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,shops.address,D,店舗マスタ（設定）,店舗の基本情報設定。坪数・席数等はKPI計算に使用,shops.address,-,-,35
+1次,店舗管理,設定入力画面,建物,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,shops.building,D,店舗マスタ（設定）,店舗の基本情報設定。坪数・席数等はKPI計算に使用,shops.building,-,-,36
+1次,店舗管理,設定入力画面,業種,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,shops.industry_type,D,店舗マスタ（設定）,店舗の基本情報設定。坪数・席数等はKPI計算に使用,shops.industry_type,-,-,37
+1次,店舗管理,設定入力画面,業態,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,shops.business_type,D,店舗マスタ（設定）,店舗の基本情報設定。坪数・席数等はKPI計算に使用,shops.business_type,-,-,38
+1次,店舗管理,設定入力画面,総卓数,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,shops.total_table_num,B,店舗マスタ（設定）,店舗の基本情報設定。坪数・席数等はKPI計算に使用,shops.total_table_num,-,流入分析.総卓数,39
+1次,店舗管理,設定入力画面,総席数,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,shops.total_seat_num,B,店舗マスタ（設定）,店舗の基本情報設定。坪数・席数等はKPI計算に使用,shops.total_seat_num,-,流入分析.総席数,40
+1次,店舗管理,設定入力画面,坪数,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,shops.total_area_num,B,店舗マスタ（設定）,店舗の基本情報設定。坪数・席数等はKPI計算に使用,shops.total_area_num,-,主要KPI指標.坪月商,41
+1次,店舗管理,設定入力画面,初期投資額,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,shops.initial_investment,B,店舗マスタ（設定）,店舗の基本情報設定。坪数・席数等はKPI計算に使用,shops.initial_investment,-,主要KPI指標.ROI,42
+1次,店舗間商品移動,実績入力画面,相手店舗,L0,-,ユーザー入力単独,設定画面での直接入力（費用/棚卸等）,店舗マスタ,stocking_transfers.counter_party_shop_id,C,費用・棚卸（入力）,店舗間の商品移動を管理。FD仕入の調整に反映,stocking_transfers.counter_party_shop_id（店舗間移動入力）,-,-,91
+1次,店舗間商品移動,実績入力画面,仕入金額（税抜）,L0,-,ユーザー入力単独,設定画面での直接入力（費用/棚卸等）,入力値,stocking_transfers.price_excluded_tax,C,費用・棚卸（入力）,店舗間の商品移動を管理。FD仕入の調整に反映,stocking_transfers.price_excluded_tax（店舗間移動入力）,-,平均単価推移.仕入金額（税抜）,92
+1次,店舗間商品移動,実績入力画面,提供金額（税抜）,L0,-,ユーザー入力単独,設定画面での直接入力（費用/棚卸等）,入力値,stocking_transfers.price_excluded_tax,C,費用・棚卸（入力）,店舗間の商品移動を管理。FD仕入の調整に反映,stocking_transfers.price_excluded_tax（店舗間移動入力）,-,-,93
+1次,店舗間商品移動,実績入力画面,商品タイプ,L0,-,ユーザー入力単独,設定画面での直接入力（費用/棚卸等）,データ,stocking_transfers.transfer_type,C,費用・棚卸（入力）,店舗間の商品移動を管理。FD仕入の調整に反映,stocking_transfers.transfer_type（店舗間移動入力）,-,-,94
+1次,月次予算設定,設定入力画面,目標月次利益,L0,-,ユーザー入力単独,Step1: 目標月次利益を金額で入力,入力値（金額）,monthly_budgets.profit,A,予算設定（入力）,月次の予算詳細設定,monthly_budgets.profit,-,-,43
+1次,月次予算設定,設定入力画面,FD仕入比率,L0,-,ユーザー入力単独,Step2: FD仕入費率を％で入力,入力値（％）,monthly_budgets.food_cost_rate,B,予算設定（入力）,月次の予算詳細設定,monthly_budgets.food_cost_rate,-,-,44
+1次,月次予算設定,設定入力画面,PA人件費率,L0,-,ユーザー入力単独,Step2: PA人件費率を％で入力,入力値（％）,monthly_budgets.labor_cost_rate,B,予算設定（入力）,月次の予算詳細設定,monthly_budgets.labor_cost_rate,-,-,45
+1次,月次予算設定,設定入力画面,目標客単価（税抜）,L0,-,ユーザー入力単独,Step3: 目標客単価を金額で入力,入力値（金額）,monthly_budgets.sales_per_customer,B,予算設定（入力）,月次の予算詳細設定,monthly_budgets.sales_per_customer,-,-,46
+1次,棚卸,実績入力画面,棚卸商品,L0,-,ユーザー入力単独,棚卸画面での直接入力,入力値,inventory_items.name,D,費用・棚卸（入力）,-,inventory_items.name,-,-,95
+1次,棚卸,実績入力画面,在庫数量,L0,-,ユーザー入力単独,棚卸画面での直接入力,入力値,inventory_items.num,C,費用・棚卸（入力）,-,inventory_items.num,-,-,96
+1次,棚卸,実績入力画面,商品単価,L0,-,ユーザー入力単独,棚卸画面での直接入力,入力値,inventory_items.price,C,費用・棚卸（入力）,-,inventory_items.price,-,-,97
+1次,棚卸詳細,一覧表示画面,カテゴリ,L0,-,マスタ参照表示,マスタから取得して表示,マスタ参照,labels.name,D,ラベルマスタ（設定）,棚卸結果の詳細。在庫数量・単価・小計の確認,labels.name,-,-,456
+1次,棚卸（カテゴリ、タブ選択）,実績入力画面,肉類（カテゴリ１）,L0,-,マスタ参照表示,棚卸カテゴリの選択タブ,-,-,C,カテゴリマスタ（参照）,【ラクミーアプリ】肉類・魚介類等のカテゴリタブで棚卸対象を選択,inventory_categories.id=1,[マスタ]カテゴリマスタ,棚卸（数量・単価の編集）,756
+1次,棚卸（カテゴリ、タブ選択）,実績入力画面,魚介類（カテゴリ２）,L0,-,マスタ参照表示,棚卸カテゴリの選択タブ,-,-,C,カテゴリマスタ（参照）,【ラクミーアプリ】肉類・魚介類等のカテゴリタブで棚卸対象を選択,inventory_categories.id=2,[マスタ]カテゴリマスタ,棚卸（数量・単価の編集）,757
+1次,棚卸（カテゴリ、タブ選択）,実績入力画面,野菜・果物（カテゴリ３）,L0,-,マスタ参照表示,棚卸カテゴリの選択タブ,-,-,C,カテゴリマスタ（参照）,【ラクミーアプリ】肉類・魚介類等のカテゴリタブで棚卸対象を選択,inventory_categories.id=3,[マスタ]カテゴリマスタ,棚卸（数量・単価の編集）,758
+1次,棚卸（カテゴリ、タブ選択）,実績入力画面,加工品（カテゴリ４）,L0,-,マスタ参照表示,棚卸カテゴリの選択タブ,-,-,D,カテゴリマスタ（参照）,【ラクミーアプリ】肉類・魚介類等のカテゴリタブで棚卸対象を選択,inventory_categories.id=4,[マスタ]カテゴリマスタ,棚卸（数量・単価の編集）,759
+1次,棚卸（カテゴリ、タブ選択）,実績入力画面,米・穀物（カテゴリ５）,L0,-,マスタ参照表示,棚卸カテゴリの選択タブ,-,-,D,カテゴリマスタ（参照）,【ラクミーアプリ】肉類・魚介類等のカテゴリタブで棚卸対象を選択,inventory_categories.id=5,[マスタ]カテゴリマスタ,棚卸（数量・単価の編集）,760
+1次,棚卸（カテゴリ、タブ選択）,実績入力画面,麺・パン（カテゴリ６）,L0,-,マスタ参照表示,棚卸カテゴリの選択タブ,-,-,D,カテゴリマスタ（参照）,【ラクミーアプリ】肉類・魚介類等のカテゴリタブで棚卸対象を選択,inventory_categories.id=6,[マスタ]カテゴリマスタ,棚卸（数量・単価の編集）,761
+1次,棚卸（カテゴリ、タブ選択）,実績入力画面,乾物・缶詰（カテゴリ７）,L0,-,マスタ参照表示,棚卸カテゴリの選択タブ,-,-,D,カテゴリマスタ（参照）,【ラクミーアプリ】肉類・魚介類等のカテゴリタブで棚卸対象を選択,inventory_categories.id=7,[マスタ]カテゴリマスタ,棚卸（数量・単価の編集）,762
+1次,棚卸（カテゴリ、タブ選択）,実績入力画面,調味料（カテゴリ８）,L0,-,マスタ参照表示,棚卸カテゴリの選択タブ,-,-,D,カテゴリマスタ（参照）,【ラクミーアプリ】肉類・魚介類等のカテゴリタブで棚卸対象を選択,inventory_categories.id=8,[マスタ]カテゴリマスタ,棚卸（数量・単価の編集）,763
+1次,棚卸（カテゴリ、タブ選択）,実績入力画面,酒・ドリンク（カテゴリ９）,L0,-,マスタ参照表示,棚卸カテゴリの選択タブ,-,-,C,カテゴリマスタ（参照）,【ラクミーアプリ】肉類・魚介類等のカテゴリタブで棚卸対象を選択,inventory_categories.id=9,[マスタ]カテゴリマスタ,棚卸（数量・単価の編集）,764
+1次,棚卸（カテゴリ、タブ選択）,実績入力画面,資材（カテゴリ１０）,L0,-,マスタ参照表示,棚卸カテゴリの選択タブ,-,-,D,カテゴリマスタ（参照）,【ラクミーアプリ】肉類・魚介類等のカテゴリタブで棚卸対象を選択,inventory_categories.id=10,[マスタ]カテゴリマスタ,棚卸（数量・単価の編集）,765
+1次,棚卸（カテゴリ、タブ選択）,実績入力画面,その他（カテゴリ１１）,L0,-,マスタ参照表示,棚卸カテゴリの選択タブ,-,-,D,カテゴリマスタ（参照）,【ラクミーアプリ】肉類・魚介類等のカテゴリタブで棚卸対象を選択,inventory_categories.id=11,[マスタ]カテゴリマスタ,棚卸（数量・単価の編集）,766
+1次,棚卸（ラベル、タブ選択）,実績入力画面,ラベル名１,L0,-,マスタ参照表示,ラクミーウェブのラベル設定で作成,-,-,C,ラベルマスタ（参照）,【ラクミーアプリ】ラクミーウェブで設定したラベルで棚卸対象を選択,labels.name,[マスタ]ラベル設定.ラベル名,棚卸（数量・単価の編集）,767
+1次,棚卸（ラベル、タブ選択）,実績入力画面,ラベル名２,L0,-,マスタ参照表示,ラクミーウェブのラベル設定で作成,-,-,D,ラベルマスタ（参照）,【ラクミーアプリ】ラクミーウェブで設定したラベルで棚卸対象を選択,labels.name,[マスタ]ラベル設定.ラベル名,棚卸（数量・単価の編集）,768
+1次,棚卸（ラベル、タブ選択）,実績入力画面,ラベル名３〜１０,L0,-,マスタ参照表示,ラクミーウェブのラベル設定で作成,-,-,D,ラベルマスタ（参照）,【ラクミーアプリ】ラクミーウェブで設定したラベルで棚卸対象を選択,labels.name,[マスタ]ラベル設定.ラベル名,棚卸（数量・単価の編集）,769
+1次,棚卸（数量・単価の編集）,実績入力画面,商品名,L0,-,マスタ参照表示,仕入商品マスタから表示,-,-,C,商品マスタ（参照）,【ラクミーアプリ】在庫数量・単価を入力。推奨単価は直近の納品データから表示,infomart_items.name,[マスタ]ラベル設定（仕入商品）.商品名,ラクミーウェブ.棚卸詳細,771
+1次,棚卸（数量・単価の編集）,実績入力画面,仕入れ先,L0,-,マスタ参照表示,発注先マスタから表示,-,-,C,発注先マスタ（参照）,【ラクミーアプリ】在庫数量・単価を入力。推奨単価は直近の納品データから表示,infomart_clients.name,[マスタ]ラベル設定（仕入商品）.発注先,-,772
+1次,棚卸（数量・単価の編集）,実績入力画面,在庫数量,L0,-,ユーザー入力単独,現物在庫数量を入力,-,-,B,inventories + inventory_items（アプリ入力）,【ラクミーアプリ】在庫数量・単価を入力。推奨単価は直近の納品データから表示,inventories.quantity,ユーザー入力（棚卸）,"ラクミーウェブ.棚卸詳細, FD分析.当月在庫高",773
+1次,棚卸（数量・単価の編集）,実績入力画面,単価（税抜）,L0,-,ユーザー入力単独,在庫の単価を入力,-,-,B,inventories + inventory_items（アプリ入力）,【ラクミーアプリ】在庫数量・単価を入力。推奨単価は直近の納品データから表示,inventories.unit_price,ユーザー入力（棚卸）,ラクミーウェブ.棚卸詳細.商品単価,774
+1次,流入分析,分析画面,総卓数,L0,-,マスタ参照表示,マスタから取得して表示,マスタ参照,店舗マスタ.total_tables,D,店舗マスタ（設定）,-,shops.total_tables,[マスタ]shops.total_tables,流入分析.回転数,363
+1次,発注先商品管理,設定入力画面,商品名,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,infomart_items.name,D,商品マスタ（設定）,発注先ごとの商品マスタ。ラクミーアプリの発注書作成で商品選択に使用,infomart_items.name,-,-,56
+1次,発注先商品管理,設定入力画面,商品コード,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,infomart_items.code,D,商品マスタ（設定）,発注先ごとの商品マスタ。ラクミーアプリの発注書作成で商品選択に使用,infomart_items.code,-,-,57
+1次,発注先商品管理,設定入力画面,ステータス,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,infomart_items.status,D,商品マスタ（設定）,発注先ごとの商品マスタ。ラクミーアプリの発注書作成で商品選択に使用,infomart_items.status,-,-,58
+1次,発注先商品管理,設定入力画面,単位,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,infomart_items.unit,D,商品マスタ（設定）,発注先ごとの商品マスタ。ラクミーアプリの発注書作成で商品選択に使用,infomart_items.unit,-,-,59
+1次,発注先商品管理,設定入力画面,税区分,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,infomart_items.tax_type,D,商品マスタ（設定）,発注先ごとの商品マスタ。ラクミーアプリの発注書作成で商品選択に使用,infomart_items.tax_type,-,-,60
+1次,発注先情報編集,設定入力画面,発注先,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,infomart_clients.name,D,発注先マスタ（設定）,-,infomart_clients.name,-,-,61
+1次,発注先情報編集,設定入力画面,表示名,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,infomart_clients.display_name,D,発注先マスタ（設定）,-,infomart_clients.display_name,-,-,62
+1次,発注先情報編集,設定入力画面,店舗コード,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,shops.code,D,店舗マスタ（設定）,-,shops.code,-,-,63
+1次,発注先管理,設定入力画面,発注先名,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,infomart_clients.name,D,発注先マスタ（設定）,-,infomart_clients.name,-,-,64
+1次,発注先管理,設定入力画面,カテゴリ,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,labels.name,D,ラベルマスタ（設定）,-,labels.name,-,-,65
+1次,発注書作成,設定登録画面,発注ID,L0,-,ユーザー入力単独,発注書作成時に自動採番,-,-,D,orders + official_order_items（アプリ入力）,【ラクミーアプリ】ラクミーウェブの発注先商品管理で設定した商品を選択し発注書を作成,orders.id,ユーザー入力,発注書一覧.発注ID,731
+1次,発注書作成,設定登録画面,発注先名,L0,-,マスタ参照表示,ラクミーウェブの発注先管理から参照,-,-,C,発注先マスタ（参照）,【ラクミーアプリ】ラクミーウェブの発注先商品管理で設定した商品を選択し発注書を作成,vendors.name,[マスタ]発注先管理,発注書一覧.発注先,732
+1次,発注書作成,設定登録画面,商品コード,L0,-,マスタ参照表示,ラクミーウェブの発注先商品管理から参照,-,-,D,商品マスタ（参照）,【ラクミーアプリ】ラクミーウェブの発注先商品管理で設定した商品を選択し発注書を作成,official_items.item_code,[マスタ]発注先商品管理,-,733
+1次,発注書作成,設定登録画面,商品名,L0,-,マスタ参照表示,ラクミーウェブの発注先商品管理から参照,-,-,C,商品マスタ（参照）,【ラクミーアプリ】ラクミーウェブの発注先商品管理で設定した商品を選択し発注書を作成,official_items.name,[マスタ]発注先商品管理,発注書一覧.商品名,734
+1次,発注書作成,設定登録画面,発注単位,L0,-,マスタ参照表示,ラクミーウェブの発注先商品管理から参照,-,-,D,商品マスタ（参照）,【ラクミーアプリ】ラクミーウェブの発注先商品管理で設定した商品を選択し発注書を作成,official_items.unit,[マスタ]発注先商品管理,-,735
+1次,発注書作成,設定登録画面,税区分,L0,-,マスタ参照表示,ラクミーウェブの発注先商品管理から参照,-,-,D,商品マスタ（参照）,【ラクミーアプリ】ラクミーウェブの発注先商品管理で設定した商品を選択し発注書を作成,official_items.tax_rate,[マスタ]発注先商品管理,-,736
+1次,納品書管理,一覧表示画面,店舗名,L0,-,マスタ参照表示,マスタから取得して表示,マスタ参照,shops.name,D,店舗マスタ（設定）,ラクミーアプリで撮影・AI読込された納品書データの一覧管理。インフォマート連携データも表示,shops.name,-,-,463
+1次,費用実績入力,実績入力画面,単月地代家賃,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,S,monthly_costs（実績入力）,単月ごとの地代家賃実績値。POS売上がない場合の手入力補完,monthly_costs.rent_value,-,予実対比.実績_地代家賃; 年間予実対比（予実対比）.年間実績_地代家賃; 予実対比（一覧）.地代家賃,R1
+1次,費用実績入力,実績入力画面,電気代,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,A,monthly_costs（実績入力）,月次の電気代実績,monthly_costs.electricity,-,予実対比.実績_電気代,R10
+1次,費用実績入力,実績入力画面,ガス代,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,A,monthly_costs（実績入力）,月次のガス代実績,monthly_costs.gas,-,予実対比.実績_ガス代,R11
+1次,費用実績入力,実績入力画面,水道代,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,A,monthly_costs（実績入力）,月次の水道代実績,monthly_costs.water,-,予実対比.実績_水道代,R12
+1次,費用実績入力,実績入力画面,消耗品費,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,B,monthly_costs（実績入力）,月次の消耗品費実績,monthly_costs.supplies,-,予実対比.実績_消耗品費,R13
+1次,費用実績入力,実績入力画面,保守修繕費,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,B,monthly_costs（実績入力）,月次の保守修繕費実績,monthly_costs.maintenance,-,予実対比.実績_保守修繕費,R14
+1次,費用実績入力,実績入力画面,租税公課,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,C,monthly_costs（実績入力）,月次の租税公課実績,monthly_costs.tax,-,予実対比.実績_租税公課,R15
+1次,費用実績入力,実績入力画面,接待交際費,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,C,monthly_costs（実績入力）,月次の接待交際費実績,monthly_costs.entertainment,-,予実対比.実績_接待交際費,R16
+1次,費用実績入力,実績入力画面,旅費交通費,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,C,monthly_costs（実績入力）,月次の旅費交通費実績,monthly_costs.travel,-,予実対比.実績_旅費交通費,R17
+1次,費用実績入力,実績入力画面,通信費,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,B,monthly_costs（実績入力）,月次の通信費実績,monthly_costs.communication,-,予実対比.実績_通信費,R18
+1次,費用実績入力,実績入力画面,ｸﾚｼﾞｯﾄ手数料,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,A,monthly_costs（実績入力）,月次のｸﾚｼﾞｯﾄ手数料実績,monthly_costs.credit_fee,-,予実対比.実績_クレジットカード手数料,R19
+1次,費用実績入力,実績入力画面,固定人件費,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,S,monthly_costs（実績入力）,月次の固定人件費実績,monthly_costs.fixed_labor,-,予実対比.実績_固定人件費,R2
+1次,費用実績入力,実績入力画面,支払手数料,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,B,monthly_costs（実績入力）,月次の支払手数料実績,monthly_costs.payment_fee,-,予実対比.実績_支払手数料,R20
+1次,費用実績入力,実績入力画面,会議費,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,C,monthly_costs（実績入力）,月次の会議費実績,monthly_costs.meeting,-,予実対比.実績_会議費,R21
+1次,費用実績入力,実績入力画面,諸会費,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,C,monthly_costs（実績入力）,月次の諸会費実績,monthly_costs.dues,-,予実対比.実績_諸会費,R22
+1次,費用実績入力,実績入力画面,図書教育費,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,C,monthly_costs（実績入力）,月次の図書教育費実績,monthly_costs.books,-,予実対比.実績_図書教育費,R23
+1次,費用実績入力,実績入力画面,研修費,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,C,monthly_costs（実績入力）,月次の研修費実績,monthly_costs.training,-,予実対比.実績_研修費,R24
+1次,費用実績入力,実績入力画面,業態研究費,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,C,monthly_costs（実績入力）,月次の業態研究費実績,monthly_costs.business_research,-,予実対比.実績_業態研究費,R25
+1次,費用実績入力,実績入力画面,採用費,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,C,monthly_costs（実績入力）,月次の採用費実績,monthly_costs.recruiting,-,予実対比.実績_採用費,R26
+1次,費用実績入力,実績入力画面,IT費,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,B,monthly_costs（実績入力）,月次のIT費実績,monthly_costs.it,-,予実対比.実績_IT費用,R27
+1次,費用実績入力,実績入力画面,外注費,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,B,monthly_costs（実績入力）,月次の外注費実績,monthly_costs.outsourcing,-,予実対比.実績_外注費,R28
+1次,費用実績入力,実績入力画面,雑費,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,C,monthly_costs（実績入力）,月次の雑費実績,monthly_costs.misc,-,予実対比.実績_雑費,R29
+1次,費用実績入力,実績入力画面,減価償却費,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,A,monthly_costs（実績入力）,月次の減価償却費実績,monthly_costs.depreciation,-,予実対比.実績_減価償却費,R3
+1次,費用実績入力,実績入力画面,資材費,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,A,monthly_costs（実績入力）,月次の資材費実績,monthly_costs.materials,-,予実対比.実績_資材費,R4
+1次,費用実績入力,実績入力画面,販売促進費,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,A,monthly_costs（実績入力）,月次の販売促進費実績,monthly_costs.sales_promotion,-,予実対比.実績_販促費,R5
+1次,費用実績入力,実績入力画面,メニューコピー,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,C,monthly_costs（実績入力）,月次のメニューコピー費実績,monthly_costs.menu_copy,-,予実対比.実績_メニューコピー,R6
+1次,費用実績入力,実績入力画面,調査費,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,C,monthly_costs（実績入力）,月次の調査費実績,monthly_costs.research,-,予実対比.実績_調査費,R7
+1次,費用実績入力,実績入力画面,衛生費,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,B,monthly_costs（実績入力）,月次の衛生費実績,monthly_costs.hygiene,-,予実対比.実績_衛生費,R8
+1次,費用実績入力,実績入力画面,サービス費,L0,-,ユーザー入力単独,費用予算設定の実績を入力,入力値,入力値,B,monthly_costs（実績入力）,月次のサービス費実績,monthly_costs.service,-,予実対比.実績_サービス費,R9
+1次,費用設定編集,設定入力画面,費目名,L0,-,ユーザー入力単独,費目名を入力,入力値（テキスト）,monthly_cost_items.name,D,費用設定（入力）,費目ごとの予算タイプ・デフォルト値を設定,monthly_cost_items.name,-,-,66
+1次,費用設定編集,設定入力画面,設定タイプ（固定費用予算、変動費用予算）,L0,-,ユーザー入力単独,変動費用予算/固定費用予算を選択入力,選択入力（区分）,monthly_cost_items.cost_type,D,費用設定（入力）,費目ごとの予算タイプ・デフォルト値を設定,monthly_cost_items.cost_type,-,-,67
+1次,費用設定編集,設定入力画面,固定費用予算デフォルト数値,L0,-,ユーザー入力単独,固定費用予算のデフォルト金額を入力,入力値（金額）,monthly_cost_items.default_value,C,費用設定（入力）,費目ごとの予算タイプ・デフォルト値を設定,monthly_cost_items.default_value,-,-,68
+1次,費用設定（一覧）,設定入力画面,費目,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,monthly_cost_items.name,D,費目マスタ（設定）,費目マスタの一覧。固定費・変動費の設定,monthly_cost_items.name,-,-,69
+1次,費用設定（一覧）,設定入力画面,設定タイプ,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,monthly_cost_items.cost_type,D,費目マスタ（設定）,費目マスタの一覧。固定費・変動費の設定,monthly_cost_items.cost_type,-,-,70
+1次,費用設定（一覧）,設定入力画面,デフォルト数値,L0,-,ユーザー入力単独,ユーザーが設定入力,入力値,monthly_cost_items.default_value,C,費目マスタ（設定）,費目マスタの一覧。固定費・変動費の設定,monthly_cost_items.default_value,-,-,71
+1次,費目別仕入分析,分析画面,費目,L0,-,マスタ参照表示,マスタから取得して表示,費目マスタ,monthly_cost_items.name,D,店舗マスタ（設定）,費目ごとの仕入金額を分析,monthly_cost_items.name,[マスタ]monthly_cost_items.name,-,372
+2次,ABC分析,分析画面,売上（税抜）,L1,同画面内,外部連携単独,POSデータから単独取得,SUM商品別,SUM(TITEM.sales_excluded) GROUP BY item_name,S,POS（売上・客数）,-,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,"ABC分析.価格, ABC分析.売上構成比率, 当月実績.売上（税抜）, 感度分析.売上（税抜）, 日次レポート.売上（税抜）",100
+2次,ABC分析,分析画面,販売点数,L1,同画面内,外部連携単独,POSデータから単独取得,SUM商品別,SUM(TITEM.quantity) GROUP BY item_name,C,POS（売上・客数）,-,head_office_item_sales_logs.quantity,[外部]TITEM.quantity,"ABC分析.価格, ABC分析.販売点数構成比率",102
+2次,ABC分析,分析画面,商品,L1,同画面内,外部連携単独,POSデータから単独取得,商品マスタ,TITEM.item_name,D,POS（売上・客数）,-,head_office_item_sales_logs.item_name,[外部]TITEM.item_name,商品別仕入分析.商品,99
+2次,FD分析（仕入率/原価率）,分析画面,フード前月在庫高,L1,同画面内,棚卸入力参照,棚卸入力で登録した在庫データを参照,マスタ参照,shop_inventories.amount WHERE category = 'フード' AND year_month = target_month - 1,C,計算項目,フード・ドリンクの仕入率・原価率を分析。棚卸データを使用,shop_inventories.amount（棚卸入力）,-,-,112
+2次,FD分析（仕入率/原価率）,分析画面,フード当月仕入,L1,同画面内,外部連携単独,インフォマート仕入データから単独取得,SUMフード,SUM(infomart_transactions.total_tax_excluded) WHERE category = 'フード',C,インフォマート（仕入）,フード・ドリンクの仕入率・原価率を分析。棚卸データを使用,infomart_transactions.total_tax_excluded,[外部]infomart_transactions.total_tax_excluded,-,113
+2次,FD分析（仕入率/原価率）,分析画面,フード当月在庫高,L1,同画面内,棚卸入力参照,棚卸入力で登録した在庫データを参照,マスタ参照,shop_inventories.amount WHERE category = 'フード' AND year_month = target_month,C,計算項目,フード・ドリンクの仕入率・原価率を分析。棚卸データを使用,shop_inventories.amount（棚卸入力）,-,-,114
+2次,FD分析（仕入率/原価率）,分析画面,ドリンク前月在庫高,L1,同画面内,棚卸入力参照,棚卸入力で登録した在庫データを参照,マスタ参照,shop_inventories.amount WHERE category = 'ドリンク' AND year_month = target_month - 1,C,計算項目,フード・ドリンクの仕入率・原価率を分析。棚卸データを使用,shop_inventories.amount（棚卸入力）,-,-,117
+2次,FD分析（仕入率/原価率）,分析画面,ドリンク当月仕入,L1,同画面内,外部連携単独,インフォマート仕入データから単独取得,SUMドリンク,SUM(infomart_transactions.total_tax_excluded) WHERE category = 'ドリンク',C,インフォマート（仕入）,フード・ドリンクの仕入率・原価率を分析。棚卸データを使用,infomart_transactions.total_tax_excluded,[外部]infomart_transactions.total_tax_excluded,-,118
+2次,FD分析（仕入率/原価率）,分析画面,ドリンク当月在庫高,L1,同画面内,棚卸入力参照,棚卸入力で登録した在庫データを参照,マスタ参照,shop_inventories.amount WHERE category = 'ドリンク' AND year_month = target_month,C,計算項目,フード・ドリンクの仕入率・原価率を分析。棚卸データを使用,shop_inventories.amount（棚卸入力）,-,-,119
+2次,FD分析（仕入率/原価率）,分析画面,FD前月在庫高,L1,同画面内,棚卸入力参照,棚卸入力で登録した在庫データを参照,前月末在庫,shop_inventories.amount WHERE year_month = target_month - 1,C,計算項目,フード・ドリンクの仕入率・原価率を分析。棚卸データを使用,shop_inventories.amount（棚卸入力）,-,-,122
+2次,FD分析（仕入率/原価率）,分析画面,FD当月仕入,L1,同画面内,外部連携単独,インフォマート仕入データから単独取得,SUM月間,SUM(infomart_transactions.total_tax_excluded),C,インフォマート（仕入）,フード・ドリンクの仕入率・原価率を分析。棚卸データを使用,infomart_transactions.total_tax_excluded,[外部]infomart_transactions.total_tax_excluded,-,123
+2次,FD分析（仕入率/原価率）,分析画面,FD当月在庫高,L1,同画面内,棚卸入力参照,棚卸入力で登録した在庫データを参照,当月末在庫,shop_inventories.amount WHERE year_month = target_month,C,計算項目,フード・ドリンクの仕入率・原価率を分析。棚卸データを使用,shop_inventories.amount（棚卸入力）,-,-,124
+2次,FD分析（仕入率/原価率）,分析画面,売上,L1,同画面内,外部連携単独,POSデータから単独取得,SUM,SUM(ZTOTAL.sales_excluded),S,POS（売上・客数）,フード・ドリンクの仕入率・原価率を分析。棚卸データを使用,head_office_connected_service_sales_logs.sales_excluded,[外部]ZTOTAL.sales_excluded,-,125
+2次,FD分析（仕入率/原価率）,分析画面,フード売上,L1,同画面内,外部連携単独,POSデータから単独取得,SUMフード,SUM(TITEM.sales_excluded) WHERE category = 'フード',C,POS（売上・客数）,フード・ドリンクの仕入率・原価率を分析。棚卸データを使用,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,126
+2次,FD分析（仕入率/原価率）,分析画面,ドリンク売上,L1,同画面内,外部連携単独,POSデータから単独取得,SUMドリンク,SUM(TITEM.sales_excluded) WHERE category = 'ドリンク',C,POS（売上・客数）,フード・ドリンクの仕入率・原価率を分析。棚卸データを使用,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,127
+2次,FD分析（売上構成比）,分析画面,フード売上合計,L1,同画面内,外部連携単独,POSデータから単独取得,SUMフード,SUM(TITEM.sales_excluded) WHERE category = 'フード',C,POS（売上・客数）,フード・ドリンクの売上構成比を分析,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,129
+2次,FD分析（売上構成比）,分析画面,ドリンク売上合計,L1,同画面内,外部連携単独,POSデータから単独取得,SUMドリンク,SUM(TITEM.sales_excluded) WHERE category = 'ドリンク',C,POS（売上・客数）,フード・ドリンクの売上構成比を分析,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,130
+2次,ラベル一覧（仕入商品リスト）,一覧表示画面,発注先名,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,infomart_transactions.client_name,D,インフォマート（仕入）,-,infomart_transactions.client_name,-,-,376
+2次,予実対比,分析画面,実績_総売上 計,L1,同画面内,外部連携単独,POSデータから日次売上合計を取得,SUM,SUM(ZTOTAL.sales_excluded),A,POS（売上・客数）,-,head_office_connected_service_sales_logs.sales_excluded,[外部]ZTOTAL.sales_excluded,-,131
+2次,予実対比,分析画面,実績_フード売上 計,L1,同画面内,外部連携単独,POSデータからフード売上合計を取得,SUMフード,SUM(TITEM.sales_excluded) WHERE category = 'フード',B,POS（売上・客数）,-,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,132
+2次,予実対比,分析画面,実績_フード売上ランチ,L1,同画面内,外部連携単独,POSデータからランチ時間帯フード売上を取得,SUM(フード×ランチ),SUM(TITEM.sales_excluded) WHERE category = 'フード' AND time_zone = 'ランチ',C,POS（売上・客数）,-,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,133
+2次,予実対比,分析画面,実績_フード売上ディナー,L1,同画面内,外部連携単独,POSデータからディナー時間帯フード売上を取得,SUM(フード×ディナー),SUM(TITEM.sales_excluded) WHERE category = 'フード' AND time_zone = 'ディナー',C,POS（売上・客数）,-,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,134
+2次,予実対比,分析画面,実績_ドリンク売上 計,L1,同画面内,外部連携単独,POSデータからドリンク売上合計を取得,SUMドリンク,SUM(TITEM.sales_excluded) WHERE category = 'ドリンク',B,POS（売上・客数）,-,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,135
+2次,予実対比,分析画面,実績_ドリンク売上ランチ,L1,同画面内,外部連携単独,POSデータからランチ時間帯ドリンク売上を取得,SUM(ドリンク×ランチ),SUM(TITEM.sales_excluded) WHERE category = 'ドリンク' AND time_zone = 'ランチ',C,POS（売上・客数）,-,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,136
+2次,予実対比,分析画面,実績_ドリンク売上ディナー,L1,同画面内,外部連携単独,POSデータからディナー時間帯ドリンク売上を取得,SUM(ドリンク×ディナー),SUM(TITEM.sales_excluded) WHERE category = 'ドリンク' AND time_zone = 'ディナー',C,POS（売上・客数）,-,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,137
+2次,予実対比,分析画面,実績_その他売上 計（サービス料等）,L1,同画面内,外部連携単独,POSデータからその他売上合計を取得,SUMその他,SUM(ZTOTAL.service_charge_1),C,POS（売上・客数）,-,z_totals.service_charge_1,[外部]ZTOTAL.service_charge_1,-,138
+2次,予実対比,分析画面,実績_その他売上ランチ,L1,同画面内,外部連携単独,POSデータからランチ時間帯その他売上を取得,SUM(その他×ランチ),SUM(TITEM.sales_excluded) WHERE category = 'その他' AND time_zone = 'ランチ',C,POS（売上・客数）,-,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,139
+2次,予実対比,分析画面,実績_その他売上ディナー,L1,同画面内,外部連携単独,POSデータからディナー時間帯その他売上を取得,SUM(その他×ディナー),SUM(TITEM.sales_excluded) WHERE category = 'その他' AND time_zone = 'ディナー',C,POS（売上・客数）,-,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,140
+2次,予実対比,分析画面,実績_FD仕入 計,L1,同画面内,外部連携単独,インフォマート仕入データからFD仕入合計を取得,SUMFD,SUM(infomart_transactions.total_tax_excluded) WHERE category IN ('フード',A,インフォマート（仕入）,-,-,インフォマート（仕入）,[外部]infomart_transactions.total_tax_excluded,142
+2次,予実対比,分析画面,実績_フード仕入,L1,同画面内,外部連携単独,インフォマート仕入データからフード仕入を取得,SUMフード,SUM(infomart_transactions.total_tax_excluded) WHERE category = 'フード',C,インフォマート（仕入）,-,infomart_transactions.total_tax_excluded,[外部]infomart_transactions.total_tax_excluded,-,143
+2次,予実対比,分析画面,実績_ドリンク仕入,L1,同画面内,外部連携単独,インフォマート仕入データからドリンク仕入を取得,SUMドリンク,SUM(infomart_transactions.total_tax_excluded) WHERE category = 'ドリンク',C,インフォマート（仕入）,-,infomart_transactions.total_tax_excluded,[外部]infomart_transactions.total_tax_excluded,-,144
+2次,予実対比,分析画面,実績_人件費 計,L1,同画面内,外部連携単独,勤怠データから人件費合計を取得,SUM,SUM(head_office_employee_working_records.daily_cost),A,KOT（勤怠・人件費）,-,head_office_employee_working_records.daily_cost,[外部]head_office_employee_working_records.daily_cost,-,145
+2次,予実対比,分析画面,実績_固定人件費,L1,同画面内,外部連携単独,勤怠データから月給者人件費を取得,SUM月給者,SUM(head_office_employee_working_records.daily_cost) WHERE employee_type = '月給者',C,KOT（勤怠・人件費）,-,head_office_employee_working_records.daily_cost,[外部]head_office_employee_working_records.daily_cost,-,146
+2次,予実対比,分析画面,実績_PA人件費,L1,同画面内,外部連携単独,勤怠データから時給者人件費を取得,SUM時給者,SUM(head_office_employee_working_records.daily_cost) WHERE employee_type = '時給者',A,KOT（勤怠・人件費）,-,head_office_employee_working_records.daily_cost,[外部]head_office_employee_working_records.daily_cost,-,147
+2次,予実対比,分析画面,実績_ヘルプ人件費,L1,同画面内,外部連携単独,勤怠データからヘルプスタッフ人件費を取得,SUMヘルプ,SUM(head_office_employee_working_records.daily_cost) WHERE employee_type = 'ヘルプ',C,KOT（勤怠・人件費）,-,head_office_employee_working_records.daily_cost,[外部]head_office_employee_working_records.daily_cost,-,148
+2次,予実対比,分析画面,実績_その他経費 計,L1,同画面内,実績入力参照,費用実績入力から経費合計を取得,SUM経費,SUM(monthly_costs.value) WHERE cost_type = '経費',B,費用実績入力,-,monthly_costs.value,[入力]monthly_costs.value,-,149
+2次,予実対比,分析画面,実績_地代家賃,L1,同画面内,実績入力参照,費用実績入力から地代家賃を取得,費目別,monthly_costs.value WHERE cost_item = '地代家賃',C,費用実績入力,-,monthly_costs.value,[入力]monthly_costs.value,-,150
+2次,予実対比,分析画面,実績_資材費,L1,同画面内,実績入力参照,費用実績入力から資材費を取得,費目別,monthly_costs.value WHERE cost_item = '資材費',C,費用実績入力,-,monthly_costs.value,[入力]monthly_costs.value,-,151
+2次,予実対比,分析画面,実績_ラクミー利用料,L1,同画面内,実績入力参照,費用実績入力からラクミー利用料を取得,費目別,monthly_costs.value WHERE cost_item = 'ラクミー利用料',C,費用実績入力,-,monthly_costs.value,[入力]monthly_costs.value,-,152
+2次,予実対比,分析画面,実績_IT費用,L1,同画面内,実績入力参照,費用実績入力からIT費用を取得,費目別,monthly_costs.value WHERE cost_item = 'IT費用',C,費用実績入力,-,monthly_costs.value,[入力]monthly_costs.value,-,153
+2次,予実対比,分析画面,実績_お花代,L1,同画面内,実績入力参照,費用実績入力からお花代を取得,費目別,monthly_costs.value WHERE cost_item = 'お花代',C,費用実績入力,-,monthly_costs.value,[入力]monthly_costs.value,-,154
+2次,予実対比,分析画面,実績_ガス代,L1,同画面内,実績入力参照,費用実績入力からガス代を取得,費目別,monthly_costs.value WHERE cost_item = 'ガス代',C,費用実績入力,-,monthly_costs.value,[入力]monthly_costs.value,-,155
+2次,予実対比,分析画面,実績_クレジットカード手数料,L1,同画面内,実績入力参照,費用実績入力からクレジットカード手数料を取得,費目別,monthly_costs.value WHERE cost_item = 'クレジットカード手数料',C,費用実績入力,-,monthly_costs.value,[入力]monthly_costs.value,-,156
+2次,予実対比,分析画面,実績_レジ利用料,L1,同画面内,実績入力参照,費用実績入力からレジ利用料を取得,費目別,monthly_costs.value WHERE cost_item = 'レジ利用料',C,費用実績入力,-,monthly_costs.value,[入力]monthly_costs.value,-,157
+2次,予実対比,分析画面,実績_借入金返済,L1,同画面内,実績入力参照,費用実績入力から借入金返済を取得,費目別,monthly_costs.value WHERE cost_item = '借入金返済',C,費用実績入力,-,monthly_costs.value,[入力]monthly_costs.value,-,158
+2次,予実対比,分析画面,実績_家賃（変動分）,L1,同画面内,実績入力参照,費用実績入力から家賃（変動分）を取得,費目別,monthly_costs.value WHERE cost_item = '家賃(変動分)',C,費用実績入力,-,monthly_costs.value,[入力]monthly_costs.value,-,159
+2次,予実対比,分析画面,実績_水道代,L1,同画面内,実績入力参照,費用実績入力から水道代を取得,費目別,monthly_costs.value WHERE cost_item = '水道代',C,費用実績入力,-,monthly_costs.value,[入力]monthly_costs.value,-,160
+2次,予実対比,分析画面,実績_水道光熱費,L1,同画面内,実績入力参照,費用実績入力から水道光熱費を取得,費目別,monthly_costs.value WHERE cost_item = '水道光熱費',C,費用実績入力,-,monthly_costs.value,[入力]monthly_costs.value,-,161
+2次,予実対比,分析画面,実績_減価償却費,L1,同画面内,実績入力参照,費用実績入力から減価償却費を取得,費目別,monthly_costs.value WHERE cost_item = '減価償却費',C,費用実績入力,-,monthly_costs.value,[入力]monthly_costs.value,-,162
+2次,予実対比,分析画面,実績_社員人件費,L1,同画面内,実績入力参照,費用実績入力から社員人件費を取得,費目別,monthly_costs.value WHERE cost_item = '社員人件費',C,費用実績入力,-,monthly_costs.value,[入力]monthly_costs.value,-,163
+2次,予実対比,分析画面,実績_販促費,L1,同画面内,実績入力参照,費用実績入力から販促費を取得,費目別,monthly_costs.value WHERE cost_item = '販促費',C,費用実績入力,-,monthly_costs.value,[入力]monthly_costs.value,-,164
+2次,予実対比,分析画面,実績_電気代,L1,同画面内,実績入力参照,費用実績入力から電気代を取得,費目別,monthly_costs.value WHERE cost_item = '電気代',C,費用実績入力,-,monthly_costs.value,[入力]monthly_costs.value,-,165
+2次,予実対比,分析画面,予算_総売上 計,L1,同画面内,予算設定参照×演算,月次予算設定.売上÷営業日数×経過日数,月次予算設定.売上（税抜） ÷ 営業日数 × 経過日数,monthly_budgets.target_sales / 営業日数 × 経過日数,A,計算項目,-,monthly_budgets.target_sales,月次予算設定.総売上,-,167
+2次,予実対比,分析画面,予算_フード売上 計,L1,同画面内,予算設定参照×演算,予算_総売上×フード構成比,予算_総売上 計 × 売上構成比設定.フード構成比,予算_総売上 × food_ratio,B,計算項目,-,"monthly_budgets.target_sales, budget_sales_compositions.food_ratio",月次予算設定.フード売上,-,168
+2次,予実対比,分析画面,予算_フード売上ランチ,L1,同画面内,予算設定参照×演算,予算_フード売上×ランチ比率,予算_フード売上 計 × 売上構成比設定.ランチ比率,予算_フード売上 × lunch_ratio,C,計算項目,-,"monthly_budgets.target_sales, budget_sales_compositions.lunch_ratio",月次予算設定.フード売上ランチ,-,169
+2次,予実対比,分析画面,予算_フード売上ディナー,L1,同画面内,予算設定参照×演算,予算_フード売上×ディナー比率,予算_フード売上 計 × 売上構成比設定.ディナー比率,予算_フード売上 × dinner_ratio,C,計算項目,-,"monthly_budgets.target_sales, budget_sales_compositions.dinner_ratio",月次予算設定.フード売上ディナー,-,170
+2次,予実対比,分析画面,予算_ドリンク売上 計,L1,同画面内,予算設定参照×演算,予算_総売上×ドリンク構成比,予算_総売上 計 × 売上構成比設定.ドリンク構成比,予算_総売上 × drink_ratio,B,計算項目,-,"monthly_budgets.target_sales, budget_sales_compositions.drink_ratio",月次予算設定.ドリンク売上,-,171
+2次,予実対比,分析画面,予算_ドリンク売上ランチ,L1,同画面内,予算設定参照×演算,予算_ドリンク売上×ランチ比率,予算_ドリンク売上 計 × 売上構成比設定.ランチ比率,予算_ドリンク売上 × lunch_ratio,C,計算項目,-,"monthly_budgets.target_sales, budget_sales_compositions.lunch_ratio",月次予算設定.ドリンク売上ランチ,-,172
+2次,予実対比,分析画面,予算_ドリンク売上ディナー,L1,同画面内,予算設定参照×演算,予算_ドリンク売上×ディナー比率,予算_ドリンク売上 計 × 売上構成比設定.ディナー比率,予算_ドリンク売上 × dinner_ratio,C,計算項目,-,"monthly_budgets.target_sales, budget_sales_compositions.dinner_ratio",月次予算設定.ドリンク売上ディナー,-,173
+2次,予実対比,分析画面,予算_その他売上 計（サービス料等）,L1,同画面内,予算設定参照×演算,予算_総売上×その他構成比,予算_総売上 計 × 売上構成比設定.その他構成比,予算_総売上 × other_ratio,C,計算項目,-,"monthly_budgets.target_sales, budget_sales_compositions.other_ratio",月次予算設定.その他売上（サービス料等）,-,174
+2次,予実対比,分析画面,予算_その他売上ランチ,L1,同画面内,予算設定参照×演算,予算_その他売上×ランチ比率,予算_その他売上 計 × 売上構成比設定.ランチ比率,予算_その他売上 × lunch_ratio,C,計算項目,-,"monthly_budgets.target_sales, budget_sales_compositions.lunch_ratio",月次予算設定.その他売上ランチ,-,175
+2次,予実対比,分析画面,予算_その他売上ディナー,L1,同画面内,予算設定参照×演算,予算_その他売上×ディナー比率,予算_その他売上 計 × 売上構成比設定.ディナー比率,予算_その他売上 × dinner_ratio,C,計算項目,-,"monthly_budgets.target_sales, budget_sales_compositions.dinner_ratio",月次予算設定.その他売上ディナー,-,176
+2次,予実対比,分析画面,予算_FLコスト 計,L1,同画面内,予算設定参照×演算,予算_FD仕入+予算_人件費の合計,予算_FD仕入 計 + 予算_人件費 計,FD仕入予算 + 人件費予算,A,計算項目,-,-,"予実対比.予算_FD仕入 計, 予実対比.予算_人件費 計",-,177
+2次,予実対比,分析画面,予算_FD仕入 計,L1,同画面内,予算設定参照×演算,月次予算設定.売上×FD仕入比率÷営業日数×経過日数,月次予算設定.売上（税抜） × 月次予算設定.FD仕入比率 ÷ 営業日数 × 経過日数,target_sales × food_cost_rate / 営業日数 × 経過日数,A,計算項目,-,"monthly_budgets.target_sales, monthly_budgets.food_cost_rate",月次予算設定.FD仕入,-,178
+2次,予実対比,分析画面,予算_フード仕入,L1,同画面内,予算設定参照×演算,予算_FD仕入×フード按分比,予算_FD仕入 計 × フード按分比,予算_FD仕入 × フード按分比,C,計算項目,-,"monthly_budgets.target_sales, monthly_budgets.food_cost_rate, budget_sales_compositions.food_ratio",月次予算設定.フード仕入,-,179
+2次,予実対比,分析画面,予算_ドリンク仕入,L1,同画面内,予算設定参照×演算,予算_FD仕入×ドリンク按分比,予算_FD仕入 計 × ドリンク按分比,予算_FD仕入 × ドリンク按分比,C,計算項目,-,"monthly_budgets.target_sales, monthly_budgets.food_cost_rate, budget_sales_compositions.drink_ratio",月次予算設定.ドリンク仕入,-,180
+2次,予実対比,分析画面,予算_人件費 計,L1,同画面内,予算設定参照×演算,(売上×PA人件費率+固定人件費)÷営業日数×経過日数,(月次予算設定.売上 × PA人件費率 + 固定人件費予算) ÷ 営業日数 × 経過日数,(target_sales × labor_cost_rate + 固定人件費) / 営業日数 × 経過日数,A,計算項目,-,"monthly_budgets.target_sales, monthly_budgets.labor_cost_rate, 固定人件費予算",月次予算設定.人件費,-,181
+2次,予実対比,分析画面,予算_固定人件費,L1,同画面内,予算設定参照×演算,費用設定.固定人件費÷営業日数×経過日数,費用設定.固定人件費予算 ÷ 営業日数 × 経過日数,固定人件費予算 / 営業日数 × 経過日数,C,計算項目,-,monthly_costs.固定人件費,月次予算設定.固定人件費,-,182
+2次,予実対比,分析画面,予算_PA人件費,L1,同画面内,予算設定参照×演算,月次予算設定.売上×PA人件費率÷営業日数×経過日数,月次予算設定.売上（税抜） × 月次予算設定.PA人件費率 ÷ 営業日数 × 経過日数,target_sales × labor_cost_rate / 営業日数 × 経過日数,A,計算項目,-,"monthly_budgets.target_sales, monthly_budgets.labor_cost_rate",月次予算設定.PA人件費,-,183
+2次,予実対比,分析画面,予算_ヘルプ人件費,L1,同画面内,予算設定参照×演算,費用設定.ヘルプ人件費÷営業日数×経過日数,費用設定.ヘルプ人件費予算 ÷ 営業日数 × 経過日数,ヘルプ人件費予算 / 営業日数 × 経過日数,C,計算項目,-,monthly_costs.ヘルプ人件費,月次予算設定.ヘルプ人件費,-,184
+2次,予実対比,分析画面,予算_その他経費 計,L1,同画面内,予算設定参照×演算,費用設定.その他経費合計÷営業日数×経過日数,費用設定.その他経費予算合計 ÷ 営業日数 × 経過日数,その他経費予算 / 営業日数 × 経過日数,B,計算項目,-,monthly_costs.その他経費合計,月次予算設定.その他経費,-,185
+2次,予実対比,分析画面,予算_地代家賃,L1,同画面内,予算設定参照×演算,費用設定.地代家賃÷営業日数×経過日数,費用設定.地代家賃 ÷ 営業日数 × 経過日数,地代家賃 / 営業日数 × 経過日数,C,計算項目,-,monthly_costs.地代家賃,月次予算設定.地代家賃,-,186
+2次,予実対比,分析画面,予算_資材費,L1,同画面内,予算設定参照×演算,費用設定.資材費÷営業日数×経過日数,費用設定.資材費 ÷ 営業日数 × 経過日数,資材費 / 営業日数 × 経過日数,C,計算項目,-,monthly_costs.資材費,月次予算設定.資材費,-,187
+2次,予実対比,分析画面,予算_ラクミー利用料,L1,同画面内,予算設定参照×演算,費用設定.ラクミー利用料÷営業日数×経過日数,費用設定.ラクミー利用料 ÷ 営業日数 × 経過日数,ラクミー利用料 / 営業日数 × 経過日数,C,計算項目,-,monthly_costs.ラクミー利用料,月次予算設定.ラクミー利用料,-,188
+2次,予実対比,分析画面,予算_IT費用,L1,同画面内,予算設定参照×演算,費用設定.IT費用÷営業日数×経過日数,費用設定.IT費用 ÷ 営業日数 × 経過日数,IT費用 / 営業日数 × 経過日数,C,計算項目,-,monthly_costs.IT費用,月次予算設定.IT費用,-,189
+2次,予実対比,分析画面,予算_お花代,L1,同画面内,予算設定参照×演算,費用設定.お花代÷営業日数×経過日数,費用設定.お花代 ÷ 営業日数 × 経過日数,お花代 / 営業日数 × 経過日数,C,計算項目,-,monthly_costs.お花代,月次予算設定.お花代,-,190
+2次,予実対比,分析画面,予算_ガス代,L1,同画面内,予算設定参照×演算,費用設定.ガス代÷営業日数×経過日数,費用設定.ガス代 ÷ 営業日数 × 経過日数,ガス代 / 営業日数 × 経過日数,C,計算項目,-,monthly_costs.ガス代,月次予算設定.ガス代,-,191
+2次,予実対比,分析画面,予算_クレジットカード手数料,L1,同画面内,予算設定参照×演算,費用設定.クレジットカード手数料÷営業日数×経過日数,費用設定.クレジットカード手数料 ÷ 営業日数 × 経過日数,クレジットカード手数料 / 営業日数 × 経過日数,C,計算項目,-,monthly_costs.クレジットカード手数料,月次予算設定.クレジットカード手数料,-,192
+2次,予実対比,分析画面,予算_レジ利用料,L1,同画面内,予算設定参照×演算,費用設定.レジ利用料÷営業日数×経過日数,費用設定.レジ利用料 ÷ 営業日数 × 経過日数,レジ利用料 / 営業日数 × 経過日数,C,計算項目,-,monthly_costs.レジ利用料,月次予算設定.レジ利用料,-,193
+2次,予実対比,分析画面,予算_借入金返済,L1,同画面内,予算設定参照×演算,費用設定.借入金返済÷営業日数×経過日数,費用設定.借入金返済 ÷ 営業日数 × 経過日数,借入金返済 / 営業日数 × 経過日数,C,計算項目,-,monthly_costs.借入金返済,月次予算設定.借入金返済,-,194
+2次,予実対比,分析画面,予算_家賃（変動分）,L1,同画面内,予算設定参照×演算,費用設定.家賃（変動分）÷営業日数×経過日数,費用設定.家賃（変動分） ÷ 営業日数 × 経過日数,家賃（変動分） / 営業日数 × 経過日数,C,計算項目,-,monthly_costs.家賃（変動分）,月次予算設定.家賃（変動分）,-,195
+2次,予実対比,分析画面,予算_水道代,L1,同画面内,予算設定参照×演算,費用設定.水道代÷営業日数×経過日数,費用設定.水道代 ÷ 営業日数 × 経過日数,水道代 / 営業日数 × 経過日数,C,計算項目,-,monthly_costs.水道代,月次予算設定.水道代,-,196
+2次,予実対比,分析画面,予算_水道光熱費,L1,同画面内,予算設定参照×演算,費用設定.水道光熱費÷営業日数×経過日数,費用設定.水道光熱費 ÷ 営業日数 × 経過日数,水道光熱費 / 営業日数 × 経過日数,C,計算項目,-,monthly_costs.水道光熱費,月次予算設定.水道光熱費,-,197
+2次,予実対比,分析画面,予算_減価償却費,L1,同画面内,予算設定参照×演算,費用設定.減価償却費÷営業日数×経過日数,費用設定.減価償却費 ÷ 営業日数 × 経過日数,減価償却費 / 営業日数 × 経過日数,C,計算項目,-,monthly_costs.減価償却費,月次予算設定.減価償却費,-,198
+2次,予実対比,分析画面,予算_社員人件費,L1,同画面内,予算設定参照×演算,費用設定.社員人件費÷営業日数×経過日数,費用設定.社員人件費 ÷ 営業日数 × 経過日数,社員人件費 / 営業日数 × 経過日数,C,計算項目,-,monthly_costs.社員人件費,月次予算設定.社員人件費,-,199
+2次,予実対比,分析画面,予算_販促費,L1,同画面内,予算設定参照×演算,費用設定.販促費÷営業日数×経過日数,費用設定.販促費 ÷ 営業日数 × 経過日数,販促費 / 営業日数 × 経過日数,C,計算項目,-,monthly_costs.販促費,月次予算設定.販促費,-,200
+2次,予実対比,分析画面,予算_電気代,L1,同画面内,予算設定参照×演算,費用設定.電気代÷営業日数×経過日数,費用設定.電気代 ÷ 営業日数 × 経過日数,電気代 / 営業日数 × 経過日数,C,計算項目,-,monthly_costs.電気代,月次予算設定.電気代,-,201
+2次,予実対比（一覧）,一覧表示画面,その他売上（サービス料等）,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(ZTOTAL.service_charge_1),C,POS（売上・客数）,予算と実績の対比一覧,z_totals.service_charge_1,[外部]ZTOTAL.service_charge_1,-,386
+2次,予実対比（一覧）,一覧表示画面,その他売上ランチ,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(TITEM.sales_excluded) WHERE category = 'その他' AND order_time BETWEEN 11:00 AND 15:00,C,POS（売上・客数）,予算と実績の対比一覧,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,387
+2次,予実対比（一覧）,一覧表示画面,その他売上ディナー,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(TITEM.sales_excluded) WHERE category = 'その他' AND order_time BETWEEN 17:00 AND 23:00,C,POS（売上・客数）,予算と実績の対比一覧,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,388
+2次,予実対比（一覧）,一覧表示画面,割引･値引等,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(ZTOTAL.discount),C,POS（売上・客数）,予算と実績の対比一覧,z_totals.discount,[外部]ZTOTAL.discount,-,389
+2次,予実対比（一覧）,一覧表示画面,総売上,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(ZTOTAL.sales_excluded),C,POS（売上・客数）,予算と実績の対比一覧,head_office_connected_service_sales_logs.sales_excluded,[外部]ZTOTAL.sales_excluded,予実対比（一覧）.営業利益,390
+2次,予実対比（一覧）,一覧表示画面,フード売上,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(TITEM.sales_excluded) WHERE category = 'フード',C,POS（売上・客数）,予算と実績の対比一覧,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,391
+2次,予実対比（一覧）,一覧表示画面,フード売上ランチ,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(TITEM.sales_excluded) WHERE category = 'フード' AND order_time BETWEEN 11:00 AND 15:00,C,POS（売上・客数）,予算と実績の対比一覧,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,392
+2次,予実対比（一覧）,一覧表示画面,フード売上ディナー,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(TITEM.sales_excluded) WHERE category = 'フード' AND order_time BETWEEN 17:00 AND 23:00,C,POS（売上・客数）,予算と実績の対比一覧,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,393
+2次,予実対比（一覧）,一覧表示画面,ドリンク売上,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(TITEM.sales_excluded) WHERE category = 'ドリンク',C,POS（売上・客数）,予算と実績の対比一覧,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,394
+2次,予実対比（一覧）,一覧表示画面,ドリンク売上ランチ,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(TITEM.sales_excluded) WHERE category = 'ドリンク' AND order_time BETWEEN 11:00 AND 15:00,C,POS（売上・客数）,予算と実績の対比一覧,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,395
+2次,予実対比（一覧）,一覧表示画面,ドリンク売上ディナー,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(TITEM.sales_excluded) WHERE category = 'ドリンク' AND order_time BETWEEN 17:00 AND 23:00,C,POS（売上・客数）,予算と実績の対比一覧,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,396
+2次,予実対比（一覧）,一覧表示画面,FD仕入,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(infomart_transactions.total_tax_excluded) WHERE category IN ('フード' 'ドリンク'),A,インフォマート（仕入）,予算と実績の対比一覧,infomart_transactions.total_tax_excluded,[外部]infomart_transactions.total_tax_excluded,予実対比（一覧）.営業利益,397
+2次,予実対比（一覧）,一覧表示画面,フード仕入,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(infomart_transactions.total_tax_excluded) WHERE category = 'フード',C,インフォマート（仕入）,予算と実績の対比一覧,infomart_transactions.total_tax_excluded,[外部]infomart_transactions.total_tax_excluded,-,398
+2次,予実対比（一覧）,一覧表示画面,ドリンク仕入,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(infomart_transactions.total_tax_excluded) WHERE category = 'ドリンク',C,インフォマート（仕入）,予算と実績の対比一覧,infomart_transactions.total_tax_excluded,[外部]infomart_transactions.total_tax_excluded,-,399
+2次,予実対比（一覧）,一覧表示画面,人件費,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(head_office_connected_service_labor_costs_logs.labor_costs),A,KOT（勤怠・人件費）,予算と実績の対比一覧,head_office_connected_service_labor_costs_logs.labor_costs,[外部]head_office_connected_service_labor_costs_logs.labor_costs,予実対比（一覧）.営業利益,400
+2次,予実対比（一覧）,一覧表示画面,固定人件費,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(head_office_connected_service_labor_costs_logs.labor_costs) WHERE employee_type = '月給者',C,KOT（勤怠・人件費）,予算と実績の対比一覧,head_office_connected_service_labor_costs_logs.labor_costs,[外部]head_office_connected_service_labor_costs_logs.labor_costs,-,401
+2次,予実対比（一覧）,一覧表示画面,PA人件費,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(head_office_employee_working_records.daily_cost),C,KOT（勤怠・人件費）,予算と実績の対比一覧,head_office_employee_working_records.daily_cost,[外部]head_office_employee_working_records.daily_cost,-,402
+2次,予実対比（一覧）,一覧表示画面,その他経費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,SUM経費,SUM(monthly_costs.value) WHERE cost_type = '経費',C,計算項目,予算と実績の対比一覧,monthly_costs.value,-,予実対比（一覧）.営業利益,404
+2次,予実対比（一覧）,一覧表示画面,地代家賃,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目=家賃,monthly_costs.value WHERE cost_item = '家賃',C,計算項目,予算と実績の対比一覧,monthly_costs.value,-,-,405
+2次,予実対比（一覧）,一覧表示画面,資材費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目=資材費,monthly_costs.value WHERE cost_item = '資材費',C,計算項目,予算と実績の対比一覧,monthly_costs.value,-,-,406
+2次,予算一覧（予算構成）,一覧表示画面,売上 計,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(ZTOTAL.sales_excluded),C,POS（売上・客数）,予算の構成比を一覧表示,head_office_connected_service_sales_logs.sales_excluded,[外部]ZTOTAL.sales_excluded,予算一覧（予算構成）.営業利益,408
+2次,予算一覧（予算構成）,一覧表示画面,フード売上 計,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(TITEM.sales_excluded) WHERE category = 'フード',C,POS（売上・客数）,予算の構成比を一覧表示,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,409
+2次,予算一覧（予算構成）,一覧表示画面,ドリンク売上 計,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(TITEM.sales_excluded) WHERE category = 'ドリンク',C,POS（売上・客数）,予算の構成比を一覧表示,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,410
+2次,予算一覧（予算構成）,一覧表示画面,その他売上 計（サービス料等）,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(ZTOTAL.service_charge_1),C,POS（売上・客数）,予算の構成比を一覧表示,z_totals.service_charge_1,[外部]ZTOTAL.service_charge_1,-,411
+2次,予算一覧（予算構成）,一覧表示画面,FD仕入 計,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(infomart_transactions.total_tax_excluded) WHERE category IN ('フード' 'ドリンク'),C,インフォマート（仕入）,予算の構成比を一覧表示,infomart_transactions.total_tax_excluded,[外部]infomart_transactions.total_tax_excluded,-,413
+2次,予算一覧（予算構成）,一覧表示画面,人件費 計,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(head_office_connected_service_labor_costs_logs.labor_costs),C,KOT（勤怠・人件費）,予算の構成比を一覧表示,head_office_connected_service_labor_costs_logs.labor_costs,[外部]head_office_connected_service_labor_costs_logs.labor_costs,-,414
+2次,予算一覧（予算構成）,一覧表示画面,その他経費 計,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,SUM,SUM(monthly_costs.value) WHERE cost_type = '経費',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,予算一覧（予算構成）.営業利益,415
+2次,予算一覧（予算構成）,一覧表示画面,IT費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = 'IT費',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,416
+2次,予算一覧（予算構成）,一覧表示画面,ガス代,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = 'ガス代',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,417
+2次,予算一覧（予算構成）,一覧表示画面,サービス費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = 'サービス費',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,418
+2次,予算一覧（予算構成）,一覧表示画面,保守修繕費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '保守修繕費',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,419
+2次,予算一覧（予算構成）,一覧表示画面,外注費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '外注費',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,420
+2次,予算一覧（予算構成）,一覧表示画面,支払手数料,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '支払手数料',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,421
+2次,予算一覧（予算構成）,一覧表示画面,水道代,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '水道代',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,422
+2次,予算一覧（予算構成）,一覧表示画面,消耗品費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '消耗品費',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,423
+2次,予算一覧（予算構成）,一覧表示画面,衛生費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '衛生費',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,424
+2次,予算一覧（予算構成）,一覧表示画面,調査費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '調査費',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,425
+2次,予算一覧（予算構成）,一覧表示画面,諸会費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '諸会費',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,426
+2次,予算一覧（予算構成）,一覧表示画面,警備料,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '警備料',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,427
+2次,予算一覧（予算構成）,一覧表示画面,販売促進費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '販売促進費',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,428
+2次,予算一覧（予算構成）,一覧表示画面,販売管理費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '販売管理費',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,429
+2次,予算一覧（予算構成）,一覧表示画面,通信費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '通信費',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,430
+2次,予算一覧（予算構成）,一覧表示画面,雑費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '雑費',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,431
+2次,予算一覧（予算構成）,一覧表示画面,電気代,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '電気代',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,432
+2次,予算一覧（予算構成）,一覧表示画面,フード売上ランチ,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(TITEM.sales_excluded) WHERE category = 'フード' AND order_time BETWEEN 11:00 AND 15:00,C,POS（売上・客数）,予算の構成比を一覧表示,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,434
+2次,予算一覧（予算構成）,一覧表示画面,フード売上ディナー,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(TITEM.sales_excluded) WHERE category = 'フード' AND order_time BETWEEN 17:00 AND 23:00,C,POS（売上・客数）,予算の構成比を一覧表示,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,435
+2次,予算一覧（予算構成）,一覧表示画面,ドリンク売上ランチ,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(TITEM.sales_excluded) WHERE category = 'ドリンク' AND order_time BETWEEN 11:00 AND 15:00,C,POS（売上・客数）,予算の構成比を一覧表示,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,436
+2次,予算一覧（予算構成）,一覧表示画面,ドリンク売上ディナー,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(TITEM.sales_excluded) WHERE category = 'ドリンク' AND order_time BETWEEN 17:00 AND 23:00,C,POS（売上・客数）,予算の構成比を一覧表示,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,437
+2次,予算一覧（予算構成）,一覧表示画面,フード仕入,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(infomart_transactions.total_tax_excluded) WHERE category = 'フード',C,インフォマート（仕入）,予算の構成比を一覧表示,infomart_transactions.total_tax_excluded,[外部]infomart_transactions.total_tax_excluded,-,438
+2次,予算一覧（予算構成）,一覧表示画面,ドリンク仕入,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(infomart_transactions.total_tax_excluded) WHERE category = 'ドリンク',C,インフォマート（仕入）,予算の構成比を一覧表示,infomart_transactions.total_tax_excluded,[外部]infomart_transactions.total_tax_excluded,-,439
+2次,予算一覧（予算構成）,一覧表示画面,固定人件費,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(head_office_connected_service_labor_costs_logs.labor_costs) WHERE employee_type = '月給者',C,KOT（勤怠・人件費）,予算の構成比を一覧表示,head_office_connected_service_labor_costs_logs.labor_costs,[外部]head_office_connected_service_labor_costs_logs.labor_costs,-,440
+2次,予算一覧（予算構成）,一覧表示画面,PA人件費,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(head_office_employee_working_records.daily_cost),C,KOT（勤怠・人件費）,予算の構成比を一覧表示,head_office_employee_working_records.daily_cost,[外部]head_office_employee_working_records.daily_cost,-,441
+2次,予算一覧（予算構成）,一覧表示画面,地代家賃,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目=家賃,monthly_costs.value WHERE cost_item = '家賃',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,443
+2次,予算一覧（予算構成）,一覧表示画面,資材費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目=資材費,monthly_costs.value WHERE cost_item = '資材費',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,444
+2次,予算一覧（予算構成）,一覧表示画面,減価償却費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目=減価償却費,monthly_costs.value WHERE cost_item = '減価償却費',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,445
+2次,予算一覧（予算構成）,一覧表示画面,ｸﾚｼﾞｯﾄ手数料,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = 'クレジット手数料',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,446
+2次,予算一覧（予算構成）,一覧表示画面,メニューコピー,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = 'メニューコピー',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,446a
+2次,予算一覧（予算構成）,一覧表示画面,租税公課,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '租税公課',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,446b
+2次,予算一覧（予算構成）,一覧表示画面,接待交際費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '接待交際費',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,446c
+2次,予算一覧（予算構成）,一覧表示画面,旅費交通費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '旅費交通費',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,446d
+2次,予算一覧（予算構成）,一覧表示画面,会議費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '会議費',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,446e
+2次,予算一覧（予算構成）,一覧表示画面,図書教育費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '図書教育費',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,446f
+2次,予算一覧（予算構成）,一覧表示画面,研修費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '研修費',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,446g
+2次,予算一覧（予算構成）,一覧表示画面,業態研究費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '業態研究費',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,446h
+2次,予算一覧（予算構成）,一覧表示画面,採用費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '採用費',C,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,446i
+2次,予算一覧（予算設定値）,一覧表示画面,月次目標利益,L1,同画面内,予算設定参照,月次予算設定.目標月次利益を参照表示,マスタ参照,monthly_budgets.value,B,予算設定（入力）,設定した予算値の一覧表示,monthly_budgets.profit,月次予算設定.目標月次利益,-,447
+2次,予算一覧（予算設定値）,一覧表示画面,目標FD仕入費率,L1,同画面内,予算設定参照,月次予算設定.FD仕入比率を参照表示,マスタ参照,monthly_budgets.ratio,B,予算設定（入力）,設定した予算値の一覧表示,"monthly_budgets.food_cost_rate（またはlabor_cost_rate）, monthly_budgets.profit",[入力]monthly_budgets.food_cost_rate（またはlabor_cost_rate）,-,448
+2次,予算一覧（予算設定値）,一覧表示画面,目標PA人件費率,L1,同画面内,予算設定参照,月次予算設定.PA人件費率を参照表示,マスタ参照,monthly_budgets.ratio,S,予算設定（入力）,設定した予算値の一覧表示,"monthly_budgets.food_cost_rate（またはlabor_cost_rate）, monthly_budgets.profit",[入力]monthly_budgets.food_cost_rate（またはlabor_cost_rate）,-,449
+2次,予算一覧（予算設定値）,一覧表示画面,目標客単価,L1,同画面内,予算設定参照,月次予算設定.目標客単価（税抜）を参照表示,マスタ参照,monthly_budgets.value,A,予算設定（入力）,設定した予算値の一覧表示,monthly_budgets.profit,月次予算設定.目標客単価（税抜）,-,450
+2次,仕入先分析,分析画面,仕入れ先,L1,同画面内,外部連携単独,インフォマート仕入データから単独取得,マスタ参照,member_name_partner.client_name,C,インフォマート（仕入）,仕入先ごとの金額・比率を分析。納品書撮影データを集計,infomart_orders.client_name,[外部]member_name_partner.client_name,商品別仕入分析.仕入先,239
+2次,仕入先分析,分析画面,金額（税抜）,L1,同画面内,外部連携単独,インフォマート仕入データから単独取得,SUM仕入先別,SUM(infomart_transactions.total_tax_excluded) GROUP BY client_name,C,インフォマート（仕入）,仕入先ごとの金額・比率を分析。納品書撮影データを集計,infomart_transactions.total_tax_excluded,[外部]infomart_transactions.total_tax_excluded + ラクミーアプリ.納品書撮影.小計（税抜）,"仕入先分析.比率, 商品仕入単価, 商品別仕入分析, 費目別仕入分析",240
+2次,商品仕入単価,一覧表示画面,アイテム,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,detail_list.item_name,D,インフォマート（仕入）,商品ごとの仕入単価推移を分析,infomart_order_details.item_name,[外部]detail_list.item_name,平均単価推移.仕入商品ラベル,451
+2次,商品仕入単価,一覧表示画面,金額（税抜）,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(detail_list.price) GROUP BY item_name,C,インフォマート（仕入）,商品ごとの仕入単価推移を分析,infomart_order_details.price,[外部]detail_list.price,商品仕入単価.単価,452
+2次,商品仕入単価,一覧表示画面,数量,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(detail_list.num) GROUP BY item_name,C,インフォマート（仕入）,商品ごとの仕入単価推移を分析,infomart_order_details.num,[外部]detail_list.num,"商品仕入単価.単価, 平均単価推移.数量",453
+2次,商品別仕入分析,分析画面,商品,L1,同画面内,外部連携単独,インフォマート仕入データから単独取得,マスタ参照,detail_list.item_name,D,インフォマート（仕入）,商品ごとの仕入金額・比率を分析,infomart_order_details.item_name,[外部]detail_list.item_name,-,246
+2次,商品別仕入分析,分析画面,仕入先,L1,同画面内,外部連携単独,インフォマート仕入データから単独取得,マスタ参照,member_name_partner.client_name,C,インフォマート（仕入）,商品ごとの仕入金額・比率を分析,infomart_orders.client_name,[外部]member_name_partner.client_name,-,247
+2次,商品別仕入分析,分析画面,金額（税抜）,L1,同画面内,外部連携単独,インフォマート仕入データから単独取得,SUM商品別,SUM(detail_list.price) GROUP BY item_name,C,インフォマート（仕入）,商品ごとの仕入金額・比率を分析,infomart_order_details.price,[外部]detail_list.price,商品別仕入分析.比率,248
+2次,商品別売上分析,分析画面,販売数量,L1,同画面内,外部連携単独,POSデータから単独取得,SUM商品別,SUM(TITEM.quantity) GROUP BY item_name,C,POS（売上・客数）,-,head_office_item_sales_logs.quantity,[外部]TITEM.quantity,"ABC分析.販売点数, 商品別売上分析.商品単価（税抜）",252
+2次,地代家賃設定,設定入力画面,地代家賃シミュレーション金額,L1,同画面内,画面内演算,賃料体系に応じた動的計算,"IF(賃料体系=固定賃料) → 固定賃料
+IF(変動賃料・合算) → 固定賃料 + 売上×歩合率×売上歩合対象率
+IF(変動賃料・最大選択) → MAX(固定賃料, 売上×歩合率×売上歩合対象率)
+IF(段階別歩合・合算) → 固定賃料 + Σ段階別歩合額
+IF(段階別歩合・最大選択) → MAX(固定賃料, Σ段階別歩合額)
+※最低保証額を下回る場合は最低保証額を適用",演算結果,A,計算項目,月額売上予算に対する賃料試算結果,-,"地代家賃設定.賃料体系, 地代家賃設定.固定賃料, 地代家賃設定.歩合率, 地代家賃設定.最低保証額, 地代家賃設定.月額売上予算（シミュレーション入力）",-,P21
+2次,平均単価推移,分析画面,仕入商品ラベル,L1,同画面内,外部連携単独,インフォマート仕入データから単独取得,ラベルマスタ,detail_list.item_name,D,インフォマート（仕入）,仕入商品ラベル別の平均単価推移を表示,infomart_order_details.item_name,[外部]detail_list.item_name,"商品別仕入分析.商品, 商品仕入単価.アイテム",257
+2次,平均単価推移,分析画面,仕入金額（税抜）,L1,同画面内,外部連携単独,インフォマート仕入データから単独取得,SUM月別,SUM(detail_list.price) GROUP BY year_month,C,インフォマート（仕入）,仕入商品ラベル別の平均単価推移を表示,infomart_order_details.price,[外部]detail_list.price,"平均単価推移.平均単価, 店舗間商品移動",258
+2次,平均単価推移,分析画面,数量,L1,同画面内,外部連携単独,インフォマート仕入データから単独取得,SUM月別,SUM(detail_list.num) GROUP BY year_month,C,インフォマート（仕入）,仕入商品ラベル別の平均単価推移を表示,infomart_order_details.num,[外部]detail_list.num,"商品仕入単価.数量, 平均単価推移.平均単価",259
+2次,年間予実対比,分析画面,月次実績_総売上 計,L1,同画面内,外部連携単独,POSデータから月次売上合計を取得,SUM月次,SUM(ZTOTAL.sales_excluded) GROUP BY year_month,A,POS（売上・客数）,-,head_office_connected_service_sales_logs.sales_excluded,[外部]ZTOTAL.sales_excluded,-,497
+2次,年間予実対比,分析画面,月次実績_フード売上 計,L1,同画面内,外部連携単独,POSデータからフード売上月次合計を取得,SUMフード月次,SUM(TITEM.sales_excluded) WHERE category = 'フード' GROUP BY year_month,B,POS（売上・客数）,-,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,498
+2次,年間予実対比,分析画面,月次実績_ドリンク売上 計,L1,同画面内,外部連携単独,POSデータからドリンク売上月次合計を取得,SUMドリンク月次,SUM(TITEM.sales_excluded) WHERE category = 'ドリンク' GROUP BY year_month,B,POS（売上・客数）,-,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,499
+2次,年間予実対比,分析画面,月次実績_その他売上 計,L1,同画面内,外部連携単独,POSデータからその他売上月次合計を取得,SUMその他月次,SUM(ZTOTAL.service_charge_1) GROUP BY year_month,C,POS（売上・客数）,-,z_totals.service_charge_1,[外部]ZTOTAL.service_charge_1,-,500
+2次,年間予実対比,分析画面,月次実績_FD仕入 計,L1,同画面内,外部連携単独,インフォマート仕入データから月次FD仕入合計を取得,SUMFD月次,SUM(infomart_transactions.total_tax_excluded) WHERE category IN ('フード',A,インフォマート（仕入）,-,-,インフォマート（仕入）,[外部]infomart_transactions.total_tax_excluded,502
+2次,年間予実対比,分析画面,月次実績_人件費 計,L1,同画面内,外部連携単独,勤怠データから月次人件費合計を取得,SUM月次,SUM(head_office_employee_working_records.daily_cost) GROUP BY year_month,A,KOT（勤怠・人件費）,-,head_office_employee_working_records.daily_cost,[外部]head_office_employee_working_records.daily_cost,-,503
+2次,年間予実対比,分析画面,月次実績_その他経費 計,L1,同画面内,実績入力参照,費用実績入力から月次経費合計を取得,SUM経費月次,SUM(monthly_costs.value) WHERE cost_type = '経費' GROUP BY year_month,B,費用実績入力,-,monthly_costs.value,[入力]monthly_costs.value,-,504
+2次,年間予実対比,分析画面,月次予算_総売上 計,L1,同画面内,予算設定参照,月次予算設定から売上予算を取得,月次予算,monthly_budgets.target_sales GROUP BY year_month,A,計算項目,-,月次予算値,月次予算設定.売上（税抜）,-,506
+2次,年間予実対比,分析画面,月次予算_フード売上 計,L1,同画面内,予算設定参照×演算,月次予算_総売上×フード構成比,月次予算_総売上 計 × 売上構成比設定.フード構成比,月次予算 × フード構成比 GROUP BY year_month,B,計算項目,-,"monthly_budgets.target_sales, budget_sales_compositions.food_ratio",月次予算設定.月次フード売上,-,507
+2次,年間予実対比,分析画面,月次予算_ドリンク売上 計,L1,同画面内,予算設定参照×演算,月次予算_総売上×ドリンク構成比,月次予算_総売上 計 × 売上構成比設定.ドリンク構成比,月次予算 × ドリンク構成比 GROUP BY year_month,B,計算項目,-,"monthly_budgets.target_sales, budget_sales_compositions.drink_ratio",月次予算設定.月次ドリンク売上,-,508
+2次,年間予実対比,分析画面,月次予算_その他売上 計,L1,同画面内,予算設定参照×演算,月次予算_総売上×その他構成比,月次予算_総売上 計 × 売上構成比設定.その他構成比,月次予算 × その他構成比 GROUP BY year_month,C,計算項目,-,"monthly_budgets.target_sales, budget_sales_compositions.other_ratio",月次予算設定.月次その他売上,-,509
+2次,年間予実対比,分析画面,月次予算_FD仕入 計,L1,同画面内,予算設定参照×演算,月次予算設定.売上×FD仕入比率,月次予算設定.売上（税抜） × 月次予算設定.FD仕入比率,target_sales × food_cost_rate GROUP BY year_month,A,計算項目,-,"monthly_budgets.target_sales, monthly_budgets.food_cost_rate",月次予算設定.月次FD仕入,-,511
+2次,年間予実対比,分析画面,月次予算_人件費 計,L1,同画面内,予算設定参照×演算,(売上×PA人件費率+固定人件費),月次予算設定.売上 × PA人件費率 + 固定人件費予算,(target_sales × labor_cost_rate + 固定人件費) GROUP BY year_month,A,計算項目,-,"monthly_budgets.target_sales, monthly_budgets.labor_cost_rate, 固定人件費予算",月次予算設定.月次人件費,-,512
+2次,年間予実対比,分析画面,月次予算_その他経費 計,L1,同画面内,予算設定参照,費用設定.その他経費合計,費用設定.その他経費予算合計,その他経費予算,B,計算項目,-,monthly_costs.その他経費合計,月次予算設定.月次その他経費,-,513
+2次,年間予実対比（サマリー）,ダッシュボード表示画面,FD仕入額,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(infomart_transactions.total_tax_excluded) GROUP BY year,C,インフォマート（仕入）,-,infomart_transactions.total_tax_excluded,[外部]infomart_transactions.total_tax_excluded,-,478
+2次,年間予実対比（サマリー）,ダッシュボード表示画面,人件費額,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(head_office_connected_service_labor_costs_logs.labor_costs) GROUP BY year,C,KOT（勤怠・人件費）,-,head_office_connected_service_labor_costs_logs.labor_costs,[外部]head_office_connected_service_labor_costs_logs.labor_costs,-,479
+2次,年間予実対比（予実対比）,分析画面,年間実績_総売上 計,L1,同画面内,外部連携単独,POSデータから単独取得,SUM,SUM(ZTOTAL.sales_excluded) GROUP BY year,C,POS（売上・客数）,-,head_office_connected_service_sales_logs.sales_excluded,[外部]ZTOTAL.sales_excluded,年間予実対比（予実対比）.営業利益,262
+2次,年間予実対比（予実対比）,分析画面,年間実績_フード売上 計,L1,同画面内,外部連携単独,POSデータから単独取得,SUMフード,SUM(TITEM.sales_excluded) WHERE category = 'フード' GROUP BY year,C,POS（売上・客数）,-,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,263
+2次,年間予実対比（予実対比）,分析画面,年間実績_ドリンク売上 計,L1,同画面内,外部連携単独,POSデータから単独取得,SUMドリンク,SUM(TITEM.sales_excluded) WHERE category = 'ドリンク' GROUP BY year,C,POS（売上・客数）,-,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,264
+2次,年間予実対比（予実対比）,分析画面,年間実績_その他売上 計,L1,同画面内,外部連携単独,POSデータから単独取得,SUM,SUM(ZTOTAL.service_charge_1) GROUP BY year,C,POS（売上・客数）,-,z_totals.service_charge_1,[外部]ZTOTAL.service_charge_1,-,265
+2次,年間予実対比（予実対比）,分析画面,年間実績_その他売上ランチ,L1,同画面内,外部連携単独,POSデータから単独取得,SUM(その他かつ時間フィルタ),SUM(TITEM.sales_excluded) WHERE category = 'その他' AND order_time BETWEEN 11:00 AND 15:00 GROUP BY year,C,POS（売上・客数）,-,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,266
+2次,年間予実対比（予実対比）,分析画面,年間実績_その他売上ディナー,L1,同画面内,外部連携単独,POSデータから単独取得,SUM(その他かつ時間フィルタ),SUM(TITEM.sales_excluded) WHERE category = 'その他' AND order_time BETWEEN 17:00 AND 23:00 GROUP BY year,C,POS（売上・客数）,-,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,267
+2次,年間予実対比（予実対比）,分析画面,年間実績_FD仕入 計,L1,同画面内,外部連携単独,インフォマート仕入データから単独取得,SUMFD,SUM(infomart_transactions.total_tax_excluded) WHERE category IN ('フード' 'ドリンク') GROUP BY year,C,インフォマート（仕入）,-,infomart_transactions.total_tax_excluded,[外部]infomart_transactions.total_tax_excluded,-,269
+2次,年間予実対比（予実対比）,分析画面,年間実績_人件費 計,L1,同画面内,外部連携単独,KOT/ジョブカン勤怠データから単独取得,SUM,SUM(head_office_connected_service_labor_costs_logs.labor_costs) GROUP BY year,C,KOT（勤怠・人件費）,-,head_office_connected_service_labor_costs_logs.labor_costs,[外部]head_office_connected_service_labor_costs_logs.labor_costs,-,270
+2次,年間予実対比（予実対比）,分析画面,年間実績_その他経費 計,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,SUM,SUM(monthly_costs.value) WHERE cost_type = '経費' GROUP BY year,C,計算項目,-,monthly_costs.value,-,年間予実対比（予実対比）.営業利益,271
+2次,年間予実対比（予実対比）,分析画面,年間実績_ラクミー利用料,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = 'ラクミー利用料',C,計算項目,-,monthly_costs.value,-,-,272
+2次,年間予実対比（予実対比）,分析画面,年間実績_IT費用,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = 'IT費用',D,計算項目,-,monthly_costs.value,-,-,273
+2次,年間予実対比（予実対比）,分析画面,年間実績_お花代,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = 'お花代',C,計算項目,-,monthly_costs.value,-,-,274
+2次,年間予実対比（予実対比）,分析画面,年間実績_ガス代,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = 'ガス代',C,計算項目,-,monthly_costs.value,-,-,275
+2次,年間予実対比（予実対比）,分析画面,年間実績_クレジットカード手数料,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = 'クレジットカード手数料',C,計算項目,-,monthly_costs.value,-,-,276
+2次,年間予実対比（予実対比）,分析画面,年間実績_レジ利用料,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = 'レジ利用料',C,計算項目,-,monthly_costs.value,-,-,277
+2次,年間予実対比（予実対比）,分析画面,年間実績_借入金返済,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '借入金返済',C,計算項目,-,monthly_costs.value,-,-,278
+2次,年間予実対比（予実対比）,分析画面,年間実績_家賃（変動分）,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '家賃(変動分)',C,計算項目,-,monthly_costs.value,-,-,279
+2次,年間予実対比（予実対比）,分析画面,年間実績_水道代,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '水道代',C,計算項目,-,monthly_costs.value,-,-,280
+2次,年間予実対比（予実対比）,分析画面,年間実績_社員人件費,L1,同画面内,外部連携単独,KOT/ジョブカン勤怠データから単独取得,SUM月給者,SUM(head_office_connected_service_labor_costs_logs.labor_costs) WHERE employee_type = '月給者',C,KOT（勤怠・人件費）,-,head_office_connected_service_labor_costs_logs.labor_costs,[外部]head_office_connected_service_labor_costs_logs.labor_costs,-,281
+2次,年間予実対比（予実対比）,分析画面,年間実績_電気代,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目フィルタ,monthly_costs.value WHERE cost_item = '電気代',C,計算項目,-,monthly_costs.value,-,-,282
+2次,年間予実対比（予実対比）,分析画面,年間実績_フード売上ランチ,L1,同画面内,外部連携単独,POSデータから単独取得,SUM(フードかつ時間フィルタ),SUM(TITEM.sales_excluded) WHERE category = 'フード' AND order_time BETWEEN 11:00 AND 15:00 GROUP BY year,C,POS（売上・客数）,-,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,284
+2次,年間予実対比（予実対比）,分析画面,年間実績_フード売上ディナー,L1,同画面内,外部連携単独,POSデータから単独取得,SUM(フードかつ時間フィルタ),SUM(TITEM.sales_excluded) WHERE category = 'フード' AND order_time BETWEEN 17:00 AND 23:00 GROUP BY year,C,POS（売上・客数）,-,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,285
+2次,年間予実対比（予実対比）,分析画面,年間実績_ドリンク売上ランチ,L1,同画面内,外部連携単独,POSデータから単独取得,SUM(ドリンクかつ時間フィルタ),SUM(TITEM.sales_excluded) WHERE category = 'ドリンク' AND order_time BETWEEN 11:00 AND 15:00 GROUP BY year,C,POS（売上・客数）,-,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,286
+2次,年間予実対比（予実対比）,分析画面,年間実績_ドリンク売上ディナー,L1,同画面内,外部連携単独,POSデータから単独取得,SUM(ドリンクかつ時間フィルタ),SUM(TITEM.sales_excluded) WHERE category = 'ドリンク' AND order_time BETWEEN 17:00 AND 23:00 GROUP BY year,C,POS（売上・客数）,-,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,-,287
+2次,年間予実対比（予実対比）,分析画面,年間実績_フード仕入,L1,同画面内,外部連携単独,インフォマート仕入データから単独取得,SUMフード,SUM(infomart_transactions.total_tax_excluded) WHERE category = 'フード' GROUP BY year,C,インフォマート（仕入）,-,infomart_transactions.total_tax_excluded,[外部]infomart_transactions.total_tax_excluded,-,288
+2次,年間予実対比（予実対比）,分析画面,年間実績_ドリンク仕入,L1,同画面内,外部連携単独,インフォマート仕入データから単独取得,SUMドリンク,SUM(infomart_transactions.total_tax_excluded) WHERE category = 'ドリンク' GROUP BY year,C,インフォマート（仕入）,-,infomart_transactions.total_tax_excluded,[外部]infomart_transactions.total_tax_excluded,-,289
+2次,年間予実対比（予実対比）,分析画面,年間実績_固定人件費,L1,同画面内,外部連携単独,KOT/ジョブカン勤怠データから単独取得,SUM月給者,SUM(head_office_connected_service_labor_costs_logs.labor_costs) WHERE employee_type = '月給者' GROUP BY year,C,KOT（勤怠・人件費）,-,head_office_connected_service_labor_costs_logs.labor_costs,[外部]head_office_connected_service_labor_costs_logs.labor_costs,-,290
+2次,年間予実対比（予実対比）,分析画面,年間実績_PA人件費,L1,同画面内,外部連携単独,KOT/ジョブカン勤怠データから単独取得,SUM,SUM(head_office_employee_working_records.daily_cost) GROUP BY year,C,KOT（勤怠・人件費）,-,head_office_employee_working_records.daily_cost,[外部]head_office_employee_working_records.daily_cost,-,291
+2次,年間予実対比（予実対比）,分析画面,年間実績_地代家賃,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目=家賃,monthly_costs.value WHERE cost_item = '家賃' GROUP BY year,C,計算項目,-,monthly_costs.value,-,-,293
+2次,年間予実対比（予実対比）,分析画面,年間実績_資材費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目=資材費,monthly_costs.value WHERE cost_item = '資材費' GROUP BY year,C,計算項目,-,monthly_costs.value,-,-,294
+2次,年間予実対比（予実対比）,分析画面,年間実績_水道光熱費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目=水道光熱費,monthly_costs.value WHERE cost_item = '水道光熱費' GROUP BY year,C,計算項目,-,monthly_costs.value,-,-,295
+2次,年間予実対比（予実対比）,分析画面,年間実績_減価償却費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目=減価償却費,monthly_costs.value WHERE cost_item = '減価償却費' GROUP BY year,C,計算項目,-,monthly_costs.value,-,-,296
+2次,年間予実対比（予実対比）,分析画面,年間実績_販促費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,費目=販促費,monthly_costs.value WHERE cost_item = '販促費' GROUP BY year,C,計算項目,-,monthly_costs.value,-,-,297
+2次,年間予実対比（予実対比）,分析画面,年間予算_総売上 計,L1,同画面内,予算設定参照,月次予算設定の年間累計,SUM月次予算,SUM(monthly_budgets.target_sales) GROUP BY year,A,計算項目,-,monthly_budgets.target_sales,月次予算設定.年間総売上,-,551
+2次,年間予実対比（予実対比）,分析画面,年間予算_フード売上 計,L1,同画面内,予算設定参照×演算,年間予算_総売上×フード構成比,年間予算_総売上 計 × 売上構成比設定.フード構成比,年間予算 × food_ratio,B,計算項目,-,"monthly_budgets.target_sales, budget_sales_compositions.food_ratio",月次予算設定.年間フード売上,-,552
+2次,年間予実対比（予実対比）,分析画面,年間予算_フード売上ランチ,L1,同画面内,予算設定参照×演算,年間予算_フード売上×ランチ比率,年間予算_フード売上 計 × 売上構成比設定.ランチ比率,年間予算 × lunch_ratio,C,計算項目,-,"monthly_budgets.target_sales, budget_sales_compositions.lunch_ratio",月次予算設定.年間フード売上ランチ,-,553
+2次,年間予実対比（予実対比）,分析画面,年間予算_フード売上ディナー,L1,同画面内,予算設定参照×演算,年間予算_フード売上×ディナー比率,年間予算_フード売上 計 × 売上構成比設定.ディナー比率,年間予算 × dinner_ratio,C,計算項目,-,"monthly_budgets.target_sales, budget_sales_compositions.dinner_ratio",月次予算設定.年間フード売上ディナー,-,554
+2次,年間予実対比（予実対比）,分析画面,年間予算_ドリンク売上 計,L1,同画面内,予算設定参照×演算,年間予算_総売上×ドリンク構成比,年間予算_総売上 計 × 売上構成比設定.ドリンク構成比,年間予算 × drink_ratio,B,計算項目,-,"monthly_budgets.target_sales, budget_sales_compositions.drink_ratio",月次予算設定.年間ドリンク売上,-,555
+2次,年間予実対比（予実対比）,分析画面,年間予算_ドリンク売上ランチ,L1,同画面内,予算設定参照×演算,年間予算_ドリンク売上×ランチ比率,年間予算_ドリンク売上 計 × 売上構成比設定.ランチ比率,年間予算 × lunch_ratio,C,計算項目,-,"monthly_budgets.target_sales, budget_sales_compositions.lunch_ratio",月次予算設定.年間ドリンク売上ランチ,-,556
+2次,年間予実対比（予実対比）,分析画面,年間予算_ドリンク売上ディナー,L1,同画面内,予算設定参照×演算,年間予算_ドリンク売上×ディナー比率,年間予算_ドリンク売上 計 × 売上構成比設定.ディナー比率,年間予算 × dinner_ratio,C,計算項目,-,"monthly_budgets.target_sales, budget_sales_compositions.dinner_ratio",月次予算設定.年間ドリンク売上ディナー,-,557
+2次,年間予実対比（予実対比）,分析画面,年間予算_その他売上 計（サービス料等）,L1,同画面内,予算設定参照×演算,年間予算_総売上×その他構成比,年間予算_総売上 計 × 売上構成比設定.その他構成比,年間予算 × other_ratio,C,計算項目,-,"monthly_budgets.target_sales, budget_sales_compositions.other_ratio",月次予算設定.年間その他売上（サービス料等）,-,558
+2次,年間予実対比（予実対比）,分析画面,年間予算_その他売上ランチ,L1,同画面内,予算設定参照×演算,年間予算_その他売上×ランチ比率,年間予算_その他売上 計 × 売上構成比設定.ランチ比率,年間予算 × lunch_ratio,D,計算項目,-,"monthly_budgets.target_sales, budget_sales_compositions.lunch_ratio",月次予算設定.年間その他売上ランチ,-,559
+2次,年間予実対比（予実対比）,分析画面,年間予算_その他売上ディナー,L1,同画面内,予算設定参照×演算,年間予算_その他売上×ディナー比率,年間予算_その他売上 計 × 売上構成比設定.ディナー比率,年間予算 × dinner_ratio,D,計算項目,-,"monthly_budgets.target_sales, budget_sales_compositions.dinner_ratio",月次予算設定.年間その他売上ディナー,-,560
+2次,年間予実対比（予実対比）,分析画面,年間予算_FD仕入 計,L1,同画面内,予算設定参照×演算,月次予算設定.売上×FD仕入比率の年間累計,SUM(monthly_budgets.target_sales × monthly_budgets.food_cost_rate) GROUP BY year,target_sales × food_cost_rate,A,計算項目,-,"monthly_budgets.target_sales, monthly_budgets.food_cost_rate",月次予算設定.年間FD仕入,-,562
+2次,年間予実対比（予実対比）,分析画面,年間予算_フード仕入,L1,同画面内,予算設定参照×演算,年間予算_FD仕入×フード比率,年間予算_FD仕入 計 × FD構成比設定.フード比率,FD仕入予算 × food_ratio,B,計算項目,-,"monthly_budgets.food_cost_rate, fd_compositions.food_ratio",月次予算設定.年間フード仕入,-,563
+2次,年間予実対比（予実対比）,分析画面,年間予算_ドリンク仕入,L1,同画面内,予算設定参照×演算,年間予算_FD仕入×ドリンク比率,年間予算_FD仕入 計 × FD構成比設定.ドリンク比率,FD仕入予算 × drink_ratio,B,計算項目,-,"monthly_budgets.food_cost_rate, fd_compositions.drink_ratio",月次予算設定.年間ドリンク仕入,-,564
+2次,年間予実対比（予実対比）,分析画面,年間予算_人件費 計,L1,同画面内,予算設定参照×演算,(売上×PA人件費率+固定人件費)の年間累計,SUM(monthly_budgets.target_sales × monthly_budgets.labor_cost_rate + 固定人件費) GROUP BY year,(target_sales × labor_cost_rate + 固定人件費),A,計算項目,-,"monthly_budgets.target_sales, monthly_budgets.labor_cost_rate, 固定人件費予算",月次予算設定.年間人件費,-,565
+2次,年間予実対比（予実対比）,分析画面,年間予算_PA人件費,L1,同画面内,予算設定参照×演算,売上×PA人件費率の年間累計,SUM(monthly_budgets.target_sales × monthly_budgets.labor_cost_rate) GROUP BY year,target_sales × labor_cost_rate,B,計算項目,-,"monthly_budgets.target_sales, monthly_budgets.labor_cost_rate",月次予算設定.年間PA人件費,-,567
+2次,店舗別サマリー,ダッシュボード表示画面,売上目標,L1,同画面内,予算設定参照,月次予算設定.売上（税抜）を参照表示,マスタ参照,monthly_budgets.value,B,予算設定（入力）,店舗ごとの主要指標サマリー,monthly_budgets.profit,月次予算設定.売上（税抜）,"店舗別サマリー.売上進捗率, 店舗別サマリー.売上達成率",481
+2次,店舗別サマリー,ダッシュボード表示画面,売上（税抜）,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(ZTOTAL.sales_excluded) GROUP BY shop_id,S,POS（売上・客数）,店舗ごとの主要指標サマリー,head_office_connected_service_sales_logs.sales_excluded,[外部]ZTOTAL.sales_excluded,-,484
+2次,当月実績,ダッシュボード表示画面,売上（税抜）,L1,同画面内,外部データ参照,POS/インフォマート等の外部データを参照表示,参照表示,SUM(ZTOTAL.sales_excluded),S,POS（売上・客数）,当月の営業利益・売上・FD仕入率・人件費率・FL率を表示,head_office_connected_service_sales_logs.sales_excluded,[外部]ZTOTAL.sales_excluded,"ABC分析.売上（税抜）, 予算設定.売上（税抜）, 当月実績.FD仕入率, 当月実績.FL率, 当月実績.人件費率, 当月実績.営業利益, 支払種別売上分析.売上比率, 日次レポート.売上（税抜）",489
+2次,当月実績,ダッシュボード表示画面,営業利益予算,L1,同画面内,予算設定参照,月次予算設定の目標利益を参照表示,参照表示,monthly_budgets.profit,S,予算設定（入力）,当月の営業利益・売上・FD仕入率・人件費率・FL率を表示,monthly_budgets.profit,月次予算設定.目標月次利益,当月実績.営業利益達成率,493
+2次,当月実績,ダッシュボード表示画面,売上予算,L1,同画面内,予算設定参照,月次予算設定の目標売上を参照表示,参照表示,monthly_budgets.sales,S,予算設定（入力）,当月の営業利益・売上・FD仕入率・人件費率・FL率を表示,monthly_budgets.sales,月次予算設定.売上予算,当月実績.売上達成率,495
+2次,感度分析,分析画面,客数,L1,同画面内,外部連携単独,POSデータから単独取得,SUM,SUM(ZTOTAL.customers),A,POS（売上・客数）,-,head_office_connected_service_sales_logs.customers,[外部]ZTOTAL.customers,"予算設定.客数, 感度分析.変動費単価, 感度分析.客単価（税抜）, 感度分析.粗利単価, 時間帯別売上分析.客数, 月次集計.客数, 流入分析.客数",303
+2次,感度分析,分析画面,売上（税抜）,L1,同画面内,外部連携単独,POSデータから単独取得,SUM,SUM(ZTOTAL.sales_excluded),S,POS（売上・客数）,-,head_office_connected_service_sales_logs.sales_excluded,[外部]ZTOTAL.sales_excluded,"当月実績.売上（税抜）, ABC分析.売上（税抜）, 日次レポート.売上（税抜）",304
+2次,感度分析,分析画面,固定費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,SUM,SUM(monthly_costs.value) WHERE cost_type = '固定費',C,計算項目,-,monthly_costs.value,-,-,307
+2次,支払種別売上分析,分析画面,支払方法,L1,同画面内,外部連携単独,POSデータから単独取得,マスタ参照,TTEND.head_office_payment_method_id,D,POS（売上・客数）,-,t_tends.head_office_payment_method_id,[外部]TTEND.head_office_payment_method_id,-,308
+2次,支払種別売上分析,分析画面,売上（税込）,L1,同画面内,外部連携単独,POSデータから単独取得,SUM支払別,SUM(TTEND.sales) GROUP BY payment_method_id,C,POS（売上・客数）,-,head_office_payment_method_sales_logs.sales,[外部]TTEND.sales,支払種別売上分析.売上比率,309
+2次,支払種別売上分析,分析画面,クレジットカード合計売上,L1,同画面内,外部連携単独,POSデータから単独取得,SUM(支払種別フィルタ),SUM(TTEND.sales) WHERE payment_method = 'クレジットカード',C,POS（売上・客数）,-,head_office_payment_method_sales_logs.sales,[外部]TTEND.sales,-,311
+2次,支払種別売上分析,分析画面,QR決済合計売上,L1,同画面内,外部連携単独,POSデータから単独取得,SUM(支払種別フィルタ),SUM(TTEND.sales) WHERE payment_method = 'QR決済',C,POS（売上・客数）,-,head_office_payment_method_sales_logs.sales,[外部]TTEND.sales,-,312
+2次,支払種別売上分析,分析画面,MUGENファミリーカード合計売上,L1,同画面内,外部連携単独,POSデータから単独取得,SUM(支払種別フィルタ),SUM(TTEND.sales) WHERE payment_method = 'MUGENファミリーカード',C,POS（売上・客数）,-,head_office_payment_method_sales_logs.sales,[外部]TTEND.sales,-,313
+2次,支払種別売上分析,分析画面,売掛合計売上,L1,同画面内,外部連携単独,POSデータから単独取得,SUM(支払種別フィルタ),SUM(TTEND.sales) WHERE payment_method = '売掛',C,POS（売上・客数）,-,head_office_payment_method_sales_logs.sales,[外部]TTEND.sales,-,314
+2次,支払種別売上分析,分析画面,交通系IC合計売上,L1,同画面内,外部連携単独,POSデータから単独取得,SUM(支払種別フィルタ),SUM(TTEND.sales) WHERE payment_method = '交通系IC',C,POS（売上・客数）,-,head_office_payment_method_sales_logs.sales,[外部]TTEND.sales,-,315
+2次,日次レポート,分析画面,売上（税込）,L1,同画面内,外部連携単独,POSデータから単独取得,日別集計,SUM(ZTOTAL.sales) GROUP BY date,S,POS（売上・客数）,-,z_totals.sales,[外部]ZTOTAL.sales,-,316
+2次,日次レポート,分析画面,売上（税抜）,L1,同画面内,外部連携単独,POSデータから単独取得,日別集計,SUM(ZTOTAL.sales_excluded) GROUP BY date,S,POS（売上・客数）,-,head_office_connected_service_sales_logs.sales_excluded,[外部]ZTOTAL.sales_excluded,"ABC分析.売上（税抜）, 当月実績.売上（税抜）, 感度分析.売上（税抜）",317
+2次,日次レポート,分析画面,仕入（税込）,L1,同画面内,外部連携単独,インフォマート仕入データから単独取得,日別集計,SUM(trade_total.total) GROUP BY date,S,インフォマート（仕入）,-,infomart_orders.total,[外部]trade_total.total,-,318
+2次,日次レポート,分析画面,仕入（税抜）,L1,同画面内,外部連携単独,インフォマート仕入データから単独取得,日別集計,SUM(infomart_transactions.total_tax_excluded) GROUP BY date,A,インフォマート（仕入）,-,infomart_transactions.total_tax_excluded,[外部]infomart_transactions.total_tax_excluded,-,319
+2次,日次レポート,分析画面,PA人件費,L1,同画面内,外部連携単独,KOT/ジョブカン勤怠データから単独取得,日別集計,SUM(head_office_employee_working_records.daily_cost) GROUP BY date,S,KOT（勤怠・人件費）,-,head_office_employee_working_records.daily_cost,[外部]head_office_employee_working_records.daily_cost,予実対比.PA人件費,320
+2次,時間帯別売上分析,分析画面,ランチ売上（税抜）,L1,同画面内,外部連携単独,POSデータから単独取得,SUM(時間フィルタ),SUM(TITEM.sales_excluded) WHERE order_time BETWEEN 11:00 AND 15:00,C,POS（売上・客数）,-,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,年間予実対比（サマリー）.客単価（ランチ）,321
+2次,時間帯別売上分析,分析画面,ディナー売上（税抜）,L1,同画面内,外部連携単独,POSデータから単独取得,SUM(時間フィルタ),SUM(TITEM.sales_excluded) WHERE order_time BETWEEN 17:00 AND 23:00,C,POS（売上・客数）,-,head_office_item_sales_logs.sales_excluded,[外部]TITEM.sales_excluded,年間予実対比（サマリー）.客単価（ディナー）,322
+2次,時間帯別売上分析,分析画面,客数,L1,同画面内,外部連携単独,POSデータから単独取得,SUM時間帯別,SUM(ZTOTAL.customers) GROUP BY hour,A,POS（売上・客数）,-,head_office_connected_service_sales_logs.customers,[外部]ZTOTAL.customers,"感度分析.客数, 時間帯別売上分析.客単価（税抜）, 曜日別売上分析.平均客数, 流入分析.テーブル回転数",323
+2次,曜日別売上分析,分析画面,曜日,L1,同画面内,外部連携単独,POSデータから単独取得,曜日抽出,DAYOFWEEK(ZTOTAL.date),C,POS（売上・客数）,-,z_totals.date,[外部]ZTOTAL.date,-,325
+2次,月次レポート,分析画面,売上（税抜）,L1,同画面内,外部連携単独,POSデータから単独取得,SUM月間,SUM(ZTOTAL.sales_excluded) GROUP BY year_month,S,POS（売上・客数）,-,head_office_connected_service_sales_logs.sales_excluded,[外部]ZTOTAL.sales_excluded,-,331
+2次,月次レポート,分析画面,対象前月在庫,L1,同画面内,棚卸入力参照,棚卸入力で登録した在庫データを参照,マスタ参照,shop_inventories.amount WHERE year_month = target_month - 1,C,計算項目,-,shop_inventories.amount（棚卸入力）,-,月次レポート.原価（金額）,332
+2次,月次レポート,分析画面,仕入総額,L1,同画面内,外部連携単独,インフォマート仕入データから単独取得,SUM,SUM(infomart_transactions.total_tax_excluded),C,インフォマート（仕入）,-,infomart_transactions.total_tax_excluded,[外部]infomart_transactions.total_tax_excluded,月次レポート.原価（金額）,333
+2次,月次レポート,分析画面,対象月在庫,L1,同画面内,棚卸入力参照,棚卸入力で登録した在庫データを参照,マスタ参照,shop_inventories.amount WHERE year_month = target_month,C,計算項目,-,shop_inventories.amount（棚卸入力）,-,月次レポート.原価（金額）,334
+2次,月次レポート,分析画面,年月,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,年月参照,monthly_cost_entries.year_month,C,計算項目,-,"monthly_cost_entries.year_month, monthly_costs.value",-,-,335
+2次,月次レポート,分析画面,売上（税込）,L1,同画面内,外部連携単独,POSデータから単独取得,SUM月間,SUM(ZTOTAL.sales) GROUP BY year_month,C,POS（売上・客数）,-,z_totals.sales,[外部]ZTOTAL.sales,-,336
+2次,月次レポート,分析画面,仕入（税抜）,L1,同画面内,外部連携単独,インフォマート仕入データから単独取得,SUM月間,SUM(infomart_transactions.total_tax_excluded) GROUP BY year_month,C,インフォマート（仕入）,-,infomart_transactions.total_tax_excluded,[外部]infomart_transactions.total_tax_excluded,-,337
+2次,月次レポート,分析画面,仕入（税込）,L1,同画面内,外部連携単独,インフォマート仕入データから単独取得,SUM月間,SUM(trade_total.total) GROUP BY year_month,C,インフォマート（仕入）,-,infomart_orders.total,[外部]trade_total.total,-,338
+2次,月次レポート,分析画面,PA人件費,L1,同画面内,外部連携単独,KOT/ジョブカン勤怠データから単独取得,SUM月間,SUM(head_office_employee_working_records.daily_cost) GROUP BY year_month,C,KOT（勤怠・人件費）,-,head_office_employee_working_records.daily_cost,[外部]head_office_employee_working_records.daily_cost,-,339
+2次,月次集計,分析画面,固定費,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,SUM,SUM(monthly_costs.value) WHERE cost_type = '固定費',C,計算項目,-,monthly_costs.value,-,-,350
+2次,月次集計,分析画面,売上（税抜）,L1,同画面内,外部連携単独,POSデータから単独取得,SUM,SUM(ZTOTAL.sales_excluded),S,POS（売上・客数）,-,head_office_connected_service_sales_logs.sales_excluded,[外部]ZTOTAL.sales_excluded,-,351
+2次,月次集計,分析画面,客数,L1,同画面内,外部連携単独,POSデータから単独取得,SUM,SUM(ZTOTAL.customers),A,POS（売上・客数）,-,head_office_connected_service_sales_logs.customers,[外部]ZTOTAL.customers,-,352
+2次,流入分析,分析画面,予約客数,L1,同画面内,外部連携単独,予約システムから単独取得,SUM予約,SUM(予約連携.customers),A,予約システム,-,reservations.customers,-,"流入分析.ウォークイン客数, 流入分析.テーブル稼働率, 流入分析.予約売上, 流入分析.予約客単価, 流入分析.予約客数トレンド",356
+2次,流入分析,分析画面,総席数,L1,同画面内,外部連携単独,POSデータから単独取得,SUM,SUM(ZTOTAL.customers),C,POS（売上・客数）,-,head_office_connected_service_sales_logs.customers,[外部]ZTOTAL.customers,-,361
+2次,流入分析,分析画面,総組数,L1,同画面内,外部連携単独,POSデータから単独取得,COUNT伝票,COUNT(TTOTAL.receipt_no),C,POS（売上・客数）,-,t_totals.receipt_no,[外部]TTOTAL.receipt_no,流入分析.回転数,362
+2次,流入分析,分析画面,客数,L1,同画面内,外部連携単独,POSデータから単独取得,SUM,SUM(ZTOTAL.customers),A,POS（売上・客数）,-,head_office_connected_service_sales_logs.customers,[外部]ZTOTAL.customers,-,371
+2次,費目別仕入分析,分析画面,金額（税抜）,L1,同画面内,費用設定参照,費用設定で設定した経費項目を参照,SUM費目別,SUM(monthly_costs.value) GROUP BY cost_item_id,C,計算項目,費目ごとの仕入金額を分析,monthly_costs.value,-,費目別仕入分析.比率,373
+3次,ABC分析,分析画面,販売点数構成比率,L2-S,単店舗,外部連携×外部連携,POS売上とPOS客数/商品等の組合せ,商品数÷総数×100,ABC分析.販売点数 ÷ SUM(ABC分析.販売点数) × 100,C,計算項目,-,head_office_item_sales_logs.quantity,ABC分析.販売点数,-,103
+3次,ABC分析,分析画面,価格,L2-S,単店舗,外部連携×外部連携,POS売上とPOS客数/商品等の組合せ,売上÷数量,ABC分析.売上（税抜） ÷ ABC分析.販売点数,C,計算項目,-,"head_office_item_sales_logs.sales_excluded, head_office_item_sales_logs.quantity","ABC分析.売上（税抜）, ABC分析.販売点数",-,104
+3次,FD仕入率トレンド,分析画面,直近6ヶ月,L2-S,単店舗,演算×演算,複数の演算結果の組合せ,6ヶ月推移,FD仕入率 直近6ヶ月トレンド,C,計算項目,FD仕入率の長期トレンドを表示,-,FD仕入率トレンド.FD仕入率トレンド,-,106
+3次,FD仕入率トレンド,分析画面,直近12ヶ月,L2-S,単店舗,演算×演算,複数の演算結果の組合せ,12ヶ月推移,FD仕入率 直近12ヶ月トレンド,C,計算項目,FD仕入率の長期トレンドを表示,-,FD仕入率トレンド.FD仕入率トレンド,-,107
+3次,ラベル設定（仕入商品リスト）,設定入力画面,AIによる費目生成,L2-S,単店舗,AI生成,AIによる自動生成,AI生成,-,D,AI生成,納品書撮影で読み込んだ仕入商品にラベルを紐付け。棚卸時の在庫分類に活用,-,-,-,9
+3次,ラベル設定（売上商品リスト）,設定入力画面,AIによるラベル生成,L2-S,単店舗,AI生成,AIによる自動生成,AI生成,-,D,AI生成,POS連携の売上商品にラベルを設定。売上分析のグルーピングに使用,-,-,-,26
+3次,予実対比,分析画面,実績_FLコスト 計,L2-S,単店舗,画面内演算,FD仕入+人件費の合計,実績_FD仕入 計 + 実績_人件費 計,FD仕入 + 人件費,A,計算項目,-,-,"予実対比.実績_FD仕入 計, 予実対比.実績_人件費 計",-,141
+3次,予実対比,分析画面,実績_営業利益,L2-S,単店舗,画面内演算,総売上-FLコスト-その他経費,実績_総売上 計 - 実績_FLコスト 計 - 実績_その他経費 計,総売上 - FLコスト - その他経費,A,計算項目,-,-,"予実対比.実績_総売上 計, 予実対比.実績_FLコスト 計, 予実対比.実績_その他経費 計",-,166
+3次,予実対比,分析画面,予算_営業利益,L2-S,単店舗,画面内演算,予算_総売上-予算_FLコスト-予算_その他経費,予算_総売上 計 - 予算_FLコスト 計 - 予算_その他経費 計,予算_総売上 - 予算_FLコスト - 予算_その他経費,A,計算項目,-,-,"予実対比.予算_総売上 計, 予実対比.予算_FLコスト 計, 予実対比.予算_その他経費 計",-,202
+3次,予実対比,分析画面,予算構成比_総売上 計,L2-S,単店舗,画面内演算,予算_総売上÷予算_総売上×100,予算_総売上 計 ÷ 予算_総売上 計 × 100,100%（基準値）,A,計算項目,-,-,予実対比.予算_総売上 計,-,203
+3次,予実対比,分析画面,予算構成比_フード売上 計,L2-S,単店舗,画面内演算,予算_フード売上÷予算_総売上×100,予算_フード売上 計 ÷ 予算_総売上 計 × 100,予算_フード売上 / 予算_総売上 × 100,B,計算項目,-,-,"予実対比.予算_フード売上 計, 予実対比.予算_総売上 計",-,204
+3次,予実対比,分析画面,予算構成比_ドリンク売上 計,L2-S,単店舗,画面内演算,予算_ドリンク売上÷予算_総売上×100,予算_ドリンク売上 計 ÷ 予算_総売上 計 × 100,予算_ドリンク売上 / 予算_総売上 × 100,B,計算項目,-,-,"予実対比.予算_ドリンク売上 計, 予実対比.予算_総売上 計",-,205
+3次,予実対比,分析画面,予算構成比_その他売上 計,L2-S,単店舗,画面内演算,予算_その他売上÷予算_総売上×100,予算_その他売上 計 ÷ 予算_総売上 計 × 100,予算_その他売上 / 予算_総売上 × 100,C,計算項目,-,-,"予実対比.予算_その他売上 計, 予実対比.予算_総売上 計",-,206
+3次,予実対比,分析画面,予算構成比_FLコスト 計,L2-S,単店舗,画面内演算,予算_FLコスト÷予算_総売上×100,予算_FLコスト 計 ÷ 予算_総売上 計 × 100,予算_FLコスト / 予算_総売上 × 100,A,計算項目,-,-,"予実対比.予算_FLコスト 計, 予実対比.予算_総売上 計",-,207
+3次,予実対比,分析画面,予算構成比_FD仕入 計,L2-S,単店舗,画面内演算,予算_FD仕入÷予算_総売上×100,予算_FD仕入 計 ÷ 予算_総売上 計 × 100,予算_FD仕入 / 予算_総売上 × 100,A,計算項目,-,-,"予実対比.予算_FD仕入 計, 予実対比.予算_総売上 計",-,208
+3次,予実対比,分析画面,予算構成比_人件費 計,L2-S,単店舗,画面内演算,予算_人件費÷予算_総売上×100,予算_人件費 計 ÷ 予算_総売上 計 × 100,予算_人件費 / 予算_総売上 × 100,A,計算項目,-,-,"予実対比.予算_人件費 計, 予実対比.予算_総売上 計",-,209
+3次,予実対比,分析画面,予算構成比_その他経費 計,L2-S,単店舗,画面内演算,予算_その他経費÷予算_総売上×100,予算_その他経費 計 ÷ 予算_総売上 計 × 100,予算_その他経費 / 予算_総売上 × 100,B,計算項目,-,-,"予実対比.予算_その他経費 計, 予実対比.予算_総売上 計",-,210
+3次,予実対比,分析画面,予算構成比_営業利益,L2-S,単店舗,画面内演算,予算_営業利益÷予算_総売上×100,予算_営業利益 ÷ 予算_総売上 計 × 100,予算_営業利益 / 予算_総売上 × 100,A,計算項目,-,-,"予実対比.予算_営業利益, 予実対比.予算_総売上 計",-,211
+3次,予実対比,分析画面,予実差額_総売上 計,L2-S,単店舗,画面内演算,実績_総売上-予算_総売上,実績_総売上 計 - 予算_総売上 計,実績 - 予算,A,計算項目,-,-,"予実対比.実績_総売上 計, 予実対比.予算_総売上 計",-,212
+3次,予実対比,分析画面,予実差額_フード売上 計,L2-S,単店舗,画面内演算,実績_フード売上-予算_フード売上,実績_フード売上 計 - 予算_フード売上 計,実績 - 予算,B,計算項目,-,-,"予実対比.実績_フード売上 計, 予実対比.予算_フード売上 計",-,213
+3次,予実対比,分析画面,予実差額_ドリンク売上 計,L2-S,単店舗,画面内演算,実績_ドリンク売上-予算_ドリンク売上,実績_ドリンク売上 計 - 予算_ドリンク売上 計,実績 - 予算,B,計算項目,-,-,"予実対比.実績_ドリンク売上 計, 予実対比.予算_ドリンク売上 計",-,214
+3次,予実対比,分析画面,予実差額_その他売上 計,L2-S,単店舗,画面内演算,実績_その他売上-予算_その他売上,実績_その他売上 計 - 予算_その他売上 計,実績 - 予算,C,計算項目,-,-,"予実対比.実績_その他売上 計, 予実対比.予算_その他売上 計",-,215
+3次,予実対比,分析画面,予実差額_FLコスト 計,L2-S,単店舗,画面内演算,実績_FLコスト-予算_FLコスト,実績_FLコスト 計 - 予算_FLコスト 計,実績 - 予算,A,計算項目,-,-,"予実対比.実績_FLコスト 計, 予実対比.予算_FLコスト 計",-,216
+3次,予実対比,分析画面,予実差額_FD仕入 計,L2-S,単店舗,画面内演算,実績_FD仕入-予算_FD仕入,実績_FD仕入 計 - 予算_FD仕入 計,実績 - 予算,A,計算項目,-,-,"予実対比.実績_FD仕入 計, 予実対比.予算_FD仕入 計",-,217
+3次,予実対比,分析画面,予実差額_人件費 計,L2-S,単店舗,画面内演算,実績_人件費-予算_人件費,実績_人件費 計 - 予算_人件費 計,実績 - 予算,A,計算項目,-,-,"予実対比.実績_人件費 計, 予実対比.予算_人件費 計",-,218
+3次,予実対比,分析画面,予実差額_その他経費 計,L2-S,単店舗,画面内演算,実績_その他経費-予算_その他経費,実績_その他経費 計 - 予算_その他経費 計,実績 - 予算,B,計算項目,-,-,"予実対比.実績_その他経費 計, 予実対比.予算_その他経費 計",-,219
+3次,予実対比,分析画面,予実差額_営業利益,L2-S,単店舗,画面内演算,実績_営業利益-予算_営業利益,実績_営業利益 - 予算_営業利益,実績 - 予算,A,計算項目,-,-,"予実対比.実績_営業利益, 予実対比.予算_営業利益",-,220
+3次,予実対比,分析画面,予算対比率_総売上 計,L2-S,単店舗,画面内演算,実績_総売上÷予算_総売上×100,実績_総売上 計 ÷ 予算_総売上 計 × 100,実績 / 予算 × 100,A,計算項目,-,-,"予実対比.実績_総売上 計, 予実対比.予算_総売上 計",-,221
+3次,予実対比,分析画面,予算対比率_フード売上 計,L2-S,単店舗,画面内演算,実績_フード売上÷予算_フード売上×100,実績_フード売上 計 ÷ 予算_フード売上 計 × 100,実績 / 予算 × 100,B,計算項目,-,-,"予実対比.実績_フード売上 計, 予実対比.予算_フード売上 計",-,222
+3次,予実対比,分析画面,予算対比率_ドリンク売上 計,L2-S,単店舗,画面内演算,実績_ドリンク売上÷予算_ドリンク売上×100,実績_ドリンク売上 計 ÷ 予算_ドリンク売上 計 × 100,実績 / 予算 × 100,B,計算項目,-,-,"予実対比.実績_ドリンク売上 計, 予実対比.予算_ドリンク売上 計",-,223
+3次,予実対比,分析画面,予算対比率_その他売上 計,L2-S,単店舗,画面内演算,実績_その他売上÷予算_その他売上×100,実績_その他売上 計 ÷ 予算_その他売上 計 × 100,実績 / 予算 × 100,C,計算項目,-,-,"予実対比.実績_その他売上 計, 予実対比.予算_その他売上 計",-,224
+3次,予実対比,分析画面,予算対比率_FLコスト 計,L2-S,単店舗,画面内演算,実績_FLコスト÷予算_FLコスト×100,実績_FLコスト 計 ÷ 予算_FLコスト 計 × 100,実績 / 予算 × 100,A,計算項目,-,-,"予実対比.実績_FLコスト 計, 予実対比.予算_FLコスト 計",-,225
+3次,予実対比,分析画面,予算対比率_FD仕入 計,L2-S,単店舗,画面内演算,実績_FD仕入÷予算_FD仕入×100,実績_FD仕入 計 ÷ 予算_FD仕入 計 × 100,実績 / 予算 × 100,A,計算項目,-,-,"予実対比.実績_FD仕入 計, 予実対比.予算_FD仕入 計",-,226
+3次,予実対比,分析画面,予算対比率_人件費 計,L2-S,単店舗,画面内演算,実績_人件費÷予算_人件費×100,実績_人件費 計 ÷ 予算_人件費 計 × 100,実績 / 予算 × 100,A,計算項目,-,-,"予実対比.実績_人件費 計, 予実対比.予算_人件費 計",-,227
+3次,予実対比,分析画面,予算対比率_その他経費 計,L2-S,単店舗,画面内演算,実績_その他経費÷予算_その他経費×100,実績_その他経費 計 ÷ 予算_その他経費 計 × 100,実績 / 予算 × 100,B,計算項目,-,-,"予実対比.実績_その他経費 計, 予実対比.予算_その他経費 計",-,228
+3次,予実対比,分析画面,予算対比率_営業利益,L2-S,単店舗,画面内演算,実績_営業利益÷予算_営業利益×100,実績_営業利益 ÷ 予算_営業利益 × 100,実績 / 予算 × 100,A,計算項目,-,-,"予実対比.実績_営業利益, 予実対比.予算_営業利益",-,229
+3次,予実対比,分析画面,構成比_総売上 計,L2-S,単店舗,画面内演算,実績_総売上÷実績_総売上×100,実績_総売上 計 ÷ 実績_総売上 計 × 100,100%（基準値）,A,計算項目,-,-,予実対比.実績_総売上 計,-,230
+3次,予実対比,分析画面,構成比_フード売上 計,L2-S,単店舗,画面内演算,実績_フード売上÷実績_総売上×100,実績_フード売上 計 ÷ 実績_総売上 計 × 100,実績_フード売上 / 実績_総売上 × 100,B,計算項目,-,-,"予実対比.実績_フード売上 計, 予実対比.実績_総売上 計",-,231
+3次,予実対比,分析画面,構成比_ドリンク売上 計,L2-S,単店舗,画面内演算,実績_ドリンク売上÷実績_総売上×100,実績_ドリンク売上 計 ÷ 実績_総売上 計 × 100,実績_ドリンク売上 / 実績_総売上 × 100,B,計算項目,-,-,"予実対比.実績_ドリンク売上 計, 予実対比.実績_総売上 計",-,232
+3次,予実対比,分析画面,構成比_その他売上 計,L2-S,単店舗,画面内演算,実績_その他売上÷実績_総売上×100,実績_その他売上 計 ÷ 実績_総売上 計 × 100,実績_その他売上 / 実績_総売上 × 100,C,計算項目,-,-,"予実対比.実績_その他売上 計, 予実対比.実績_総売上 計",-,233
+3次,予実対比,分析画面,構成比_FLコスト 計,L2-S,単店舗,画面内演算,実績_FLコスト÷実績_総売上×100,実績_FLコスト 計 ÷ 実績_総売上 計 × 100,実績_FLコスト / 実績_総売上 × 100,A,計算項目,-,-,"予実対比.実績_FLコスト 計, 予実対比.実績_総売上 計",-,234
+3次,予実対比,分析画面,構成比_FD仕入 計,L2-S,単店舗,画面内演算,実績_FD仕入÷実績_総売上×100,実績_FD仕入 計 ÷ 実績_総売上 計 × 100,実績_FD仕入 / 実績_総売上 × 100,A,計算項目,-,-,"予実対比.実績_FD仕入 計, 予実対比.実績_総売上 計",-,235
+3次,予実対比,分析画面,構成比_人件費 計,L2-S,単店舗,画面内演算,実績_人件費÷実績_総売上×100,実績_人件費 計 ÷ 実績_総売上 計 × 100,実績_人件費 / 実績_総売上 × 100,A,計算項目,-,-,"予実対比.実績_人件費 計, 予実対比.実績_総売上 計",-,236
+3次,予実対比,分析画面,構成比_その他経費 計,L2-S,単店舗,画面内演算,実績_その他経費÷実績_総売上×100,実績_その他経費 計 ÷ 実績_総売上 計 × 100,実績_その他経費 / 実績_総売上 × 100,B,計算項目,-,-,"予実対比.実績_その他経費 計, 予実対比.実績_総売上 計",-,237
+3次,予実対比,分析画面,構成比_営業利益,L2-S,単店舗,画面内演算,実績_営業利益÷実績_総売上×100,実績_営業利益 ÷ 実績_総売上 計 × 100,実績_営業利益 / 実績_総売上 × 100,A,計算項目,-,-,"予実対比.実績_営業利益, 予実対比.実績_総売上 計",-,238
+3次,予実対比（一覧）,一覧表示画面,営業利益,L2-S,単店舗,実績参照,分析画面で算出された値を参照表示,参照表示,予実対比（一覧）.総売上 - 予実対比（一覧）.FD仕入 - 予実対比（一覧）.人件費 - 予実対比（一覧）.その他経費,S,計算項目,予算と実績の対比一覧,monthly_costs.value,-,-,407
+3次,予算一覧（予算構成）,一覧表示画面,FLコスト 計,L2-S,単店舗,実績参照,分析画面で算出された値を参照表示,参照表示,SUM(infomart_transactions.total_tax_excluded) + SUM(head_office_connected_service_labor_costs_logs.labor_costs),C,計算項目,予算の構成比を一覧表示,"infomart_transactions.total_tax_excluded, head_office_connected_service_labor_costs_logs.labor_costs",-,予算一覧（予算構成）.営業利益,412
+3次,予算一覧（予算構成）,一覧表示画面,営業利益,L2-S,単店舗,実績参照,分析画面で算出された値を参照表示,参照表示,予算一覧（予算構成）.売上 計 - 予算一覧（予算構成）.FLコスト 計 - 予算一覧（予算構成）.その他経費 計,S,計算項目,予算の構成比を一覧表示,monthly_costs.value,-,-,433
+3次,仕入先分析,分析画面,比率,L2-S,単店舗,外部連携×外部連携,インフォマート内の複数データ組合せ,仕入先÷総仕入×100,仕入先分析.金額税抜 ÷ SUM(仕入先分析.金額税抜) × 100,C,計算項目,仕入先ごとの金額・比率を分析。納品書撮影データを集計,infomart_transactions.total_tax_excluded,-,"商品別仕入分析.比率, 費目別仕入分析.比率",241
+3次,単月費用設定,設定入力画面,費目,L2-S,単店舗,費目マスタ参照,費目マスタから費目を参照表示,マスタ参照,monthly_cost_items.name,C,費用設定（参照）,単月の費用予算を設定,monthly_cost_items.name,[マスタ]monthly_cost_items.name,-,79
+3次,商品仕入単価,一覧表示画面,単価,L2-S,単店舗,実績参照,分析画面で算出された値を参照表示,参照表示,商品仕入単価.金額税抜 ÷ 商品仕入単価.数量,C,計算項目,商品ごとの仕入単価推移を分析,"infomart_order_details.price, infomart_order_details.num",商品仕入単価.数量,平均単価推移.平均単価,454
+3次,商品別仕入分析,分析画面,比率,L2-S,単店舗,外部連携×外部連携,インフォマート内の複数データ組合せ,商品÷総仕入×100,商品別仕入分析.金額税抜 ÷ SUM(商品別仕入分析.金額税抜) × 100,C,計算項目,商品ごとの仕入金額・比率を分析,infomart_order_details.price,-,"仕入先分析.比率, 費目別仕入分析.比率",249
+3次,商品別売上分析,分析画面,商品単価（税抜）,L2-S,単店舗,外部連携×外部連携,POS売上とPOS客数/商品等の組合せ,売上÷数量,商品別売上分析.売上合計税抜 ÷ 商品別売上分析.販売数量,C,計算項目,-,"head_office_item_sales_logs.sales_excluded, head_office_item_sales_logs.quantity",商品別売上分析.販売数量,-,250
+3次,商品別売上分析,分析画面,商品単価（税込）,L2-S,単店舗,外部連携×外部連携,POS売上とPOS客数/商品等の組合せ,売上÷数量,商品別売上分析.売上合計税込 ÷ 商品別売上分析.販売数量,C,計算項目,-,"t_items.sales, head_office_item_sales_logs.quantity",商品別売上分析.販売数量,-,251
+3次,売上経費入力（売上）,実績入力画面,店内売上（標準税率）税込,L2-S,単店舗,画面内演算,店内売上税抜×1.1,-,-,B,計算項目,【ラクミーアプリ】POS未連携店舗向け。売上を手入力しラクミー経営管理に計上,head_office_connected_service_sales_logs.sales (edited=1),店内売上税抜,集計（売上）税込,777
+3次,売上経費入力（売上）,実績入力画面,店外売上（軽減税率）税込,L2-S,単店舗,画面内演算,店外売上税抜×1.08,-,-,B,計算項目,【ラクミーアプリ】POS未連携店舗向け。売上を手入力しラクミー経営管理に計上,head_office_connected_service_sales_logs.sales_tax_reduced (edited=1),店外売上税抜,集計（売上）税込,779
+3次,小口現金管理,実績入力画面,残高,L2-S,単店舗,画面内演算,複数のユーザー入力の組合せ,前残高+入金-出金,前回残高 + 小口現金管理.入金額 - 小口現金管理.出勤額,C,計算項目,-,-,"小口現金管理.入金額, 小口現金管理.出勤額",-,86
+3次,小口現金管理,実績入力画面,費目,L2-S,単店舗,ユーザー入力単独（マスタ選択）,マスタから選択入力,費目マスタ参照,monthly_cost_items.name,D,費用・棚卸（入力）,-,monthly_cost_items.name,[マスタ]monthly_cost_items.name,-,90
+3次,平均単価推移,分析画面,平均単価,L2-S,単店舗,外部連携×外部連携,インフォマート内の複数データ組合せ,金額÷数量,平均単価推移.仕入金額税抜 ÷ 平均単価推移.数量,C,計算項目,仕入商品ラベル別の平均単価推移を表示,"infomart_order_details.price, infomart_order_details.num",平均単価推移.数量,"商品仕入単価.単価, 平均単価推移.平均単価推移",260
+3次,平均単価推移,分析画面,平均単価推移,L2-S,単店舗,演算×演算,複数の演算結果の組合せ,期間集計トレンド計算,平均単価推移.平均単価 期間集計トレンド,C,計算項目,仕入商品ラベル別の平均単価推移を表示,-,平均単価推移.平均単価,-,261
+3次,年間予実対比,分析画面,月次実績_FLコスト 計,L2-S,単店舗,画面内演算,月次FD仕入+月次人件費の合計,月次実績_FD仕入 計 + 月次実績_人件費 計,FD仕入 + 人件費,A,計算項目,-,-,"年間予実対比.月次実績_FD仕入 計, 年間予実対比.月次実績_人件費 計",-,501
+3次,年間予実対比,分析画面,月次実績_営業利益,L2-S,単店舗,画面内演算,月次総売上-月次FLコスト-月次その他経費,月次実績_総売上 計 - 月次実績_FLコスト 計 - 月次実績_その他経費 計,総売上 - FLコスト - その他経費,A,計算項目,-,-,"年間予実対比.月次実績_総売上 計, 年間予実対比.月次実績_FLコスト 計, 年間予実対比.月次実績_その他経費 計",-,505
+3次,年間予実対比,分析画面,月次予算_FLコスト 計,L2-S,単店舗,画面内演算,月次予算_FD仕入+月次予算_人件費の合計,月次予算_FD仕入 計 + 月次予算_人件費 計,FD仕入予算 + 人件費予算,A,計算項目,-,-,"年間予実対比.月次予算_FD仕入 計, 年間予実対比.月次予算_人件費 計",-,510
+3次,年間予実対比,分析画面,月次予算_営業利益,L2-S,単店舗,画面内演算,月次予算_総売上-月次予算_FLコスト-月次予算_その他経費,月次予算_総売上 計 - 月次予算_FLコスト 計 - 月次予算_その他経費 計,予算_総売上 - 予算_FLコスト - 予算_その他経費,A,計算項目,-,-,"年間予実対比.月次予算_総売上 計, 年間予実対比.月次予算_FLコスト 計, 年間予実対比.月次予算_その他経費 計",-,514
+3次,年間予実対比,分析画面,予算構成比_総売上 計,L2-S,単店舗,画面内演算,月次予算_総売上÷月次予算_総売上×100,月次予算_総売上 計 ÷ 月次予算_総売上 計 × 100,100%（基準値）,A,計算項目,-,-,年間予実対比.月次予算_総売上 計,-,515
+3次,年間予実対比,分析画面,予算構成比_フード売上 計,L2-S,単店舗,画面内演算,月次予算_フード売上÷月次予算_総売上×100,月次予算_フード売上 計 ÷ 月次予算_総売上 計 × 100,月次予算_フード売上 / 月次予算_総売上 × 100 GROUP BY year_month,B,計算項目,-,-,"年間予実対比.月次予算_フード売上 計, 年間予実対比.月次予算_総売上 計",-,516
+3次,年間予実対比,分析画面,予算構成比_ドリンク売上 計,L2-S,単店舗,画面内演算,月次予算_ドリンク売上÷月次予算_総売上×100,月次予算_ドリンク売上 計 ÷ 月次予算_総売上 計 × 100,月次予算_ドリンク売上 / 月次予算_総売上 × 100 GROUP BY year_month,B,計算項目,-,-,"年間予実対比.月次予算_ドリンク売上 計, 年間予実対比.月次予算_総売上 計",-,517
+3次,年間予実対比,分析画面,予算構成比_その他売上 計,L2-S,単店舗,画面内演算,月次予算_その他売上÷月次予算_総売上×100,月次予算_その他売上 計 ÷ 月次予算_総売上 計 × 100,月次予算_その他売上 / 月次予算_総売上 × 100 GROUP BY year_month,C,計算項目,-,-,"年間予実対比.月次予算_その他売上 計, 年間予実対比.月次予算_総売上 計",-,518
+3次,年間予実対比,分析画面,予算構成比_FLコスト 計,L2-S,単店舗,画面内演算,月次予算_FLコスト÷月次予算_総売上×100,月次予算_FLコスト 計 ÷ 月次予算_総売上 計 × 100,月次予算_FLコスト / 月次予算_総売上 × 100 GROUP BY year_month,A,計算項目,-,-,"年間予実対比.月次予算_FLコスト 計, 年間予実対比.月次予算_総売上 計",-,519
+3次,年間予実対比,分析画面,予算構成比_FD仕入 計,L2-S,単店舗,画面内演算,月次予算_FD仕入÷月次予算_総売上×100,月次予算_FD仕入 計 ÷ 月次予算_総売上 計 × 100,月次予算_FD仕入 / 月次予算_総売上 × 100 GROUP BY year_month,A,計算項目,-,-,"年間予実対比.月次予算_FD仕入 計, 年間予実対比.月次予算_総売上 計",-,520
+3次,年間予実対比,分析画面,予算構成比_人件費 計,L2-S,単店舗,画面内演算,月次予算_人件費÷月次予算_総売上×100,月次予算_人件費 計 ÷ 月次予算_総売上 計 × 100,月次予算_人件費 / 月次予算_総売上 × 100 GROUP BY year_month,A,計算項目,-,-,"年間予実対比.月次予算_人件費 計, 年間予実対比.月次予算_総売上 計",-,521
+3次,年間予実対比,分析画面,予算構成比_その他経費 計,L2-S,単店舗,画面内演算,月次予算_その他経費÷月次予算_総売上×100,月次予算_その他経費 計 ÷ 月次予算_総売上 計 × 100,月次予算_その他経費 / 月次予算_総売上 × 100 GROUP BY year_month,B,計算項目,-,-,"年間予実対比.月次予算_その他経費 計, 年間予実対比.月次予算_総売上 計",-,522
+3次,年間予実対比,分析画面,予算構成比_営業利益,L2-S,単店舗,画面内演算,月次予算_営業利益÷月次予算_総売上×100,月次予算_営業利益 ÷ 月次予算_総売上 計 × 100,月次予算_営業利益 / 月次予算_総売上 × 100 GROUP BY year_month,A,計算項目,-,-,"年間予実対比.月次予算_営業利益, 年間予実対比.月次予算_総売上 計",-,523
+3次,年間予実対比,分析画面,予実差額_総売上 計,L2-S,単店舗,画面内演算,月次実績_総売上-月次予算_総売上 計,月次実績_総売上 計 - 月次予算_総売上 計,実績 - 予算,A,計算項目,-,-,"年間予実対比.月次実績_総売上 計, 年間予実対比.月次予算_総売上 計",-,524
+3次,年間予実対比,分析画面,予実差額_フード売上 計,L2-S,単店舗,画面内演算,月次実績_フード売上-月次予算_フード売上,月次実績_フード売上 計 - 月次予算_フード売上 計,実績 - 予算,B,計算項目,-,-,"年間予実対比.月次実績_フード売上 計, 年間予実対比.月次予算_フード売上 計",-,525
+3次,年間予実対比,分析画面,予実差額_ドリンク売上 計,L2-S,単店舗,画面内演算,月次実績_ドリンク売上-月次予算_ドリンク売上,月次実績_ドリンク売上 計 - 月次予算_ドリンク売上 計,実績 - 予算,B,計算項目,-,-,"年間予実対比.月次実績_ドリンク売上 計, 年間予実対比.月次予算_ドリンク売上 計",-,526
+3次,年間予実対比,分析画面,予実差額_その他売上 計,L2-S,単店舗,画面内演算,月次実績_その他売上-月次予算_その他売上,月次実績_その他売上 計 - 月次予算_その他売上 計,実績 - 予算,C,計算項目,-,-,"年間予実対比.月次実績_その他売上 計, 年間予実対比.月次予算_その他売上 計",-,527
+3次,年間予実対比,分析画面,予実差額_FLコスト 計,L2-S,単店舗,画面内演算,月次実績_FLコスト-月次予算_FLコスト,月次実績_FLコスト 計 - 月次予算_FLコスト 計,実績 - 予算,A,計算項目,-,-,"年間予実対比.月次実績_FLコスト 計, 年間予実対比.月次予算_FLコスト 計",-,528
+3次,年間予実対比,分析画面,予実差額_FD仕入 計,L2-S,単店舗,画面内演算,月次実績_FD仕入-月次予算_FD仕入,月次実績_FD仕入 計 - 月次予算_FD仕入 計,実績 - 予算,A,計算項目,-,-,"年間予実対比.月次実績_FD仕入 計, 年間予実対比.月次予算_FD仕入 計",-,529
+3次,年間予実対比,分析画面,予実差額_人件費 計,L2-S,単店舗,画面内演算,月次実績_人件費-月次予算_人件費,月次実績_人件費 計 - 月次予算_人件費 計,実績 - 予算,A,計算項目,-,-,"年間予実対比.月次実績_人件費 計, 年間予実対比.月次予算_人件費 計",-,530
+3次,年間予実対比,分析画面,予実差額_その他経費 計,L2-S,単店舗,画面内演算,月次実績_その他経費-月次予算_その他経費,月次実績_その他経費 計 - 月次予算_その他経費 計,実績 - 予算,B,計算項目,-,-,"年間予実対比.月次実績_その他経費 計, 年間予実対比.月次予算_その他経費 計",-,531
+3次,年間予実対比,分析画面,予実差額_営業利益,L2-S,単店舗,画面内演算,月次実績_営業利益-月次予算_営業利益,月次実績_営業利益 - 月次予算_営業利益,実績 - 予算,A,計算項目,-,-,"年間予実対比.月次実績_営業利益, 年間予実対比.月次予算_営業利益",-,532
+3次,年間予実対比,分析画面,予算対比率_総売上 計,L2-S,単店舗,画面内演算,月次実績_総売上÷月次予算_総売上×100,月次実績_総売上 計 ÷ 月次予算_総売上 計 × 100,実績 / 予算 × 100,A,計算項目,-,-,"年間予実対比.月次実績_総売上 計, 年間予実対比.月次予算_総売上 計",-,533
+3次,年間予実対比,分析画面,予算対比率_フード売上 計,L2-S,単店舗,画面内演算,月次実績_フード売上÷月次予算_フード売上×100,月次実績_フード売上 計 ÷ 月次予算_フード売上 計 × 100,実績 / 予算 × 100,B,計算項目,-,-,"年間予実対比.月次実績_フード売上 計, 年間予実対比.月次予算_フード売上 計",-,534
+3次,年間予実対比,分析画面,予算対比率_ドリンク売上 計,L2-S,単店舗,画面内演算,月次実績_ドリンク売上÷月次予算_ドリンク売上×100,月次実績_ドリンク売上 計 ÷ 月次予算_ドリンク売上 計 × 100,実績 / 予算 × 100,B,計算項目,-,-,"年間予実対比.月次実績_ドリンク売上 計, 年間予実対比.月次予算_ドリンク売上 計",-,535
+3次,年間予実対比,分析画面,予算対比率_その他売上 計,L2-S,単店舗,画面内演算,月次実績_その他売上÷月次予算_その他売上×100,月次実績_その他売上 計 ÷ 月次予算_その他売上 計 × 100,実績 / 予算 × 100,C,計算項目,-,-,"年間予実対比.月次実績_その他売上 計, 年間予実対比.月次予算_その他売上 計",-,536
+3次,年間予実対比,分析画面,予算対比率_FLコスト 計,L2-S,単店舗,画面内演算,月次実績_FLコスト÷月次予算_FLコスト×100,月次実績_FLコスト 計 ÷ 月次予算_FLコスト 計 × 100,実績 / 予算 × 100,A,計算項目,-,-,"年間予実対比.月次実績_FLコスト 計, 年間予実対比.月次予算_FLコスト 計",-,537
+3次,年間予実対比,分析画面,予算対比率_FD仕入 計,L2-S,単店舗,画面内演算,月次実績_FD仕入÷月次予算_FD仕入×100,月次実績_FD仕入 計 ÷ 月次予算_FD仕入 計 × 100,実績 / 予算 × 100,A,計算項目,-,-,"年間予実対比.月次実績_FD仕入 計, 年間予実対比.月次予算_FD仕入 計",-,538
+3次,年間予実対比,分析画面,予算対比率_人件費 計,L2-S,単店舗,画面内演算,月次実績_人件費÷月次予算_人件費×100,月次実績_人件費 計 ÷ 月次予算_人件費 計 × 100,実績 / 予算 × 100,A,計算項目,-,-,"年間予実対比.月次実績_人件費 計, 年間予実対比.月次予算_人件費 計",-,539
+3次,年間予実対比,分析画面,予算対比率_その他経費 計,L2-S,単店舗,画面内演算,月次実績_その他経費÷月次予算_その他経費×100,月次実績_その他経費 計 ÷ 月次予算_その他経費 計 × 100,実績 / 予算 × 100,B,計算項目,-,-,"年間予実対比.月次実績_その他経費 計, 年間予実対比.月次予算_その他経費 計",-,540
+3次,年間予実対比,分析画面,予算対比率_営業利益,L2-S,単店舗,画面内演算,月次実績_営業利益÷月次予算_営業利益×100,月次実績_営業利益 ÷ 月次予算_営業利益 × 100,実績 / 予算 × 100,A,計算項目,-,-,"年間予実対比.月次実績_営業利益, 年間予実対比.月次予算_営業利益",-,541
+3次,年間予実対比,分析画面,構成比_総売上 計,L2-S,単店舗,画面内演算,月次実績_総売上÷月次実績_総売上×100,月次実績_総売上 計 ÷ 月次実績_総売上 計 × 100,100%（基準値）,A,計算項目,-,-,年間予実対比.月次実績_総売上 計,-,542
+3次,年間予実対比,分析画面,構成比_フード売上 計,L2-S,単店舗,画面内演算,月次実績_フード売上÷月次実績_総売上×100,月次実績_フード売上 計 ÷ 月次実績_総売上 計 × 100,月次実績_フード売上 / 月次実績_総売上 × 100,B,計算項目,-,-,"年間予実対比.月次実績_フード売上 計, 年間予実対比.月次実績_総売上 計",-,543
+3次,年間予実対比,分析画面,構成比_ドリンク売上 計,L2-S,単店舗,画面内演算,月次実績_ドリンク売上÷月次実績_総売上×100,月次実績_ドリンク売上 計 ÷ 月次実績_総売上 計 × 100,月次実績_ドリンク売上 / 月次実績_総売上 × 100,B,計算項目,-,-,"年間予実対比.月次実績_ドリンク売上 計, 年間予実対比.月次実績_総売上 計",-,544
+3次,年間予実対比,分析画面,構成比_その他売上 計,L2-S,単店舗,画面内演算,月次実績_その他売上÷月次実績_総売上×100,月次実績_その他売上 計 ÷ 月次実績_総売上 計 × 100,月次実績_その他売上 / 月次実績_総売上 × 100,C,計算項目,-,-,"年間予実対比.月次実績_その他売上 計, 年間予実対比.月次実績_総売上 計",-,545
+3次,年間予実対比,分析画面,構成比_FLコスト 計,L2-S,単店舗,画面内演算,月次実績_FLコスト÷月次実績_総売上×100,月次実績_FLコスト 計 ÷ 月次実績_総売上 計 × 100,月次実績_FLコスト / 月次実績_総売上 × 100,A,計算項目,-,-,"年間予実対比.月次実績_FLコスト 計, 年間予実対比.月次実績_総売上 計",-,546
+3次,年間予実対比,分析画面,構成比_FD仕入 計,L2-S,単店舗,画面内演算,月次実績_FD仕入÷月次実績_総売上×100,月次実績_FD仕入 計 ÷ 月次実績_総売上 計 × 100,月次実績_FD仕入 / 月次実績_総売上 × 100,A,計算項目,-,-,"年間予実対比.月次実績_FD仕入 計, 年間予実対比.月次実績_総売上 計",-,547
+3次,年間予実対比,分析画面,構成比_人件費 計,L2-S,単店舗,画面内演算,月次実績_人件費÷月次実績_総売上×100,月次実績_人件費 計 ÷ 月次実績_総売上 計 × 100,月次実績_人件費 / 月次実績_総売上 × 100,A,計算項目,-,-,"年間予実対比.月次実績_人件費 計, 年間予実対比.月次実績_総売上 計",-,548
+3次,年間予実対比,分析画面,構成比_その他経費 計,L2-S,単店舗,画面内演算,月次実績_その他経費÷月次実績_総売上×100,月次実績_その他経費 計 ÷ 月次実績_総売上 計 × 100,月次実績_その他経費 / 月次実績_総売上 × 100,B,計算項目,-,-,"年間予実対比.月次実績_その他経費 計, 年間予実対比.月次実績_総売上 計",-,549
+3次,年間予実対比,分析画面,構成比_営業利益,L2-S,単店舗,画面内演算,月次実績_営業利益÷月次実績_総売上×100,月次実績_営業利益 ÷ 月次実績_総売上 計 × 100,月次実績_営業利益 / 月次実績_総売上 × 100,A,計算項目,-,-,"年間予実対比.月次実績_営業利益, 年間予実対比.月次実績_総売上 計",-,550
+3次,年間予実対比（予実対比）,分析画面,年間実績_FLコスト 計,L2-S,単店舗,外部連携×外部連携,インフォマート仕入とKOT人件費の組合せ,SUM,SUM(infomart_transactions.total_tax_excluded) + SUM(head_office_connected_service_labor_costs_logs.labor_costs) GROUP BY year,C,計算項目,-,"infomart_transactions.total_tax_excluded, head_office_connected_service_labor_costs_logs.labor_costs",-,年間予実対比（予実対比）.営業利益,268
+3次,年間予実対比（予実対比）,分析画面,年間実績_営業利益,L2-S,単店舗,複数種類混在,POS+インフォマート+KOT+費用設定の組合せ,売上-FLコスト-経費,年間予実対比(予実対比).総売上 計 - 年間予実対比(予実対比).FLコスト 計 - 年間予実対比(予実対比).その他経費 計,S,計算項目,-,monthly_costs.value,-,-,283
+3次,年間予実対比（予実対比）,分析画面,年間予算_FLコスト 計,L2-S,単店舗,画面内演算,年間予算_FD仕入+年間予算_人件費の合計,年間予算_FD仕入 計 + 年間予算_人件費 計,FD仕入予算 + 人件費予算,A,計算項目,-,-,"年間予実対比（予実対比）.年間予算_FD仕入 計, 年間予実対比（予実対比）.年間予算_人件費 計",-,561
+3次,年間予実対比（予実対比）,分析画面,年間予算_営業利益,L2-S,単店舗,画面内演算,年間予算_総売上-年間予算_FLコスト-年間予算_その他経費,年間予算_総売上 計 - 年間予算_FLコスト 計 - 年間予算_その他経費 計,予算_総売上 - 予算_FLコスト - 予算_その他経費,A,計算項目,-,-,"年間予実対比（予実対比）.年間予算_総売上 計, 年間予実対比（予実対比）.年間予算_FLコスト 計, 年間予実対比（予実対比）.年間予算_その他経費 計",-,586
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_総売上 計,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_総売上 計 - 年間予算_総売上 計,実績 - 予算,A,計算項目,-,-,"年間予実対比（予実対比）.年間実績_総売上 計, 年間予実対比（予実対比）.年間予算_総売上 計",-,587
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_フード売上 計,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_フード売上 計 - 年間予算_フード売上 計,実績 - 予算,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_フード売上 計, 年間予実対比（予実対比）.年間予算_フード売上 計",-,588
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_フード売上ランチ,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_フード売上ランチ - 年間予算_フード売上ランチ,実績 - 予算,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_フード売上ランチ, 年間予実対比（予実対比）.年間予算_フード売上ランチ",-,589
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_フード売上ディナー,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_フード売上ディナー - 年間予算_フード売上ディナー,実績 - 予算,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_フード売上ディナー, 年間予実対比（予実対比）.年間予算_フード売上ディナー",-,590
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_ドリンク売上 計,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_ドリンク売上 計 - 年間予算_ドリンク売上 計,実績 - 予算,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_ドリンク売上 計, 年間予実対比（予実対比）.年間予算_ドリンク売上 計",-,591
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_ドリンク売上ランチ,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_ドリンク売上ランチ - 年間予算_ドリンク売上ランチ,実績 - 予算,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_ドリンク売上ランチ, 年間予実対比（予実対比）.年間予算_ドリンク売上ランチ",-,592
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_ドリンク売上ディナー,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_ドリンク売上ディナー - 年間予算_ドリンク売上ディナー,実績 - 予算,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_ドリンク売上ディナー, 年間予実対比（予実対比）.年間予算_ドリンク売上ディナー",-,593
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_その他売上 計,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_その他売上 計 - 年間予算_その他売上 計,実績 - 予算,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_その他売上 計, 年間予実対比（予実対比）.年間予算_その他売上 計",-,594
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_その他売上ランチ,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_その他売上ランチ - 年間予算_その他売上ランチ,実績 - 予算,D,計算項目,-,-,"年間予実対比（予実対比）.年間実績_その他売上ランチ, 年間予実対比（予実対比）.年間予算_その他売上ランチ",-,595
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_その他売上ディナー,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_その他売上ディナー - 年間予算_その他売上ディナー,実績 - 予算,D,計算項目,-,-,"年間予実対比（予実対比）.年間実績_その他売上ディナー, 年間予実対比（予実対比）.年間予算_その他売上ディナー",-,596
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_FLコスト 計,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_FLコスト 計 - 年間予算_FLコスト 計,実績 - 予算,A,計算項目,-,-,"年間予実対比（予実対比）.年間実績_FLコスト 計, 年間予実対比（予実対比）.年間予算_FLコスト 計",-,597
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_FD仕入 計,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_FD仕入 計 - 年間予算_FD仕入 計,実績 - 予算,A,計算項目,-,-,"年間予実対比（予実対比）.年間実績_FD仕入 計, 年間予実対比（予実対比）.年間予算_FD仕入 計",-,598
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_フード仕入,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_フード仕入 - 年間予算_フード仕入,実績 - 予算,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_フード仕入, 年間予実対比（予実対比）.年間予算_フード仕入",-,599
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_ドリンク仕入,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_ドリンク仕入 - 年間予算_ドリンク仕入,実績 - 予算,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_ドリンク仕入, 年間予実対比（予実対比）.年間予算_ドリンク仕入",-,600
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_人件費 計,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_人件費 計 - 年間予算_人件費 計,実績 - 予算,A,計算項目,-,-,"年間予実対比（予実対比）.年間実績_人件費 計, 年間予実対比（予実対比）.年間予算_人件費 計",-,601
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_固定人件費,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_固定人件費 - 年間予算_固定人件費,実績 - 予算,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_固定人件費, 年間予実対比（予実対比）.年間予算_固定人件費",-,602
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_PA人件費,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_PA人件費 - 年間予算_PA人件費,実績 - 予算,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_PA人件費, 年間予実対比（予実対比）.年間予算_PA人件費",-,603
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_社員人件費,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_社員人件費 - 年間予算_社員人件費,実績 - 予算,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_社員人件費, 年間予実対比（予実対比）.年間予算_社員人件費",-,604
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_ヘルプ人件費,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_ヘルプ人件費 - 年間予算_ヘルプ人件費,実績 - 予算,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_ヘルプ人件費, 年間予実対比（予実対比）.年間予算_ヘルプ人件費",-,605
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_その他経費 計,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_その他経費 計 - 年間予算_その他経費 計,実績 - 予算,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_その他経費 計, 年間予実対比（予実対比）.年間予算_その他経費 計",-,606
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_地代家賃,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_地代家賃 - 年間予算_地代家賃,実績 - 予算,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_地代家賃, 年間予実対比（予実対比）.年間予算_地代家賃",-,607
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_家賃（変動分）,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_家賃（変動分） - 年間予算_家賃（変動分）,実績 - 予算,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_家賃（変動分）, 年間予実対比（予実対比）.年間予算_家賃（変動分）",-,608
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_水道光熱費,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_水道光熱費 - 年間予算_水道光熱費,実績 - 予算,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_水道光熱費, 年間予実対比（予実対比）.年間予算_水道光熱費",-,609
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_電気代,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_電気代 - 年間予算_電気代,実績 - 予算,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_電気代, 年間予実対比（予実対比）.年間予算_電気代",-,610
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_ガス代,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_ガス代 - 年間予算_ガス代,実績 - 予算,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_ガス代, 年間予実対比（予実対比）.年間予算_ガス代",-,611
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_水道代,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_水道代 - 年間予算_水道代,実績 - 予算,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_水道代, 年間予実対比（予実対比）.年間予算_水道代",-,612
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_減価償却費,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_減価償却費 - 年間予算_減価償却費,実績 - 予算,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_減価償却費, 年間予実対比（予実対比）.年間予算_減価償却費",-,613
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_販促費,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_販促費 - 年間予算_販促費,実績 - 予算,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_販促費, 年間予実対比（予実対比）.年間予算_販促費",-,614
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_資材費,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_資材費 - 年間予算_資材費,実績 - 予算,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_資材費, 年間予実対比（予実対比）.年間予算_資材費",-,615
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_借入金返済,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_借入金返済 - 年間予算_借入金返済,実績 - 予算,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_借入金返済, 年間予実対比（予実対比）.年間予算_借入金返済",-,616
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_IT費用,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_IT費用 - 年間予算_IT費用,実績 - 予算,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_IT費用, 年間予実対比（予実対比）.年間予算_IT費用",-,617
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_ラクミー利用料,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_ラクミー利用料 - 年間予算_ラクミー利用料,実績 - 予算,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_ラクミー利用料, 年間予実対比（予実対比）.年間予算_ラクミー利用料",-,618
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_レジ利用料,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_レジ利用料 - 年間予算_レジ利用料,実績 - 予算,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_レジ利用料, 年間予実対比（予実対比）.年間予算_レジ利用料",-,619
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_クレジットカード手数料,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_クレジットカード手数料 - 年間予算_クレジットカード手数料,実績 - 予算,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_クレジットカード手数料, 年間予実対比（予実対比）.年間予算_クレジットカード手数料",-,620
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_お花代,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_お花代 - 年間予算_お花代,実績 - 予算,D,計算項目,-,-,"年間予実対比（予実対比）.年間実績_お花代, 年間予実対比（予実対比）.年間予算_お花代",-,621
+3次,年間予実対比（予実対比）,分析画面,年間予実差額_営業利益,L2-S,単店舗,画面内演算,年間実績-年間予算の差額,年間実績_営業利益 - 年間予算_営業利益,実績 - 予算,A,計算項目,-,-,"年間予実対比（予実対比）.年間実績_営業利益, 年間予実対比（予実対比）.年間予算_営業利益",-,622
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_総売上 計,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_総売上 計 ÷ 年間予算_総売上 計 × 100,実績 / 予算 × 100,A,計算項目,-,-,"年間予実対比（予実対比）.年間実績_総売上 計, 年間予実対比（予実対比）.年間予算_総売上 計",-,623
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_フード売上 計,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_フード売上 計 ÷ 年間予算_フード売上 計 × 100,実績 / 予算 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_フード売上 計, 年間予実対比（予実対比）.年間予算_フード売上 計",-,624
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_フード売上ランチ,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_フード売上ランチ ÷ 年間予算_フード売上ランチ × 100,実績 / 予算 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_フード売上ランチ, 年間予実対比（予実対比）.年間予算_フード売上ランチ",-,625
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_フード売上ディナー,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_フード売上ディナー ÷ 年間予算_フード売上ディナー × 100,実績 / 予算 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_フード売上ディナー, 年間予実対比（予実対比）.年間予算_フード売上ディナー",-,626
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_ドリンク売上 計,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_ドリンク売上 計 ÷ 年間予算_ドリンク売上 計 × 100,実績 / 予算 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_ドリンク売上 計, 年間予実対比（予実対比）.年間予算_ドリンク売上 計",-,627
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_ドリンク売上ランチ,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_ドリンク売上ランチ ÷ 年間予算_ドリンク売上ランチ × 100,実績 / 予算 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_ドリンク売上ランチ, 年間予実対比（予実対比）.年間予算_ドリンク売上ランチ",-,628
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_ドリンク売上ディナー,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_ドリンク売上ディナー ÷ 年間予算_ドリンク売上ディナー × 100,実績 / 予算 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_ドリンク売上ディナー, 年間予実対比（予実対比）.年間予算_ドリンク売上ディナー",-,629
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_その他売上 計,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_その他売上 計 ÷ 年間予算_その他売上 計 × 100,実績 / 予算 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_その他売上 計, 年間予実対比（予実対比）.年間予算_その他売上 計",-,630
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_その他売上ランチ,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_その他売上ランチ ÷ 年間予算_その他売上ランチ × 100,実績 / 予算 × 100,D,計算項目,-,-,"年間予実対比（予実対比）.年間実績_その他売上ランチ, 年間予実対比（予実対比）.年間予算_その他売上ランチ",-,631
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_その他売上ディナー,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_その他売上ディナー ÷ 年間予算_その他売上ディナー × 100,実績 / 予算 × 100,D,計算項目,-,-,"年間予実対比（予実対比）.年間実績_その他売上ディナー, 年間予実対比（予実対比）.年間予算_その他売上ディナー",-,632
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_FLコスト 計,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_FLコスト 計 ÷ 年間予算_FLコスト 計 × 100,実績 / 予算 × 100,A,計算項目,-,-,"年間予実対比（予実対比）.年間実績_FLコスト 計, 年間予実対比（予実対比）.年間予算_FLコスト 計",-,633
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_FD仕入 計,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_FD仕入 計 ÷ 年間予算_FD仕入 計 × 100,実績 / 予算 × 100,A,計算項目,-,-,"年間予実対比（予実対比）.年間実績_FD仕入 計, 年間予実対比（予実対比）.年間予算_FD仕入 計",-,634
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_フード仕入,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_フード仕入 ÷ 年間予算_フード仕入 × 100,実績 / 予算 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_フード仕入, 年間予実対比（予実対比）.年間予算_フード仕入",-,635
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_ドリンク仕入,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_ドリンク仕入 ÷ 年間予算_ドリンク仕入 × 100,実績 / 予算 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_ドリンク仕入, 年間予実対比（予実対比）.年間予算_ドリンク仕入",-,636
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_人件費 計,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_人件費 計 ÷ 年間予算_人件費 計 × 100,実績 / 予算 × 100,A,計算項目,-,-,"年間予実対比（予実対比）.年間実績_人件費 計, 年間予実対比（予実対比）.年間予算_人件費 計",-,637
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_固定人件費,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_固定人件費 ÷ 年間予算_固定人件費 × 100,実績 / 予算 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_固定人件費, 年間予実対比（予実対比）.年間予算_固定人件費",-,638
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_PA人件費,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_PA人件費 ÷ 年間予算_PA人件費 × 100,実績 / 予算 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_PA人件費, 年間予実対比（予実対比）.年間予算_PA人件費",-,639
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_社員人件費,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_社員人件費 ÷ 年間予算_社員人件費 × 100,実績 / 予算 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_社員人件費, 年間予実対比（予実対比）.年間予算_社員人件費",-,640
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_ヘルプ人件費,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_ヘルプ人件費 ÷ 年間予算_ヘルプ人件費 × 100,実績 / 予算 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_ヘルプ人件費, 年間予実対比（予実対比）.年間予算_ヘルプ人件費",-,641
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_その他経費 計,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_その他経費 計 ÷ 年間予算_その他経費 計 × 100,実績 / 予算 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_その他経費 計, 年間予実対比（予実対比）.年間予算_その他経費 計",-,642
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_地代家賃,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_地代家賃 ÷ 年間予算_地代家賃 × 100,実績 / 予算 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_地代家賃, 年間予実対比（予実対比）.年間予算_地代家賃",-,643
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_家賃（変動分）,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_家賃（変動分） ÷ 年間予算_家賃（変動分） × 100,実績 / 予算 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_家賃（変動分）, 年間予実対比（予実対比）.年間予算_家賃（変動分）",-,644
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_水道光熱費,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_水道光熱費 ÷ 年間予算_水道光熱費 × 100,実績 / 予算 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_水道光熱費, 年間予実対比（予実対比）.年間予算_水道光熱費",-,645
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_電気代,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_電気代 ÷ 年間予算_電気代 × 100,実績 / 予算 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_電気代, 年間予実対比（予実対比）.年間予算_電気代",-,646
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_ガス代,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_ガス代 ÷ 年間予算_ガス代 × 100,実績 / 予算 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_ガス代, 年間予実対比（予実対比）.年間予算_ガス代",-,647
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_水道代,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_水道代 ÷ 年間予算_水道代 × 100,実績 / 予算 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_水道代, 年間予実対比（予実対比）.年間予算_水道代",-,648
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_減価償却費,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_減価償却費 ÷ 年間予算_減価償却費 × 100,実績 / 予算 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_減価償却費, 年間予実対比（予実対比）.年間予算_減価償却費",-,649
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_販促費,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_販促費 ÷ 年間予算_販促費 × 100,実績 / 予算 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_販促費, 年間予実対比（予実対比）.年間予算_販促費",-,650
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_資材費,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_資材費 ÷ 年間予算_資材費 × 100,実績 / 予算 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_資材費, 年間予実対比（予実対比）.年間予算_資材費",-,651
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_借入金返済,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_借入金返済 ÷ 年間予算_借入金返済 × 100,実績 / 予算 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_借入金返済, 年間予実対比（予実対比）.年間予算_借入金返済",-,652
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_IT費用,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_IT費用 ÷ 年間予算_IT費用 × 100,実績 / 予算 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_IT費用, 年間予実対比（予実対比）.年間予算_IT費用",-,653
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_ラクミー利用料,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_ラクミー利用料 ÷ 年間予算_ラクミー利用料 × 100,実績 / 予算 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_ラクミー利用料, 年間予実対比（予実対比）.年間予算_ラクミー利用料",-,654
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_レジ利用料,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_レジ利用料 ÷ 年間予算_レジ利用料 × 100,実績 / 予算 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_レジ利用料, 年間予実対比（予実対比）.年間予算_レジ利用料",-,655
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_クレジットカード手数料,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_クレジットカード手数料 ÷ 年間予算_クレジットカード手数料 × 100,実績 / 予算 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_クレジットカード手数料, 年間予実対比（予実対比）.年間予算_クレジットカード手数料",-,656
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_お花代,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_お花代 ÷ 年間予算_お花代 × 100,実績 / 予算 × 100,D,計算項目,-,-,"年間予実対比（予実対比）.年間実績_お花代, 年間予実対比（予実対比）.年間予算_お花代",-,657
+3次,年間予実対比（予実対比）,分析画面,年間予算対比率_営業利益,L2-S,単店舗,画面内演算,年間実績÷年間予算×100,年間実績_営業利益 ÷ 年間予算_営業利益 × 100,実績 / 予算 × 100,A,計算項目,-,-,"年間予実対比（予実対比）.年間実績_営業利益, 年間予実対比（予実対比）.年間予算_営業利益",-,658
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_総売上 計,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_総売上 計 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,A,計算項目,-,-,"年間予実対比（予実対比）.年間予算_総売上 計, 年間予実対比（予実対比）.年間予算_総売上 計",-,659
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_フード売上 計,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_フード売上 計 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間予算_フード売上 計, 年間予実対比（予実対比）.年間予算_総売上 計",-,660
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_フード売上ランチ,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_フード売上ランチ ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間予算_フード売上ランチ, 年間予実対比（予実対比）.年間予算_総売上 計",-,661
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_フード売上ディナー,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_フード売上ディナー ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間予算_フード売上ディナー, 年間予実対比（予実対比）.年間予算_総売上 計",-,662
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_ドリンク売上 計,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_ドリンク売上 計 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間予算_ドリンク売上 計, 年間予実対比（予実対比）.年間予算_総売上 計",-,663
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_ドリンク売上ランチ,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_ドリンク売上ランチ ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間予算_ドリンク売上ランチ, 年間予実対比（予実対比）.年間予算_総売上 計",-,664
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_ドリンク売上ディナー,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_ドリンク売上ディナー ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間予算_ドリンク売上ディナー, 年間予実対比（予実対比）.年間予算_総売上 計",-,665
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_その他売上 計,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_その他売上 計 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間予算_その他売上 計, 年間予実対比（予実対比）.年間予算_総売上 計",-,666
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_その他売上ランチ,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_その他売上ランチ ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,D,計算項目,-,-,"年間予実対比（予実対比）.年間予算_その他売上ランチ, 年間予実対比（予実対比）.年間予算_総売上 計",-,667
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_その他売上ディナー,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_その他売上ディナー ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,D,計算項目,-,-,"年間予実対比（予実対比）.年間予算_その他売上ディナー, 年間予実対比（予実対比）.年間予算_総売上 計",-,668
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_FLコスト 計,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_FLコスト 計 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,A,計算項目,-,-,"年間予実対比（予実対比）.年間予算_FLコスト 計, 年間予実対比（予実対比）.年間予算_総売上 計",-,669
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_FD仕入 計,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_FD仕入 計 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,A,計算項目,-,-,"年間予実対比（予実対比）.年間予算_FD仕入 計, 年間予実対比（予実対比）.年間予算_総売上 計",-,670
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_フード仕入,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_フード仕入 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間予算_フード仕入, 年間予実対比（予実対比）.年間予算_総売上 計",-,671
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_ドリンク仕入,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_ドリンク仕入 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間予算_ドリンク仕入, 年間予実対比（予実対比）.年間予算_総売上 計",-,672
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_人件費 計,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_人件費 計 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,A,計算項目,-,-,"年間予実対比（予実対比）.年間予算_人件費 計, 年間予実対比（予実対比）.年間予算_総売上 計",-,673
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_固定人件費,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_固定人件費 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間予算_固定人件費, 年間予実対比（予実対比）.年間予算_総売上 計",-,674
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_PA人件費,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_PA人件費 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間予算_PA人件費, 年間予実対比（予実対比）.年間予算_総売上 計",-,675
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_社員人件費,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_社員人件費 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間予算_社員人件費, 年間予実対比（予実対比）.年間予算_総売上 計",-,676
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_ヘルプ人件費,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_ヘルプ人件費 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間予算_ヘルプ人件費, 年間予実対比（予実対比）.年間予算_総売上 計",-,677
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_その他経費 計,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_その他経費 計 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間予算_その他経費 計, 年間予実対比（予実対比）.年間予算_総売上 計",-,678
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_地代家賃,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_地代家賃 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間予算_地代家賃, 年間予実対比（予実対比）.年間予算_総売上 計",-,679
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_家賃（変動分）,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_家賃（変動分） ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間予算_家賃（変動分）, 年間予実対比（予実対比）.年間予算_総売上 計",-,680
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_水道光熱費,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_水道光熱費 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間予算_水道光熱費, 年間予実対比（予実対比）.年間予算_総売上 計",-,681
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_電気代,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_電気代 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間予算_電気代, 年間予実対比（予実対比）.年間予算_総売上 計",-,682
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_ガス代,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_ガス代 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間予算_ガス代, 年間予実対比（予実対比）.年間予算_総売上 計",-,683
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_水道代,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_水道代 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間予算_水道代, 年間予実対比（予実対比）.年間予算_総売上 計",-,684
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_減価償却費,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_減価償却費 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間予算_減価償却費, 年間予実対比（予実対比）.年間予算_総売上 計",-,685
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_販促費,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_販促費 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間予算_販促費, 年間予実対比（予実対比）.年間予算_総売上 計",-,686
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_資材費,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_資材費 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間予算_資材費, 年間予実対比（予実対比）.年間予算_総売上 計",-,687
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_借入金返済,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_借入金返済 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間予算_借入金返済, 年間予実対比（予実対比）.年間予算_総売上 計",-,688
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_IT費用,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_IT費用 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間予算_IT費用, 年間予実対比（予実対比）.年間予算_総売上 計",-,689
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_ラクミー利用料,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_ラクミー利用料 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間予算_ラクミー利用料, 年間予実対比（予実対比）.年間予算_総売上 計",-,690
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_レジ利用料,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_レジ利用料 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間予算_レジ利用料, 年間予実対比（予実対比）.年間予算_総売上 計",-,691
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_クレジットカード手数料,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_クレジットカード手数料 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間予算_クレジットカード手数料, 年間予実対比（予実対比）.年間予算_総売上 計",-,692
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_お花代,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_お花代 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,D,計算項目,-,-,"年間予実対比（予実対比）.年間予算_お花代, 年間予実対比（予実対比）.年間予算_総売上 計",-,693
+3次,年間予実対比（予実対比）,分析画面,年間予算構成比_営業利益,L2-S,単店舗,画面内演算,年間予算÷年間予算_総売上×100,年間予算_営業利益 ÷ 年間予算_総売上 計 × 100,予算 / 予算総売上 × 100,A,計算項目,-,-,"年間予実対比（予実対比）.年間予算_営業利益, 年間予実対比（予実対比）.年間予算_総売上 計",-,694
+3次,年間予実対比（予実対比）,分析画面,年間構成比_総売上 計,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_総売上 計 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,A,計算項目,-,-,"年間予実対比（予実対比）.年間実績_総売上 計, 年間予実対比（予実対比）.年間実績_総売上 計",-,695
+3次,年間予実対比（予実対比）,分析画面,年間構成比_フード売上 計,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_フード売上 計 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_フード売上 計, 年間予実対比（予実対比）.年間実績_総売上 計",-,696
+3次,年間予実対比（予実対比）,分析画面,年間構成比_フード売上ランチ,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_フード売上ランチ ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_フード売上ランチ, 年間予実対比（予実対比）.年間実績_総売上 計",-,697
+3次,年間予実対比（予実対比）,分析画面,年間構成比_フード売上ディナー,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_フード売上ディナー ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_フード売上ディナー, 年間予実対比（予実対比）.年間実績_総売上 計",-,698
+3次,年間予実対比（予実対比）,分析画面,年間構成比_ドリンク売上 計,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_ドリンク売上 計 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_ドリンク売上 計, 年間予実対比（予実対比）.年間実績_総売上 計",-,699
+3次,年間予実対比（予実対比）,分析画面,年間構成比_ドリンク売上ランチ,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_ドリンク売上ランチ ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_ドリンク売上ランチ, 年間予実対比（予実対比）.年間実績_総売上 計",-,700
+3次,年間予実対比（予実対比）,分析画面,年間構成比_ドリンク売上ディナー,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_ドリンク売上ディナー ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_ドリンク売上ディナー, 年間予実対比（予実対比）.年間実績_総売上 計",-,701
+3次,年間予実対比（予実対比）,分析画面,年間構成比_その他売上 計,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_その他売上 計 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_その他売上 計, 年間予実対比（予実対比）.年間実績_総売上 計",-,702
+3次,年間予実対比（予実対比）,分析画面,年間構成比_その他売上ランチ,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_その他売上ランチ ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,D,計算項目,-,-,"年間予実対比（予実対比）.年間実績_その他売上ランチ, 年間予実対比（予実対比）.年間実績_総売上 計",-,703
+3次,年間予実対比（予実対比）,分析画面,年間構成比_その他売上ディナー,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_その他売上ディナー ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,D,計算項目,-,-,"年間予実対比（予実対比）.年間実績_その他売上ディナー, 年間予実対比（予実対比）.年間実績_総売上 計",-,704
+3次,年間予実対比（予実対比）,分析画面,年間構成比_FLコスト 計,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_FLコスト 計 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,A,計算項目,-,-,"年間予実対比（予実対比）.年間実績_FLコスト 計, 年間予実対比（予実対比）.年間実績_総売上 計",-,705
+3次,年間予実対比（予実対比）,分析画面,年間構成比_FD仕入 計,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_FD仕入 計 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,A,計算項目,-,-,"年間予実対比（予実対比）.年間実績_FD仕入 計, 年間予実対比（予実対比）.年間実績_総売上 計",-,706
+3次,年間予実対比（予実対比）,分析画面,年間構成比_フード仕入,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_フード仕入 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_フード仕入, 年間予実対比（予実対比）.年間実績_総売上 計",-,707
+3次,年間予実対比（予実対比）,分析画面,年間構成比_ドリンク仕入,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_ドリンク仕入 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_ドリンク仕入, 年間予実対比（予実対比）.年間実績_総売上 計",-,708
+3次,年間予実対比（予実対比）,分析画面,年間構成比_人件費 計,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_人件費 計 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,A,計算項目,-,-,"年間予実対比（予実対比）.年間実績_人件費 計, 年間予実対比（予実対比）.年間実績_総売上 計",-,709
+3次,年間予実対比（予実対比）,分析画面,年間構成比_固定人件費,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_固定人件費 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_固定人件費, 年間予実対比（予実対比）.年間実績_総売上 計",-,710
+3次,年間予実対比（予実対比）,分析画面,年間構成比_PA人件費,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_PA人件費 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_PA人件費, 年間予実対比（予実対比）.年間実績_総売上 計",-,711
+3次,年間予実対比（予実対比）,分析画面,年間構成比_社員人件費,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_社員人件費 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_社員人件費, 年間予実対比（予実対比）.年間実績_総売上 計",-,712
+3次,年間予実対比（予実対比）,分析画面,年間構成比_ヘルプ人件費,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_ヘルプ人件費 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_ヘルプ人件費, 年間予実対比（予実対比）.年間実績_総売上 計",-,713
+3次,年間予実対比（予実対比）,分析画面,年間構成比_その他経費 計,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_その他経費 計 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_その他経費 計, 年間予実対比（予実対比）.年間実績_総売上 計",-,714
+3次,年間予実対比（予実対比）,分析画面,年間構成比_地代家賃,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_地代家賃 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_地代家賃, 年間予実対比（予実対比）.年間実績_総売上 計",-,715
+3次,年間予実対比（予実対比）,分析画面,年間構成比_家賃（変動分）,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_家賃（変動分） ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_家賃（変動分）, 年間予実対比（予実対比）.年間実績_総売上 計",-,716
+3次,年間予実対比（予実対比）,分析画面,年間構成比_水道光熱費,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_水道光熱費 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_水道光熱費, 年間予実対比（予実対比）.年間実績_総売上 計",-,717
+3次,年間予実対比（予実対比）,分析画面,年間構成比_電気代,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_電気代 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_電気代, 年間予実対比（予実対比）.年間実績_総売上 計",-,718
+3次,年間予実対比（予実対比）,分析画面,年間構成比_ガス代,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_ガス代 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_ガス代, 年間予実対比（予実対比）.年間実績_総売上 計",-,719
+3次,年間予実対比（予実対比）,分析画面,年間構成比_水道代,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_水道代 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_水道代, 年間予実対比（予実対比）.年間実績_総売上 計",-,720
+3次,年間予実対比（予実対比）,分析画面,年間構成比_減価償却費,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_減価償却費 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,B,計算項目,-,-,"年間予実対比（予実対比）.年間実績_減価償却費, 年間予実対比（予実対比）.年間実績_総売上 計",-,721
+3次,年間予実対比（予実対比）,分析画面,年間構成比_販促費,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_販促費 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_販促費, 年間予実対比（予実対比）.年間実績_総売上 計",-,722
+3次,年間予実対比（予実対比）,分析画面,年間構成比_資材費,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_資材費 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_資材費, 年間予実対比（予実対比）.年間実績_総売上 計",-,723
+3次,年間予実対比（予実対比）,分析画面,年間構成比_借入金返済,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_借入金返済 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_借入金返済, 年間予実対比（予実対比）.年間実績_総売上 計",-,724
+3次,年間予実対比（予実対比）,分析画面,年間構成比_IT費用,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_IT費用 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_IT費用, 年間予実対比（予実対比）.年間実績_総売上 計",-,725
+3次,年間予実対比（予実対比）,分析画面,年間構成比_ラクミー利用料,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_ラクミー利用料 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_ラクミー利用料, 年間予実対比（予実対比）.年間実績_総売上 計",-,726
+3次,年間予実対比（予実対比）,分析画面,年間構成比_レジ利用料,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_レジ利用料 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_レジ利用料, 年間予実対比（予実対比）.年間実績_総売上 計",-,727
+3次,年間予実対比（予実対比）,分析画面,年間構成比_クレジットカード手数料,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_クレジットカード手数料 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,C,計算項目,-,-,"年間予実対比（予実対比）.年間実績_クレジットカード手数料, 年間予実対比（予実対比）.年間実績_総売上 計",-,728
+3次,年間予実対比（予実対比）,分析画面,年間構成比_お花代,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_お花代 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,D,計算項目,-,-,"年間予実対比（予実対比）.年間実績_お花代, 年間予実対比（予実対比）.年間実績_総売上 計",-,729
+3次,年間予実対比（予実対比）,分析画面,年間構成比_営業利益,L2-S,単店舗,画面内演算,年間実績÷年間実績_総売上×100,年間実績_営業利益 ÷ 年間実績_総売上 計 × 100,実績 / 実績総売上 × 100,A,計算項目,-,-,"年間予実対比（予実対比）.年間実績_営業利益, 年間予実対比（予実対比）.年間実績_総売上 計",-,730
+3次,店舗別サマリー,ダッシュボード表示画面,売上進捗率,L2-S,単店舗,実績参照,分析画面で算出された値を参照表示,参照表示,SUM(店舗別サマリー.売上（税抜）) ÷ 店舗別サマリー.売上目標 × 100,B,計算項目,店舗ごとの主要指標サマリー,"head_office_connected_service_sales_logs.sales_excluded, monthly_budgets.profit","店舗別サマリー.売上（税抜）, 店舗別サマリー.売上目標",-,485
+3次,感度分析,分析画面,変動費単価,L2-S,単店舗,演算×外部連携,演算結果とPOS売上の組合せ,変動費÷客数,感度分析.変動費 ÷ 感度分析.客数,C,計算項目,-,z_totals.customers,"感度分析.変動費, 感度分析.客数",月次集計.変動費単価,299
+3次,月次レポート,分析画面,原価（金額）,L2-S,単店舗,複数種類混在,棚卸入力とインフォマート仕入の組合せ,前月在庫+仕入-当月在庫,月次レポート.対象前月在庫 + 月次レポート.仕入総額 - 月次レポート.対象月在庫,C,計算項目,-,"shop_inventories.amount（棚卸入力）, infomart_transactions.total_tax_excluded","月次レポート.対象前月在庫, 月次レポート.仕入総額, 月次レポート.対象月在庫",-,329
+3次,月次予算設定,設定入力画面,目標客数,L2-S,単店舗,画面内演算,MQ会計シミュレーションで自動算出,売上（税抜） ÷ 目標客単価,売上（税抜） / sales_per_customer,B,計算項目,月次の予算詳細設定,monthly_budgets.target_customers,-,-,47
+3次,月次予算設定,設定入力画面,変動費率,L2-S,単店舗,画面内演算,MQ会計シミュレーションで自動算出（FD仕入比率+PA人件費率+変動費用予算率）,FD仕入比率 + PA人件費率 + 変動費用予算率,monthly_budgets.food_cost_rate + monthly_budgets.labor_cost_rate + 変動費用予算率,B,計算項目,月次の予算詳細設定,-,"月次予算設定.FD仕入比率, 月次予算設定.PA人件費率, 月次予算設定.変動費用予算",-,48
+3次,月次予算設定,設定入力画面,変動費単価,L2-S,単店舗,画面内演算,MQ会計シミュレーションで自動算出,目標客単価 × 変動費率,sales_per_customer × 変動費率,B,計算項目,月次の予算詳細設定,-,"画面内計算, 画面内計算",-,49
+3次,月次予算設定,設定入力画面,粗利単価,L2-S,単店舗,画面内演算,MQ会計シミュレーションで自動算出,目標客単価 - 変動費単価,sales_per_customer - 変動費単価,B,計算項目,月次の予算詳細設定,-,"画面内計算, 画面内計算",-,50
+3次,月次予算設定,設定入力画面,売上（税抜）,L2-S,単店舗,画面内演算,MQ会計シミュレーションで自動算出,月次予算設定.目標客単価 × 月次予算設定.目標客数,SUM(ZTOTAL.sales_excluded),A,計算項目,月次の予算詳細設定,head_office_connected_service_sales_logs.sales_excluded,-,"月次予算設定.目標客数, -",51
+3次,月次予算設定,設定入力画面,変動費,L2-S,単店舗,画面内演算,MQ会計シミュレーションで自動算出,売上（税抜） × 変動費率,売上（税抜） × 変動費率,B,計算項目,月次の予算詳細設定,-,"月次予算設定.売上（税抜）, 画面内計算",-,52
+3次,月次予算設定,設定入力画面,粗利率,L2-S,単店舗,画面内演算,MQ会計シミュレーションで自動算出（100% - 変動費率）,100 - 変動費率,100 - (food_cost_rate + labor_cost_rate + 変動費用予算率),B,計算項目,月次の予算詳細設定,-,月次予算設定.変動費率,-,53
+3次,月次予算設定,設定入力画面,営業利益,L2-S,単店舗,画面内演算,MQ会計シミュレーションで自動算出（粗利 - 固定費用予算）,粗利 - 固定費用予算,月次予算設定.粗利 - 月次予算設定.固定費用予算,A,計算項目,月次の予算詳細設定,-,"月次予算設定.粗利, 月次予算設定.固定費用予算",-,55
+3次,月次予算設定,設定入力画面,粗利,L2-S,単店舗,画面内演算,MQ会計シミュレーションで自動算出（売上 - 変動費）,売上（税抜） - 変動費,月次予算設定.売上（税抜） - 月次予算設定.変動費,B,計算項目,月次の予算詳細設定,-,"月次予算設定.売上（税抜）, 月次予算設定.変動費",-,73b
+3次,棚卸,実績入力画面,小計,L2-S,単店舗,画面内演算,入力値から画面内で自動計算,在庫数量×商品単価,棚卸.在庫数量 × 棚卸.商品単価,C,計算項目,-,"inventory_items.num, inventory_items.price",-,-,98
+3次,棚卸詳細,一覧表示画面,実施日,L2-S,単店舗,アプリ連携,ラクミーアプリの棚卸実施日を表示,日付,inventories.date,D,費用・棚卸（入力）,棚卸結果の詳細。在庫数量・単価・小計の確認,inventories.date,-,ラクミーアプリ.棚卸 → 棚卸詳細.実施日,455
+3次,棚卸詳細,一覧表示画面,在庫数量,L2-S,単店舗,アプリ連携,ラクミーアプリの棚卸画面で入力されたデータを表示,入力値,inventory_items.num,C,費用・棚卸（入力）,棚卸結果の詳細。在庫数量・単価・小計の確認,inventory_items.num,-,ラクミーアプリ.棚卸 → 棚卸詳細.在庫数量,457
+3次,棚卸詳細,一覧表示画面,商品単価,L2-S,単店舗,アプリ連携,ラクミーアプリの棚卸画面で入力されたデータを表示,入力値,inventory_items.price,C,費用・棚卸（入力）,棚卸結果の詳細。在庫数量・単価・小計の確認,inventory_items.price,-,ラクミーアプリ.棚卸 → 棚卸詳細.商品単価,458
+3次,棚卸詳細,一覧表示画面,小計,L2-S,単店舗,実績参照,分析画面で算出された値を参照表示,参照表示,棚卸詳細.在庫数量 × 棚卸詳細.商品単価,C,計算項目,棚卸結果の詳細。在庫数量・単価・小計の確認,"inventory_items.num, inventory_items.price",-,-,459
+3次,棚卸（ラベル、タブ選択）,実績入力画面,AIによる費目生成,L2-S,単店舗,AI生成,AIによる費目自動生成,-,-,D,AI生成,【ラクミーアプリ】ラクミーウェブで設定したラベルで棚卸対象を選択,-,AI生成,-,770
+3次,棚卸（数量・単価の編集）,実績入力画面,推奨単価（税抜）,L2-S,単店舗,画面内演算,直近の納品書データから推奨表示,-,-,C,計算項目,【ラクミーアプリ】在庫数量・単価を入力。推奨単価は直近の納品データから表示,-,納品書撮影.納品単価,-,775
+3次,流入分析,分析画面,予約客単価,L2-S,単店舗,演算×演算,複数の演算結果の組合せ,予約売上÷予約客数,流入分析.予約売上 ÷ 流入分析.予約客数,A,計算項目,-,-,"流入分析.予約売上, 流入分析.予約客数",-,357
+3次,流入分析,分析画面,ウォークイン客単価,L2-S,単店舗,演算×演算,複数の演算結果の組合せ,WI売上÷WI客数,流入分析.ウォークイン売上 ÷ 流入分析.ウォークイン客数,A,計算項目,-,-,"流入分析.ウォークイン売上, 流入分析.ウォークイン客数, 流入分析.ウォークイン売上, 流入分析.ウォークイン客数",-,360
+3次,流入分析,分析画面,回転数,L2-S,単店舗,外部連携×ラクミー設定マスタ,POS売上とラクミー店舗マスタの組合せ,組数÷卓数,流入分析.総組数 ÷ 流入分析.総卓数,C,計算項目,-,"t_totals.receipt_no, shops.total_tables","流入分析.総組数, 流入分析.総卓数",流入分析.平均回転数,364
+3次,流入分析,分析画面,予約客数トレンド,L2-S,単店舗,外部連携×外部連携,予約システム内の複数データ組合せ,期間集計トレンド計算,流入分析.予約客数 期間集計トレンド,A,計算項目,-,reservations.customers,流入分析.予約客数,-,367
+3次,流入分析,分析画面,ウォークイン客数トレンド,L2-S,単店舗,演算×演算,複数の演算結果の組合せ,期間集計トレンド計算,流入分析.ウォークイン客数 期間集計トレンド,A,計算項目,-,-,流入分析.ウォークイン客数,-,368
+3次,流入分析,分析画面,平均回転数,L2-S,単店舗,演算×演算,複数の演算結果の組合せ,AVG回転数,AVG(流入分析.回転数),C,計算項目,-,-,流入分析.回転数,-,369
+3次,流入分析,分析画面,平均テーブル回転数,L2-S,単店舗,演算×演算,複数の演算結果の組合せ,AVGテーブル回転数,AVG(流入分析.テーブル回転数),C,計算項目,-,-,流入分析.テーブル回転数,-,370
+3次,発注書一覧,一覧表示画面,発注ID,L2-S,単店舗,データ参照表示,発注書作成で入力されたID,-,-,D,orders + official_order_items（参照）,【ラクミーアプリ】作成した発注書の一覧・ステータス管理,orders.id,発注書作成.発注ID,-,737
+3次,発注書一覧,一覧表示画面,発注日時,L2-S,単店舗,データ参照表示,発注書作成時の日時,-,-,C,orders + official_order_items（参照）,【ラクミーアプリ】作成した発注書の一覧・ステータス管理,orders.created_at,発注書作成.作成日時,-,738
+3次,発注書一覧,一覧表示画面,ステータス,L2-S,単店舗,データ参照表示,発注書の処理状態,-,-,B,orders + official_order_items（参照）,【ラクミーアプリ】作成した発注書の一覧・ステータス管理,orders.status,発注書作成.ステータス,-,739
+3次,発注書一覧,一覧表示画面,発注先,L2-S,単店舗,データ参照表示,発注先名を表示,-,-,C,orders + official_order_items（参照）,【ラクミーアプリ】作成した発注書の一覧・ステータス管理,orders.client_name,発注書作成.発注先名,-,740
+3次,発注書一覧,一覧表示画面,納品希望日,L2-S,単店舗,データ参照表示,希望納品日,-,-,C,orders + official_order_items（参照）,【ラクミーアプリ】作成した発注書の一覧・ステータス管理,orders.delivery_date,発注書作成.納品希望日,-,741
+3次,発注書一覧,一覧表示画面,発注書画像,L2-S,単店舗,画像保存,発注書の撮影画像,-,-,D,画像データ,【ラクミーアプリ】作成した発注書の一覧・ステータス管理,orders.image_url,ユーザー撮影,-,742
+3次,納品書一覧,一覧表示画面,納品書ID,L2-S,単店舗,データ参照表示,納品書撮影で入力されたID,-,-,D,納品書データ（参照）,【ラクミーアプリ】撮影した納品書の一覧。登録状況を確認,delivery_note_photos.id,納品書撮影.納品書ID,-,752
+3次,納品書一覧,一覧表示画面,納品日,L2-S,単店舗,データ参照表示,納品書の納品日,-,-,C,納品書データ（参照）,【ラクミーアプリ】撮影した納品書の一覧。登録状況を確認,delivery_note_photos.closed_date,納品書撮影.納品日,-,753
+3次,納品書一覧,一覧表示画面,登録状況,L2-S,単店舗,データ参照表示,納品書の処理状態,-,-,B,納品書データ（参照）,【ラクミーアプリ】撮影した納品書の一覧。登録状況を確認,delivery_note_photos.status,納品書撮影.ステータス,-,754
+3次,納品書一覧,一覧表示画面,納品書画像,L2-S,単店舗,画像表示,撮影した納品書画像,-,-,D,画像データ,【ラクミーアプリ】撮影した納品書の一覧。登録状況を確認,delivery_note_photos.photo,納品書撮影.納品書画像,-,755
+3次,納品書撮影（登録）,実績入力画面,納品書ID,L2-S,単店舗,AI読込+ユーザー入力,AI読込後に確認・修正,-,-,D,delivery_note_photos + arrival_items（アプリ入力）,【ラクミーアプリ】納品書を撮影しAIが読み取り→ラクミーウェブ納品書管理に連携,delivery_note_photos.id,AI読込（納品書画像）,"納品書一覧, ラクミーウェブ.納品書管理",743
+3次,納品書撮影（登録）,実績入力画面,発注者,L2-S,単店舗,AI読込+ユーザー入力,AI読込後に確認・修正,-,-,D,delivery_note_photos + arrival_items（アプリ入力）,【ラクミーアプリ】納品書を撮影しAIが読み取り→ラクミーウェブ納品書管理に連携,arrivals.shop_vendor_id,AI読込（納品書画像）,ラクミーウェブ.納品書詳細,744
+3次,納品書撮影（登録）,実績入力画面,納品日,L2-S,単店舗,AI読込+ユーザー入力,AI読込後に確認・修正,-,-,C,delivery_note_photos + arrival_items（アプリ入力）,【ラクミーアプリ】納品書を撮影しAIが読み取り→ラクミーウェブ納品書管理に連携,delivery_note_photos.closed_date,AI読込（納品書画像）,"納品書一覧, ラクミーウェブ.納品書詳細",745
+3次,納品書撮影（登録）,実績入力画面,注文数,L2-S,単店舗,AI読込+ユーザー入力,AI読込後に確認・修正,-,-,C,delivery_note_photos + arrival_items（アプリ入力）,【ラクミーアプリ】納品書を撮影しAIが読み取り→ラクミーウェブ納品書管理に連携,arrival_items.num,AI読込（納品書画像）,ラクミーウェブ.納品書詳細,746
+3次,納品書撮影（登録）,実績入力画面,納品数,L2-S,単店舗,AI読込+ユーザー入力,仕入金額計算に使用,-,-,B,delivery_note_photos + arrival_items（アプリ入力）,【ラクミーアプリ】納品書を撮影しAIが読み取り→ラクミーウェブ納品書管理に連携,arrival_items.arrival_num,AI読込（納品書画像）,"ラクミーウェブ.納品書詳細, 仕入先分析",747
+3次,納品書撮影（登録）,実績入力画面,納品単価,L2-S,単店舗,AI読込+ユーザー入力,仕入金額計算に使用,-,-,B,delivery_note_photos + arrival_items（アプリ入力）,【ラクミーアプリ】納品書を撮影しAIが読み取り→ラクミーウェブ納品書管理に連携,arrival_items.price,AI読込（納品書画像）,"ラクミーウェブ.納品書詳細, 仕入先分析",748
+3次,納品書撮影（登録）,実績入力画面,小計（税抜）,L2-S,単店舗,画面内演算,納品数×納品単価,-,-,B,計算項目,【ラクミーアプリ】納品書を撮影しAIが読み取り→ラクミーウェブ納品書管理に連携,arrival_items.subtotal_tax_excluded,"納品数, 納品単価",ラクミーウェブ.仕入先分析.金額（税抜）,749
+3次,納品書撮影（登録）,実績入力画面,小計（税込）,L2-S,単店舗,画面内演算,小計（税抜）×税率,-,-,C,計算項目,【ラクミーアプリ】納品書を撮影しAIが読み取り→ラクミーウェブ納品書管理に連携,arrival_items.subtotal,小計（税抜）,-,750
+3次,納品書撮影（登録）,実績入力画面,納品書画像,L2-S,単店舗,画像保存,AI読込のソース画像,-,-,D,画像データ,【ラクミーアプリ】納品書を撮影しAIが読み取り→ラクミーウェブ納品書管理に連携,delivery_note_photos.photo,ユーザー撮影,"納品書一覧, ラクミーウェブ.納品書詳細",751
+3次,納品書管理,一覧表示画面,納品書ID,L2-S,単店舗,外部連携+アプリ連携,インフォマート連携データ＋ラクミーアプリ納品書撮影データを表示,参照表示,infomart_transactions.id,D,インフォマート（仕入）/ラクミーアプリ（納品書撮影）,ラクミーアプリで撮影・AI読込された納品書データの一覧管理。インフォマート連携データも表示,infomart_transactions.id,ラクミーアプリ.納品書撮影（登録）,-,460
+3次,納品書管理,一覧表示画面,受付日時,L2-S,単店舗,外部連携+アプリ連携,インフォマート連携データ＋ラクミーアプリ納品書撮影データを表示,参照表示,infomart_transactions.received_at,D,インフォマート（仕入）/ラクミーアプリ（納品書撮影）,ラクミーアプリで撮影・AI読込された納品書データの一覧管理。インフォマート連携データも表示,infomart_transactions.received_at,ラクミーアプリ.納品書撮影（登録）,-,461
+3次,納品書管理,一覧表示画面,納品日,L2-S,単店舗,外部連携+アプリ連携,インフォマート連携データ＋ラクミーアプリ納品書撮影データを表示,参照表示,infomart_transactions.delivery_date,D,インフォマート（仕入）/ラクミーアプリ（納品書撮影）,ラクミーアプリで撮影・AI読込された納品書データの一覧管理。インフォマート連携データも表示,infomart_transactions.delivery_date,ラクミーアプリ.納品書撮影（登録）,-,462
+3次,納品書管理,一覧表示画面,処理ステータス,L2-S,単店舗,外部連携+アプリ連携,インフォマート連携データ＋ラクミーアプリ納品書撮影データを表示,参照表示,infomart_transactions.status,D,インフォマート（仕入）/ラクミーアプリ（納品書撮影）,ラクミーアプリで撮影・AI読込された納品書データの一覧管理。インフォマート連携データも表示,infomart_transactions.status,ラクミーアプリ.納品書撮影（登録）,-,464
+3次,納品書管理,一覧表示画面,発注先,L2-S,単店舗,外部連携+アプリ連携,インフォマート連携データ＋ラクミーアプリ納品書撮影データを表示,参照表示,infomart_transactions.client_name,D,インフォマート（仕入）/ラクミーアプリ（納品書撮影）,ラクミーアプリで撮影・AI読込された納品書データの一覧管理。インフォマート連携データも表示,infomart_transactions.client_name,ラクミーアプリ.納品書撮影（登録）,-,465
+3次,納品書詳細,一覧表示画面,納品書ID,L2-S,単店舗,外部連携+アプリ連携,インフォマート連携データ＋ラクミーアプリ納品書撮影データを表示,参照表示,infomart_transactions.id,D,インフォマート（仕入）/ラクミーアプリ（納品書撮影）,AI読込された納品書の詳細。商品・数量・単価の確認・修正,infomart_transactions.id,ラクミーアプリ.納品書撮影（登録）,-,466
+3次,納品書詳細,一覧表示画面,発注者,L2-S,単店舗,外部連携+アプリ連携,インフォマート連携データ＋ラクミーアプリ納品書撮影データを表示,参照表示,infomart_transactions.orderer_name,D,インフォマート（仕入）/ラクミーアプリ（納品書撮影）,AI読込された納品書の詳細。商品・数量・単価の確認・修正,infomart_transactions.orderer_name,ラクミーアプリ.納品書撮影（登録）,-,467
+3次,納品書詳細,一覧表示画面,受注者,L2-S,単店舗,外部連携+アプリ連携,インフォマート連携データ＋ラクミーアプリ納品書撮影データを表示,参照表示,infomart_transactions.client_name,D,インフォマート（仕入）/ラクミーアプリ（納品書撮影）,AI読込された納品書の詳細。商品・数量・単価の確認・修正,infomart_transactions.client_name,ラクミーアプリ.納品書撮影（登録）,-,468
+3次,納品書詳細,一覧表示画面,処理ステータス,L2-S,単店舗,外部連携+アプリ連携,インフォマート連携データ＋ラクミーアプリ納品書撮影データを表示,参照表示,infomart_transactions.status,D,インフォマート（仕入）/ラクミーアプリ（納品書撮影）,AI読込された納品書の詳細。商品・数量・単価の確認・修正,infomart_transactions.status,ラクミーアプリ.納品書撮影（登録）,-,469
+3次,納品書詳細,一覧表示画面,納品日,L2-S,単店舗,外部連携+アプリ連携,インフォマート連携データ＋ラクミーアプリ納品書撮影データを表示,参照表示,infomart_transactions.delivery_date,D,インフォマート（仕入）/ラクミーアプリ（納品書撮影）,AI読込された納品書の詳細。商品・数量・単価の確認・修正,infomart_transactions.delivery_date,ラクミーアプリ.納品書撮影（登録）,-,470
+3次,費目別仕入分析,分析画面,比率,L2-S,単店舗,設定参照×設定参照,複数の費用設定の組合せ,費目÷総仕入×100,費目別仕入分析.金額税抜 ÷ SUM(費目別仕入分析.金額税抜) × 100,C,計算項目,費目ごとの仕入金額を分析,monthly_costs.value,-,-,374
+3次,集計（仕入）税抜,分析画面,仕入率（％）,L2-S,単店舗,画面内演算,仕入額÷売上総額×100,-,-,A,計算項目,【ラクミーアプリ】仕入率の集計表示（税抜）,-,"仕入額, 売上総額",-,789
+3次,集計（仕入）税込,分析画面,仕入率（％）,L2-S,単店舗,画面内演算,仕入額÷売上総額×100（税込）,-,-,B,計算項目,【ラクミーアプリ】仕入率の集計表示（税込）,-,"仕入額税込, 売上総額税込",-,797
+3次,集計（売上）税抜,分析画面,売上総額,L2-S,単店舗,画面内演算,標準税率+軽減税率の合計,-,-,A,計算項目,【ラクミーアプリ】売上経費入力で登録した売上の集計表示（税抜）,-,売上経費入力.店内売上+店外売上,ラクミーウェブ.予実対比.総売上,782
+3次,集計（売上）税抜,分析画面,標準税率（額）,L2-S,単店舗,データ参照表示,売上経費入力の店内売上を集計,-,-,B,集計表示,【ラクミーアプリ】売上経費入力で登録した売上の集計表示（税抜）,head_office_connected_service_sales_logs.sales_excluded (edited=1),売上経費入力.店内売上税抜,-,783
+3次,集計（売上）税抜,分析画面,軽減税率（額）,L2-S,単店舗,データ参照表示,売上経費入力の店外売上を集計,-,-,B,集計表示,【ラクミーアプリ】売上経費入力で登録した売上の集計表示（税抜）,head_office_connected_service_sales_logs.sales_tax_reduced (edited=1),売上経費入力.店外売上税抜,-,784
+3次,集計（売上）税抜,分析画面,客数,L2-S,単店舗,データ参照表示,売上経費入力の客数を集計,-,-,B,集計表示,【ラクミーアプリ】売上経費入力で登録した売上の集計表示（税抜）,head_office_connected_service_sales_logs.customers (edited=1),売上経費入力.客数,-,785
+3次,集計（売上）税込,分析画面,売上総額,L2-S,単店舗,画面内演算,標準税率+軽減税率の合計（税込）,-,-,B,計算項目,【ラクミーアプリ】売上経費入力で登録した売上の集計表示（税込）,-,店内売上税込+店外売上税込,-,790
+3次,集計（売上）税込,分析画面,標準税率（額）,L2-S,単店舗,データ参照表示,店内売上（税込）を集計,-,-,C,集計表示,【ラクミーアプリ】売上経費入力で登録した売上の集計表示（税込）,head_office_connected_service_sales_logs.sales (edited=1),店内売上税込,-,791
+3次,集計（売上）税込,分析画面,軽減税率（額）,L2-S,単店舗,データ参照表示,店外売上（税込）を集計,-,-,C,集計表示,【ラクミーアプリ】売上経費入力で登録した売上の集計表示（税込）,head_office_connected_service_sales_logs.sales_tax_reduced (edited=1),店外売上税込,-,792
+3次,集計（売上）税込,分析画面,客数,L2-S,単店舗,データ参照表示,客数を集計,-,-,B,集計表示,【ラクミーアプリ】売上経費入力で登録した売上の集計表示（税込）,head_office_connected_service_sales_logs.customers (edited=1),売上経費入力.客数,-,793
+3次,集計（費用）税抜,分析画面,費用総額,L2-S,単店舗,画面内演算,仕入額+人件費の合計,-,-,A,計算項目,【ラクミーアプリ】売上経費入力で登録した費用の集計表示（税抜）,-,"仕入額, 人件費",-,786
+3次,集計（費用）税抜,分析画面,仕入額,L2-S,単店舗,データ参照表示,納品書撮影の仕入データを集計,-,-,B,集計表示,【ラクミーアプリ】売上経費入力で登録した費用の集計表示（税抜）,arrival_items.subtotal_tax_excluded,納品書撮影.小計（税抜）,-,787
+3次,集計（費用）税抜,分析画面,人件費,L2-S,単店舗,データ参照表示,売上経費入力の人件費を集計,-,-,A,集計表示,【ラクミーアプリ】売上経費入力で登録した費用の集計表示（税抜）,daily_costs.value (type=PA人件費),売上経費入力.人件費,ラクミーウェブ.予実対比.PA人件費,788
+3次,集計（費用）税込,分析画面,費用総額,L2-S,単店舗,画面内演算,仕入額+人件費の合計（税込）,-,-,B,計算項目,【ラクミーアプリ】売上経費入力で登録した費用の集計表示（税込）,-,"仕入額税込, 人件費",-,794
+3次,集計（費用）税込,分析画面,仕入額,L2-S,単店舗,データ参照表示,仕入データを集計（税込）,-,-,C,集計表示,【ラクミーアプリ】売上経費入力で登録した費用の集計表示（税込）,arrival_items.subtotal,小計（税込）,-,795
+3次,集計（費用）税込,分析画面,人件費,L2-S,単店舗,データ参照表示,人件費を集計,-,-,B,集計表示,【ラクミーアプリ】売上経費入力で登録した費用の集計表示（税込）,daily_costs.value (type=PA人件費),売上経費入力.人件費,-,796
