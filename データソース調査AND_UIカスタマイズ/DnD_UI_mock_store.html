@@ -1554,6 +1554,40 @@ function renderDashboard() {
   });
 }
 
+// === ダッシュボードカードプレビューのソート ===
+const previewSorts = {};      // { viewId: { key, dir } }
+const previewDataCache = {};  // 値の安定化用
+
+function previewSortBy(viewId, key) {
+  const cur = previewSorts[viewId];
+  if (cur && cur.key === key) {
+    if (cur.dir === 'asc') cur.dir = 'desc';
+    else delete previewSorts[viewId];
+  } else {
+    previewSorts[viewId] = { key, dir: 'asc' };
+  }
+  const view = savedViews.find(x => x.id === viewId);
+  const card = document.getElementById(`dashCard_${viewId}`);
+  if (!view || !card) return;
+  const body = card.querySelector('.dashboard-card-body');
+  if (body) body.innerHTML = renderViewSnapshot(view);
+}
+
+function naturalCompare(a, b) {
+  const am = String(a).match(/-?\d+(\.\d+)?/);
+  const bm = String(b).match(/-?\d+(\.\d+)?/);
+  if (am && bm) {
+    const an = parseFloat(am[0]); const bn = parseFloat(bm[0]);
+    if (an !== bn) return an - bn;
+  }
+  return String(a).localeCompare(String(b), 'ja');
+}
+
+function sortIcon(active, dir) {
+  if (!active) return '<span style="color:#cbd5e1;font-size:8px;margin-left:2px;">↕</span>';
+  return `<span style="color:#f59e0b;font-size:9px;margin-left:2px;">${dir==='asc'?'▲':'▼'}</span>`;
+}
+
 function toggleDashCardCollapse(viewId) {
   const card = document.getElementById(`dashCard_${viewId}`);
   if (card) card.classList.toggle('collapsed');
@@ -1574,9 +1608,9 @@ function renderViewSnapshot(view) {
   const cfg = view.config;
   if (!cfg || !cfg.val) return `<div style="text-align:center;padding:14px;color:#94a3b8;font-size:11px;">⚠️ 値が未設定</div>`;
   const chart = cfg.chart || 'table';
-  if (chart === 'bar') return renderViewBar(cfg);
+  if (chart === 'bar') return renderViewBar(cfg, view.id);
   if (chart === 'line' || chart === 'heatmap') return `<div style="text-align:center;padding:14px;color:#94a3b8;font-size:11px;">${chart==='line'?'📈':'🔥'} ${chart==='line'?'折れ線':'ヒートマップ'} (モック)</div>`;
-  return renderViewTable(cfg);
+  return renderViewTable(cfg, view.id);
 }
 
 function truncLabel(s, max = 10) {
@@ -1585,53 +1619,94 @@ function truncLabel(s, max = 10) {
   return s.length > max ? s.slice(0, max) + '…' : s;
 }
 
-function renderViewTable(cfg) {
+function renderViewTable(cfg, viewId) {
   const rowListAll = cfg.row ? getZoneMembersFromCfg(cfg, cfg.row) : ['(集計)'];
   const colListAll = cfg.col ? getZoneMembersFromCfg(cfg, cfg.col) : null;
-  // ダッシュボード上は 4行 × 4列(データ3+合計1) のプレビュー
-  const rowList = rowListAll.slice(0, 4);
-  const colList = colListAll ? colListAll.slice(0, 3) : null;
+  const colVisible = colListAll ? colListAll.slice(0, 3) : null;
   const valName = cfg.val.name;
   const isRatio = valName.includes('率') || valName.includes('達成') || valName.includes('進捗');
-  const data = rowList.map(rowName => {
-    let total = 0, cells = [];
-    if (colList) {
-      cells = colList.map(() => { const v = generateValue(valName); total += v; return v; });
-    } else { total = generateValue(valName); }
-    return { rowName, cells, total: isRatio && colList ? total/colList.length : total };
-  });
-  let head = `<tr><th>${truncLabel(cfg.row?.name || '項目')}</th>`;
-  if (colList) colList.forEach(c => head += `<th>${truncLabel(c)}</th>`);
-  head += `<th class="total">合計</th></tr>`;
+  const cacheKey = viewId ? `t_${viewId}` : null;
+  let allData;
+  if (cacheKey && previewDataCache[cacheKey]) {
+    allData = previewDataCache[cacheKey];
+  } else {
+    allData = rowListAll.map(rowName => {
+      let total = 0, cells = [];
+      if (colVisible) {
+        cells = colVisible.map(() => { const v = generateValue(valName); total += v; return v; });
+      } else { total = generateValue(valName); }
+      return { rowName, cells, total: isRatio && colVisible ? total/colVisible.length : total };
+    });
+    if (cacheKey) previewDataCache[cacheKey] = allData;
+  }
+  const sort = viewId ? previewSorts[viewId] : null;
+  if (sort) {
+    const cmp = (a, b) => {
+      let av, bv;
+      if (sort.key === 'row') return naturalCompare(a.rowName, b.rowName) * (sort.dir==='asc'?1:-1);
+      if (sort.key === 'total') { av = a.total; bv = b.total; }
+      else if (sort.key.startsWith('c')) { const i = parseInt(sort.key.slice(1)); av = a.cells[i]; bv = b.cells[i]; }
+      return ((av||0) - (bv||0)) * (sort.dir==='asc'?1:-1);
+    };
+    allData = [...allData].sort(cmp);
+  }
+  const data = allData.slice(0, 4);
+  const sortKey = sort?.key, sortDir = sort?.dir;
+  const onClick = (key) => viewId ? `onclick="event.stopPropagation();previewSortBy('${viewId}','${key}')" style="cursor:pointer;"` : '';
+  let head = `<tr><th ${onClick('row')}>${truncLabel(cfg.row?.name || '項目')}${sortIcon(sortKey==='row', sortDir)}</th>`;
+  if (colVisible) colVisible.forEach((c, i) => head += `<th ${onClick('c'+i)}>${truncLabel(c)}${sortIcon(sortKey==='c'+i, sortDir)}</th>`);
+  head += `<th class="total" ${onClick('total')}>合計${sortIcon(sortKey==='total', sortDir)}</th></tr>`;
   let body = '';
   data.forEach(d => {
     let cells = `<td class="row-header">${truncLabel(d.rowName)}</td>`;
-    if (colList) d.cells.forEach(v => cells += `<td>${truncLabel(formatValue(valName, v))}</td>`);
+    if (colVisible) d.cells.forEach(v => cells += `<td>${truncLabel(formatValue(valName, v))}</td>`);
     cells += `<td class="total">${truncLabel(formatValue(valName, d.total))}</td>`;
     body += `<tr>${cells}</tr>`;
   });
-  const moreRows = rowListAll.length - rowList.length;
-  const moreCols = colListAll ? colListAll.length - colList.length : 0;
+  const moreRows = rowListAll.length - data.length;
+  const moreCols = colListAll ? colListAll.length - colVisible.length : 0;
   if (moreRows > 0 || moreCols > 0) {
-    const colSpan = (colList ? colList.length : 0) + 2;
+    const colSpan = (colVisible ? colVisible.length : 0) + 2;
     body += `<tr><td colspan="${colSpan}" style="text-align:center;color:#94a3b8;font-size:9px;padding:2px;">${moreRows>0?`他${moreRows}行`:''}${moreRows>0&&moreCols>0?' / ':''}${moreCols>0?`他${moreCols}列`:''} … エディタで全表示</td></tr>`;
   }
   return `<table class="cross-table">${head}${body}</table>`;
 }
 
-function renderViewBar(cfg) {
+function renderViewBar(cfg, viewId) {
   const valName = cfg.val.name;
   const listAll = cfg.row ? getZoneMembersFromCfg(cfg, cfg.row) : ['(全体)'];
-  const list = listAll.slice(0, 4);
-  const values = list.map(() => generateValue(valName));
-  const maxVal = Math.max(...values, 1);
-  let html = '<div class="bar-chart">';
-  list.forEach((s, i) => {
-    const v = values[i];
-    const widthPct = (v / maxVal) * 100;
-    html += `<div class="bar-row"><div class="bar-label">${truncLabel(s)}</div><div class="bar-track"><div class="bar-fill" style="width:${widthPct}%"></div></div><div class="bar-value">${truncLabel(formatValue(valName, v))}</div></div>`;
+  const cacheKey = viewId ? `b_${viewId}` : null;
+  let pairs;
+  if (cacheKey && previewDataCache[cacheKey]) {
+    pairs = previewDataCache[cacheKey];
+  } else {
+    pairs = listAll.map(s => ({ label: s, value: generateValue(valName) }));
+    if (cacheKey) previewDataCache[cacheKey] = pairs;
+  }
+  const sort = viewId ? previewSorts[viewId] : null;
+  if (sort) {
+    const cmp = (a, b) => {
+      if (sort.key === 'label') return naturalCompare(a.label, b.label) * (sort.dir==='asc'?1:-1);
+      return (a.value - b.value) * (sort.dir==='asc'?1:-1);
+    };
+    pairs = [...pairs].sort(cmp);
+  }
+  const view = pairs.slice(0, 4);
+  const maxVal = Math.max(...view.map(p => p.value), 1);
+  const sortKey = sort?.key, sortDir = sort?.dir;
+  const onClick = (key) => viewId ? `onclick="event.stopPropagation();previewSortBy('${viewId}','${key}')" style="cursor:pointer;"` : '';
+  let html = `<div class="bar-chart">`;
+  if (viewId) {
+    html += `<div style="display:flex;justify-content:flex-end;gap:8px;font-size:9px;color:#64748b;padding:0 4px 2px;">
+      <span ${onClick('label')}>項目${sortIcon(sortKey==='label', sortDir)}</span>
+      <span ${onClick('value')}>${truncLabel(valName)}${sortIcon(sortKey==='value', sortDir)}</span>
+    </div>`;
+  }
+  view.forEach(p => {
+    const widthPct = (p.value / maxVal) * 100;
+    html += `<div class="bar-row"><div class="bar-label">${truncLabel(p.label)}</div><div class="bar-track"><div class="bar-fill" style="width:${widthPct}%"></div></div><div class="bar-value">${truncLabel(formatValue(valName, p.value))}</div></div>`;
   });
-  const more = listAll.length - list.length;
+  const more = listAll.length - view.length;
   if (more > 0) html += `<div style="text-align:center;color:#94a3b8;font-size:9px;padding:2px;">他${more}件 … エディタで全表示</div>`;
   return html + '</div>';
 }
