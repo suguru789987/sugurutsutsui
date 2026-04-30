@@ -296,10 +296,13 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
 .dashboard-area-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
 .dashboard-area-title { font-size: 14px; font-weight: 700; color: #9a3412; flex: 1; }
 .dashboard-area-empty { text-align: center; color: #64748b; padding: 24px; font-size: 12px; line-height: 1.6; }
-.dashboard-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+.dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
 .dashboard-card { background: white; border: 1.5px solid #fed7aa; border-radius: 6px; padding: 10px 12px; transition: all 0.2s; }
 .dashboard-card:hover { box-shadow: 0 2px 8px rgba(245,158,11,0.15); }
-.dashboard-card.size-full { grid-column: 1 / -1; }
+.dashboard-card.size-full, .dashboard-card.size-half { grid-column: auto; }
+.dashboard-card-body { min-height: 130px; max-height: 170px; overflow: hidden; }
+.dashboard-card-body table.cross-table { width: 100%; table-layout: fixed; }
+.dashboard-card-body table.cross-table th, .dashboard-card-body table.cross-table td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .dashboard-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #e2e8f0; }
 .dashboard-card-title { font-size: 12px; font-weight: 700; color: #9a3412; flex: 1; }
 .dashboard-card-meta { font-size: 9px; color: #94a3b8; }
@@ -1576,10 +1579,18 @@ function renderViewSnapshot(view) {
   return renderViewTable(cfg);
 }
 
+function truncLabel(s, max = 10) {
+  if (s == null) return '';
+  s = String(s);
+  return s.length > max ? s.slice(0, max) + '…' : s;
+}
+
 function renderViewTable(cfg) {
-  const rowList = cfg.row ? getZoneMembersFromCfg(cfg, cfg.row) : ['(集計)'];
+  const rowListAll = cfg.row ? getZoneMembersFromCfg(cfg, cfg.row) : ['(集計)'];
   const colListAll = cfg.col ? getZoneMembersFromCfg(cfg, cfg.col) : null;
-  const colList = colListAll ? colListAll.slice(0, 6) : null;
+  // ダッシュボード上は 4行 × 4列(データ3+合計1) のプレビュー
+  const rowList = rowListAll.slice(0, 4);
+  const colList = colListAll ? colListAll.slice(0, 3) : null;
   const valName = cfg.val.name;
   const isRatio = valName.includes('率') || valName.includes('達成') || valName.includes('進捗');
   const data = rowList.map(rowName => {
@@ -1589,30 +1600,39 @@ function renderViewTable(cfg) {
     } else { total = generateValue(valName); }
     return { rowName, cells, total: isRatio && colList ? total/colList.length : total };
   });
-  let head = `<tr><th>${cfg.row?.name || '項目'}</th>`;
-  if (colList) colList.forEach(c => head += `<th>${c}</th>`);
-  head += `<th class="total">${valName}合計</th></tr>`;
+  let head = `<tr><th>${truncLabel(cfg.row?.name || '項目')}</th>`;
+  if (colList) colList.forEach(c => head += `<th>${truncLabel(c)}</th>`);
+  head += `<th class="total">合計</th></tr>`;
   let body = '';
-  data.slice(0, 8).forEach(d => {
-    let cells = `<td class="row-header">${d.rowName}</td>`;
-    if (colList) d.cells.forEach(v => cells += `<td>${formatValue(valName, v)}</td>`);
-    cells += `<td class="total">${formatValue(valName, d.total)}</td>`;
+  data.forEach(d => {
+    let cells = `<td class="row-header">${truncLabel(d.rowName)}</td>`;
+    if (colList) d.cells.forEach(v => cells += `<td>${truncLabel(formatValue(valName, v))}</td>`);
+    cells += `<td class="total">${truncLabel(formatValue(valName, d.total))}</td>`;
     body += `<tr>${cells}</tr>`;
   });
+  const moreRows = rowListAll.length - rowList.length;
+  const moreCols = colListAll ? colListAll.length - colList.length : 0;
+  if (moreRows > 0 || moreCols > 0) {
+    const colSpan = (colList ? colList.length : 0) + 2;
+    body += `<tr><td colspan="${colSpan}" style="text-align:center;color:#94a3b8;font-size:9px;padding:2px;">${moreRows>0?`他${moreRows}行`:''}${moreRows>0&&moreCols>0?' / ':''}${moreCols>0?`他${moreCols}列`:''} … エディタで全表示</td></tr>`;
+  }
   return `<table class="cross-table">${head}${body}</table>`;
 }
 
 function renderViewBar(cfg) {
   const valName = cfg.val.name;
-  const list = (cfg.row ? getZoneMembersFromCfg(cfg, cfg.row) : ['(全体)']).slice(0, 6);
+  const listAll = cfg.row ? getZoneMembersFromCfg(cfg, cfg.row) : ['(全体)'];
+  const list = listAll.slice(0, 4);
   const values = list.map(() => generateValue(valName));
   const maxVal = Math.max(...values, 1);
   let html = '<div class="bar-chart">';
   list.forEach((s, i) => {
     const v = values[i];
     const widthPct = (v / maxVal) * 100;
-    html += `<div class="bar-row"><div class="bar-label">${s}</div><div class="bar-track"><div class="bar-fill" style="width:${widthPct}%"></div></div><div class="bar-value">${formatValue(valName, v)}</div></div>`;
+    html += `<div class="bar-row"><div class="bar-label">${truncLabel(s)}</div><div class="bar-track"><div class="bar-fill" style="width:${widthPct}%"></div></div><div class="bar-value">${truncLabel(formatValue(valName, v))}</div></div>`;
   });
+  const more = listAll.length - list.length;
+  if (more > 0) html += `<div style="text-align:center;color:#94a3b8;font-size:9px;padding:2px;">他${more}件 … エディタで全表示</div>`;
   return html + '</div>';
 }
 
