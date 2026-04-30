@@ -1182,8 +1182,24 @@ function renderZoneContent() {
     cv.innerHTML = `<span class="dropped-value">${typeIcon(zones.val.type)} ${zones.val.name} <span class="remove" onclick="removeZone('val')">✕</span></span>`;
   } else {
     zv.classList.remove('has-item');
-    cv.innerHTML = `<span class="empty-hint">ここにトランザクションをドロップ → 集計値として表示</span>`;
+    const hasExpenseCat = (zones.row && zones.row.id === 'dim_expense_cat') || (zones.col && zones.col.id === 'dim_expense_cat');
+    if (hasExpenseCat) {
+      cv.innerHTML = `<span class="empty-hint" style="color:#92400e;">💡 費目には予実メジャーを推奨:<br>
+        <button class="btn" style="background:#f59e0b;color:white;font-size:10px;padding:3px 8px;margin:2px 2px 0 0;" onclick="quickSetVal('M_COST_ACT','費用（実績）')">費用(実績)</button>
+        <button class="btn" style="background:#f59e0b;color:white;font-size:10px;padding:3px 8px;margin:2px 2px 0 0;" onclick="quickSetVal('M_COST_RATE','予実達成率')">予実達成率</button>
+        <button class="btn" style="background:#f59e0b;color:white;font-size:10px;padding:3px 8px;margin:2px 2px 0 0;" onclick="quickSetVal('M_COST_SHARE','構成比')">構成比</button>
+      </span>`;
+    } else {
+      cv.innerHTML = `<span class="empty-hint">ここにトランザクションをドロップ → 集計値として表示</span>`;
+    }
   }
+}
+
+function quickSetVal(id, name) {
+  zones.val = { id, name, type: 'metric' };
+  resetTableCache();
+  renderZoneContent();
+  updateTable();
 }
 
 function typeIcon(t) { return t === 'tag' ? '🏷️' : (t === 'dim' ? '📐' : '📊'); }
