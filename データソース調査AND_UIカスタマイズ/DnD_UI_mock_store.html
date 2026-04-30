@@ -717,7 +717,7 @@ const ITEMS = {
 };
 let currentTab = 'dim';
 let currentChart = 'table';
-let zones = { row: null, col: null, val: null, filter: [] };
+let zones = { row: null, col: null, vals: [], filter: [] };
 let customTags = [];
 let dimFilters = {}; // { dim_id: [selected_members] }
 let currentEditingDim = null;
@@ -1003,10 +1003,12 @@ function setupZone(name) {
         showAlert(`🚫 重複配置`, `「${itemName}」は既にフィルタに追加されています。`);
         return;
       }
-      if (itemType === 'dim' && zones.val) {
-        const r = validateCombination(itemId, itemName, zones.val.name);
-        if (!r.ok) { showAlert(r.msg, r.detail); return; }
-        if (r.severity === 'warn') showToast(r.msg);
+      if (itemType === 'dim') {
+        for (const v of zones.vals) {
+          const r = validateCombination(itemId, itemName, v.name);
+          if (!r.ok) { showAlert(r.msg, r.detail); return; }
+          if (r.severity === 'warn') showToast(r.msg);
+        }
       }
       zones.filter.push({ id: itemId, name: itemName, type: itemType });
       renderFilterContent();
@@ -1024,12 +1026,16 @@ function setupZone(name) {
       showAlert(`🚫 重複配置エラー`, `「${itemName}」は既に「行」に配置されています。\n同じ指標を「行」と「列」の両方には配置できません。`);
       return;
     }
-    if ((name === 'row' || name === 'col') && zones.val?.id === itemId) {
+    if ((name === 'row' || name === 'col') && zones.vals.some(v => v.id === itemId)) {
       showAlert(`🚫 重複配置エラー`, `「${itemName}」は既に「値」に配置されています。`);
       return;
     }
     if (name === 'val' && (zones.row?.id === itemId || zones.col?.id === itemId)) {
       showAlert(`🚫 重複配置エラー`, `「${itemName}」は既に「${zones.row?.id === itemId ? '行' : '列'}」に配置されています。`);
+      return;
+    }
+    if (name === 'val' && zones.vals.some(v => v.id === itemId)) {
+      showAlert(`🚫 重複配置エラー`, `「${itemName}」は既に「値」に追加されています。`);
       return;
     }
 
@@ -1041,10 +1047,19 @@ function setupZone(name) {
         if (!r.ok) { showAlert(r.msg, r.detail); return; }
         if (r.severity === 'warn') showToast(r.msg);
       }
+      // メジャー系統一致チェック
+      if (zones.vals.length > 0) {
+        const newSys = inferMetricSystem(itemName);
+        const existingSys = inferMetricSystem(zones.vals[0].name);
+        if (newSys !== existingSys) {
+          showAlert('🚫 メジャー系統不一致', `「${itemName}」(${metSysLabel(newSys)}) と既存「${zones.vals[0].name}」(${metSysLabel(existingSys)}) は系統が異なるため併記できません。\n\n理由: 粒度・日付制約・更新タイミングが異なる可能性があります。\n\n同じ系統 (例: 費用実績/費用予算/予実差/達成率) で揃えてください。`);
+          return;
+        }
+      }
     }
     if ((name === 'row' || name === 'col') && itemType === 'dim') {
-      if (zones.val) {
-        const r = validateCombination(itemId, itemName, zones.val.name);
+      for (const v of zones.vals) {
+        const r = validateCombination(itemId, itemName, v.name);
         if (!r.ok) { showAlert(r.msg, r.detail); return; }
         if (r.severity === 'warn') showToast(r.msg);
       }
@@ -1061,7 +1076,12 @@ function setupZone(name) {
       }
     }
 
-    zones[name] = { id: itemId, name: itemName, type: itemType };
+    if (name === 'val') {
+      zones.vals.push({ id: itemId, name: itemName, type: itemType });
+    } else {
+      zones[name] = { id: itemId, name: itemName, type: itemType };
+    }
+    resetTableCache();
     renderZoneContent();
     updateTable();
     showToast(`✅ "${itemName}" を「${zoneLabel(name)}」に配置`);
@@ -1181,29 +1201,50 @@ function renderZoneContent() {
     zc.classList.remove('has-item');
     cc.innerHTML = `<span class="empty-hint">ここにディメン/タグをドロップ → 横軸に表示</span>`;
   }
-  // Val
+  // Val (複数メジャー対応)
   const cv = document.getElementById('content-val');
   const zv = document.getElementById('zone-val');
-  if (zones.val) {
+  if (zones.vals.length > 0) {
     zv.classList.add('has-item');
-    cv.innerHTML = `<span class="dropped-value">${typeIcon(zones.val.type)} ${zones.val.name} <span class="remove" onclick="removeZone('val')">✕</span></span>`;
+    const chips = zones.vals.map((v, i) =>
+      `<span class="dropped-value">${typeIcon(v.type)} ${v.name} <span class="remove" onclick="removeValAt(${i})">✕</span></span>`
+    ).join(' ');
+    const countBadge = zones.vals.length > 1 ? `<span style="background:#f59e0b;color:white;font-size:9px;padding:1px 6px;border-radius:8px;margin-right:6px;">📊 ${zones.vals.length}指標</span>` : '';
+    cv.innerHTML = countBadge + chips;
   } else {
     zv.classList.remove('has-item');
     const hasExpenseCat = (zones.row && zones.row.id === 'dim_expense_cat') || (zones.col && zones.col.id === 'dim_expense_cat');
     if (hasExpenseCat) {
-      cv.innerHTML = `<span class="empty-hint" style="color:#92400e;">💡 費目には予実メジャーを推奨:<br>
-        <button class="btn" style="background:#f59e0b;color:white;font-size:10px;padding:3px 8px;margin:2px 2px 0 0;" onclick="quickSetVal('M_COST_ACT','費用（実績）')">費用(実績)</button>
-        <button class="btn" style="background:#f59e0b;color:white;font-size:10px;padding:3px 8px;margin:2px 2px 0 0;" onclick="quickSetVal('M_COST_RATE','予実達成率')">予実達成率</button>
-        <button class="btn" style="background:#f59e0b;color:white;font-size:10px;padding:3px 8px;margin:2px 2px 0 0;" onclick="quickSetVal('M_COST_SHARE','構成比')">構成比</button>
+      cv.innerHTML = `<span class="empty-hint" style="color:#92400e;">💡 費目には予実メジャーを推奨 (複数追加可):<br>
+        <button class="btn" style="background:#f59e0b;color:white;font-size:10px;padding:3px 8px;margin:2px 2px 0 0;" onclick="quickSetVal('M_COST_ACT','費用（実績）')">+ 費用(実績)</button>
+        <button class="btn" style="background:#f59e0b;color:white;font-size:10px;padding:3px 8px;margin:2px 2px 0 0;" onclick="quickSetVal('M_COST_BUD','費用予算')">+ 費用予算</button>
+        <button class="btn" style="background:#f59e0b;color:white;font-size:10px;padding:3px 8px;margin:2px 2px 0 0;" onclick="quickSetVal('M_COST_DIFF','予実差')">+ 予実差</button>
+        <button class="btn" style="background:#f59e0b;color:white;font-size:10px;padding:3px 8px;margin:2px 2px 0 0;" onclick="quickSetVal('M_COST_RATE','予実達成率')">+ 達成率</button>
       </span>`;
     } else {
-      cv.innerHTML = `<span class="empty-hint">ここにトランザクションをドロップ → 集計値として表示</span>`;
+      cv.innerHTML = `<span class="empty-hint">ここにトランザクションをドロップ → 集計値として表示 (複数追加可)</span>`;
     }
   }
 }
 
 function quickSetVal(id, name) {
-  zones.val = { id, name, type: 'metric' };
+  if (zones.vals.some(v => v.id === id)) { showToast(`⚠️ 「${name}」は既に追加済みです`); return; }
+  if (zones.vals.length > 0) {
+    const newSys = inferMetricSystem(name);
+    const existingSys = inferMetricSystem(zones.vals[0].name);
+    if (newSys !== existingSys) {
+      showAlert('🚫 メジャー系統不一致', `「${name}」(${metSysLabel(newSys)}) と既存「${zones.vals[0].name}」(${metSysLabel(existingSys)}) は系統が異なるため併記できません。\n\n理由: 粒度・日付制約・更新タイミングが異なる可能性があります。\n\n同じ系統で揃えてください。`);
+      return;
+    }
+  }
+  zones.vals.push({ id, name, type: 'metric' });
+  resetTableCache();
+  renderZoneContent();
+  updateTable();
+}
+
+function removeValAt(idx) {
+  zones.vals.splice(idx, 1);
   resetTableCache();
   renderZoneContent();
   updateTable();
@@ -1211,11 +1252,18 @@ function quickSetVal(id, name) {
 
 function typeIcon(t) { return t === 'tag' ? '🏷️' : (t === 'dim' ? '📐' : '📊'); }
 
-function removeZone(name) { zones[name] = null; resetTableCache(); tableSort = { axis: null, key: null, dir: null }; renderZoneContent(); updateTable(); }
+function removeZone(name) {
+  if (name === 'val') zones.vals = [];
+  else zones[name] = null;
+  resetTableCache();
+  tableSort = { axis: null, key: null, dir: null };
+  renderZoneContent();
+  updateTable();
+}
 
 function updateTable() {
   const area = document.getElementById('tableArea');
-  const placed = (zones.row?1:0) + (zones.col?1:0) + (zones.val?1:0);
+  const placed = (zones.row?1:0) + (zones.col?1:0) + (zones.vals.length>0?1:0);
 
   if (placed === 0) {
     area.innerHTML = `<div style="text-align: center; padding: 60px 20px; color: #94a3b8;"><div style="font-size: 42px; margin-bottom: 8px;">📊</div><div style="font-size: 13px;">行・列・値をドロップすると<br>クロス集計表が表示されます</div></div>`;
@@ -1292,26 +1340,30 @@ function getZoneMembers(zone) {
 
 function renderTable() {
   const rowList = zones.row ? getZoneMembers(zones.row) : ['(集計)'];
-  const colList = zones.col ? getZoneMembers(zones.col).slice(0, 6) : null;
-  const valName = zones.val?.name || '';
+  const isMultiMeasure = zones.vals.length > 1;
+  const colListBase = zones.col ? getZoneMembers(zones.col).slice(0, 6) : null;
+  const colList = isMultiMeasure ? zones.vals.map(v => v.name) : colListBase;
+  const colMeasureName = (idx) => isMultiMeasure ? zones.vals[idx].name : (zones.vals[0]?.name || '');
+  const valName = zones.vals[0]?.name || '';
   const isRatio = valName.includes('率') || valName.includes('達成') || valName.includes('進捗') || valName.includes('構成比') || valName.includes('前年比');
 
   // 値を一度だけ生成 (キャッシュキーで安定性確保)
-  const cacheKey = `${zones.row?.id||'_'}|${zones.col?.id||'_'}|${zones.val?.id||'_'}`;
+  const valsKey = zones.vals.map(v => v.id).join(',');
+  const cacheKey = `${zones.row?.id||'_'}|${isMultiMeasure?'M':(zones.col?.id||'_')}|${valsKey||'_'}`;
   if (!cachedTableData || cachedTableData.key !== cacheKey) {
     const data = rowList.map(rowName => {
       let total = 0;
       let cells = [];
-      if (colList && zones.val) {
-        cells = colList.map(() => {
-          const v = generateValue(valName);
+      if (colList && zones.vals.length > 0) {
+        cells = colList.map((_, i) => {
+          const v = generateValue(colMeasureName(i));
           total += v;
           return v;
         });
-      } else if (zones.val) {
+      } else if (zones.vals.length > 0) {
         total = generateValue(valName);
       }
-      const totalDisplay = isRatio && colList ? (total / colList.length) : total;
+      const totalDisplay = isRatio && colList && !isMultiMeasure ? (total / colList.length) : total;
       return { rowName, cells, total: totalDisplay };
     });
     cachedTableData = { key: cacheKey, data };
@@ -1322,13 +1374,13 @@ function renderTable() {
   let colOrder = colList ? colList.map((_, i) => i) : null;
 
   if (tableSort.axis !== null) {
-    if (tableSort.axis === 'rows-by-col' && zones.val) {
+    if (tableSort.axis === 'rows-by-col' && zones.vals.length > 0) {
       const colIdx = parseInt(tableSort.key);
       sortedData.sort((a, b) => {
         const av = a.cells[colIdx] || 0, bv = b.cells[colIdx] || 0;
         return tableSort.dir === 'asc' ? av - bv : bv - av;
       });
-    } else if (tableSort.axis === 'rows-by-total' && zones.val) {
+    } else if (tableSort.axis === 'rows-by-total' && zones.vals.length > 0) {
       sortedData.sort((a, b) => tableSort.dir === 'asc' ? a.total - b.total : b.total - a.total);
     } else if (tableSort.axis === 'rows-by-label') {
       // 行のラベル名でソート (五十音順/日付順)
@@ -1394,11 +1446,16 @@ function renderTable() {
   const rowSortTitle = rowIsDate
     ? `${rowHeaderText}で並び替え (クリック: 最新→古い順 / 再クリック: 古い順→最新)`
     : `${rowHeaderText}で並び替え`;
-  // 日付列の圧縮 (列の年月共通分をバナーに集約)
-  const dateMeta = colList ? buildDateColMeta(colList) : null;
+  // 日付列の圧縮 (複数メジャー時はスキップ)
+  const dateMeta = (!isMultiMeasure && colList) ? buildDateColMeta(colList) : null;
   let dateBanner = '';
   if (dateMeta && dateMeta.bannerText) {
     dateBanner = `<div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:6px;padding:6px 12px;margin-bottom:6px;font-size:12px;color:#9a3412;font-weight:600;">${dateMeta.bannerText}</div>`;
+  }
+  let multiMeasureBar = '';
+  if (isMultiMeasure) {
+    const colSkipped = zones.col ? `<span style="margin-left:8px;color:#92400e;">⚠️ 列「${zones.col.name}」は複数メジャー併記中のため非表示</span>` : '';
+    multiMeasureBar = `<div style="background:#fff7ed;border:1.5px solid #f59e0b;border-radius:6px;padding:6px 12px;margin-bottom:6px;font-size:11px;color:#9a3412;">📊 複数メジャー併記モード (${zones.vals.length}指標)${colSkipped}</div>`;
   }
   let head = `<tr>
     <th onclick="sortTableBy('rows-by-label','')" style="cursor:pointer;${rowLabelSorted?'background:#f59e0b;color:white;':'background:#f1f5f9;'}" title="${rowSortTitle}">${rowHeaderText} ${sortIcon('rows-by-label','')}</th>`;
@@ -1411,45 +1468,67 @@ function renderTable() {
     });
   }
   const totalSorted = tableSort.axis === 'rows-by-total';
-  head += `<th class="total" onclick="sortTableBy('rows-by-total','')" style="cursor:pointer;${totalSorted?'background:#f59e0b;color:white;':''}" title="合計値で行をソート">${valName ? valName + '合計' : '値'} ${sortIcon('rows-by-total','')}</th></tr>`;
+  if (!isMultiMeasure) {
+    head += `<th class="total" onclick="sortTableBy('rows-by-total','')" style="cursor:pointer;${totalSorted?'background:#f59e0b;color:white;':''}" title="合計値で行をソート">${valName ? valName + '合計' : '値'} ${sortIcon('rows-by-total','')}</th>`;
+  }
+  head += `</tr>`;
 
   // ボディ (行ラベルは表示のみ、個別ソートアイコン無し)
   let body = '';
   sortedData.forEach(d => {
     let cells = `<td class="row-header">${d.rowName}</td>`;
     if (colList) {
-      colOrder.forEach(colIdx => {
+      colOrder.forEach((colIdx, displayIdx) => {
         const v = d.cells[colIdx];
-        if (zones.val && v !== undefined) cells += `<td>${formatValue(valName, v)}</td>`;
+        const measureName = colMeasureName(colIdx);
+        if (zones.vals.length > 0 && v !== undefined) cells += `<td>${formatValue(measureName, v)}</td>`;
         else cells += `<td class="empty-cell">―</td>`;
       });
     }
-    if (zones.val) {
-      cells += `<td class="total">${formatValue(valName, d.total)}</td>`;
-    } else {
-      cells += `<td class="empty-cell" style="background:#fffbeb;color:#92400e;">値が必要</td>`;
+    if (!isMultiMeasure) {
+      if (zones.vals.length > 0) {
+        cells += `<td class="total">${formatValue(valName, d.total)}</td>`;
+      } else {
+        cells += `<td class="empty-cell" style="background:#fffbeb;color:#92400e;">値が必要</td>`;
+      }
     }
     body += `<tr>${cells}</tr>`;
   });
 
-  return `${sortStatusBar}${dateBanner}<table class="cross-table">${head}${body}</table>`;
+  return `${sortStatusBar}${multiMeasureBar}${dateBanner}<table class="cross-table">${head}${body}</table>`;
 }
 
 function renderBar() {
-  if (!zones.val) {
+  if (zones.vals.length === 0) {
     return `<div style="text-align: center; padding: 40px 20px; color: #f59e0b;">📊 値が必要です</div>`;
   }
-  const valName = zones.val.name;
   const list = zones.row ? (getZoneMembers(zones.row) || ['(全体)']).slice(0, 8) : ['(全体)'];
-  // 各値生成
-  const values = list.map(s => generateValue(valName));
-  const maxVal = Math.max(...values);
+  const isMultiMeasure = zones.vals.length > 1;
   let html = '<div class="bar-chart">';
-  list.forEach((s, i) => {
-    const v = values[i];
-    const widthPct = (v / maxVal) * 100;
-    html += `<div class="bar-row"><div class="bar-label">${s}</div><div class="bar-track"><div class="bar-fill" style="width:${widthPct}%"></div></div><div class="bar-value">${formatValue(valName, v)}</div></div>`;
-  });
+  if (!isMultiMeasure) {
+    const valName = zones.vals[0].name;
+    const values = list.map(() => generateValue(valName));
+    const maxVal = Math.max(...values, 1);
+    list.forEach((s, i) => {
+      const v = values[i];
+      const widthPct = (v / maxVal) * 100;
+      html += `<div class="bar-row"><div class="bar-label">${s}</div><div class="bar-track"><div class="bar-fill" style="width:${widthPct}%"></div></div><div class="bar-value">${formatValue(valName, v)}</div></div>`;
+    });
+  } else {
+    html += `<div style="background:#fff7ed;border:1.5px solid #f59e0b;border-radius:6px;padding:6px 12px;margin-bottom:6px;font-size:11px;color:#9a3412;">📊 複数メジャー併記モード (${zones.vals.length}指標)</div>`;
+    const colors = ['#f59e0b','#0ea5e9','#a855f7','#10b981','#ec4899','#64748b'];
+    const allVals = zones.vals.map(v => list.map(() => generateValue(v.name)));
+    const maxAll = Math.max(...allVals.flat(), 1);
+    list.forEach((s, i) => {
+      html += `<div style="margin-bottom:6px;"><div class="bar-label" style="font-weight:600;margin-bottom:2px;">${s}</div>`;
+      zones.vals.forEach((m, mi) => {
+        const v = allVals[mi][i];
+        const widthPct = (v / maxAll) * 100;
+        html += `<div class="bar-row" style="margin-left:10px;"><div class="bar-label" style="font-size:9px;color:#64748b;">${m.name}</div><div class="bar-track"><div class="bar-fill" style="width:${widthPct}%;background:${colors[mi % colors.length]};"></div></div><div class="bar-value">${formatValue(m.name, v)}</div></div>`;
+      });
+      html += '</div>';
+    });
+  }
   html += '</div>';
   return html;
 }
@@ -1489,10 +1568,13 @@ function resetTableCache() {
 
 function updateWarning() {
   const w = document.getElementById('warningInline');
-  if (!zones.val) { w.style.display = 'none'; return; }
-  const v = zones.val.name;
+  if (zones.vals.length === 0) { w.style.display = 'none'; return; }
+  const v = zones.vals[0].name;
   w.style.display = 'block';
-  if (v.includes('率') || v.includes('単価')) {
+  if (zones.vals.length > 1) {
+    w.className = 'warning-inline'; w.style.background = '#fff7ed'; w.style.borderColor = '#f59e0b'; w.style.color = '#9a3412';
+    w.innerHTML = `📊 ${zones.vals.length}指標併記中 (${metSysLabel(inferMetricSystem(v))})`;
+  } else if (v.includes('率') || v.includes('単価')) {
     w.className = 'warning-inline'; w.style.background = '#fffbeb'; w.style.borderColor = '#fcd34d'; w.style.color = '#92400e';
     w.innerHTML = '🟡 加重平均で計算';
   } else if (zones.col?.name === '時間帯' && zones.row?.name === '月') {
@@ -1515,16 +1597,17 @@ function showToast(msg) {
 const CURRENT_SCREEN = 'store';
 
 function saveView() {
-  if (!zones.val) { showAlert('⚠️ 値が必要', '「値」スロットにトランザクションを配置してから保存してください。'); return; }
+  if (zones.vals.length === 0) { showAlert('⚠️ 値が必要', '「値」スロットにトランザクションを配置してから保存してください。'); return; }
   const parts = [];
   if (zones.row) parts.push(`📐 行: ${zones.row.name}`);
   if (zones.col) parts.push(`➡️ 列: ${zones.col.name}`);
-  parts.push(`📊 値: ${zones.val.name}`);
+  parts.push(`📊 値: ${zones.vals.map(v => v.name).join(' / ')}`);
   if (zones.filter.length > 0) parts.push(`🔍 フィルタ: ${zones.filter.map(f => f.name).join(', ')}`);
   parts.push(`📈 表示: ${({table:'表',bar:'棒グラフ',line:'折れ線',heatmap:'ヒートマップ'})[currentChart]}`);
 
   document.getElementById('saveViewSummary').innerHTML = `<strong>📌 保存内容:</strong><br>${parts.join('<br>')}`;
-  document.getElementById('viewName').value = `${zones.row?.name||''}${zones.col?' × '+zones.col.name:''} × ${zones.val.name}`;
+  const valLabel = zones.vals.length > 1 ? `[${zones.vals.length}指標]` : zones.vals[0].name;
+  document.getElementById('viewName').value = `${zones.row?.name||''}${zones.col?' × '+zones.col.name:''} × ${valLabel}`;
   document.getElementById('viewDesc').value = '';
   document.getElementById('viewScreen').value = CURRENT_SCREEN;
   document.getElementById('viewSize').value = 'half';
@@ -1556,7 +1639,7 @@ function confirmSaveView() {
     config: {
       row: zones.row ? {...zones.row} : null,
       col: zones.col ? {...zones.col} : null,
-      val: zones.val ? {...zones.val} : null,
+      vals: zones.vals.map(v => ({...v})),
       filter: zones.filter.map(f => ({...f})),
       chart: currentChart,
       dimFilters: JSON.parse(JSON.stringify(dimFilters)),
@@ -1575,6 +1658,10 @@ function migrateViews() {
     if (v.pinned === undefined) v.pinned = false;
     if (v.size === undefined) v.size = 'half';
     if (v.order === undefined) v.order = order++;
+    // v3.10: config.val (単一) → config.vals (配列) マイグレーション
+    if (v.config && !v.config.vals) {
+      v.config.vals = v.config.val ? [v.config.val] : [];
+    }
   });
 }
 
@@ -1605,7 +1692,7 @@ function renderDashboard() {
     const summary = [
       cfg.row ? `📐${cfg.row.name}` : '',
       cfg.col ? `➡️${cfg.col.name}` : '',
-      cfg.val ? `📊${cfg.val.name}` : '',
+      (cfg.vals && cfg.vals.length > 0) ? `📊${cfg.vals.length > 1 ? cfg.vals.length + '指標: ' : ''}${cfg.vals.map(x=>x.name).join(' / ')}` : (cfg.val ? `📊${cfg.val.name}` : ''),
     ].filter(Boolean).join(' × ');
     card.innerHTML = `
       <div class="dashboard-card-header">
@@ -1675,7 +1762,8 @@ function unpinView(viewId) {
 
 function renderViewSnapshot(view) {
   const cfg = view.config;
-  if (!cfg || !cfg.val) return `<div style="text-align:center;padding:14px;color:#94a3b8;font-size:11px;">⚠️ 値が未設定</div>`;
+  const vals = cfg && (cfg.vals || (cfg.val ? [cfg.val] : []));
+  if (!cfg || !vals || vals.length === 0) return `<div style="text-align:center;padding:14px;color:#94a3b8;font-size:11px;">⚠️ 値が未設定</div>`;
   const chart = cfg.chart || 'table';
   if (chart === 'bar') return renderViewBar(cfg, view.id);
   if (chart === 'line' || chart === 'heatmap') return `<div style="text-align:center;padding:14px;color:#94a3b8;font-size:11px;">${chart==='line'?'📈':'🔥'} ${chart==='line'?'折れ線':'ヒートマップ'} (モック)</div>`;
@@ -1737,9 +1825,12 @@ function truncLabel(s, max = 10) {
 
 function renderViewTable(cfg, viewId) {
   const rowListAll = cfg.row ? getZoneMembersFromCfg(cfg, cfg.row) : ['(集計)'];
-  const colListAll = cfg.col ? getZoneMembersFromCfg(cfg, cfg.col) : null;
-  const colVisible = colListAll ? colListAll.slice(0, 3) : null;
-  const valName = cfg.val.name;
+  const vals = cfg.vals && cfg.vals.length > 0 ? cfg.vals : (cfg.val ? [cfg.val] : []);
+  const isMultiMeasure = vals.length > 1;
+  const colListAll = isMultiMeasure ? vals.map(v => v.name) : (cfg.col ? getZoneMembersFromCfg(cfg, cfg.col) : null);
+  const colVisible = colListAll ? colListAll.slice(0, isMultiMeasure ? 4 : 3) : null;
+  const colMeasureName = (idx) => isMultiMeasure ? vals[idx].name : vals[0].name;
+  const valName = vals[0].name;
   const isRatio = valName.includes('率') || valName.includes('達成') || valName.includes('進捗') || valName.includes('構成比') || valName.includes('前年比');
   const cacheKey = viewId ? `t_${viewId}` : null;
   let allData;
@@ -1749,9 +1840,10 @@ function renderViewTable(cfg, viewId) {
     allData = rowListAll.map(rowName => {
       let total = 0, cells = [];
       if (colVisible) {
-        cells = colVisible.map(() => { const v = generateValue(valName); total += v; return v; });
+        cells = colVisible.map((_, i) => { const m = colMeasureName(i); const v = generateValue(m); total += v; return v; });
       } else { total = generateValue(valName); }
-      return { rowName, cells, total: isRatio && colVisible ? total/colVisible.length : total };
+      const totalDisplay = isMultiMeasure ? total : (isRatio && colVisible ? total/colVisible.length : total);
+      return { rowName, cells, total: totalDisplay };
     });
     if (cacheKey) previewDataCache[cacheKey] = allData;
   }
@@ -1772,27 +1864,28 @@ function renderViewTable(cfg, viewId) {
   const moreColsCount = colListAll ? (colListAll.length - colVisible.length) : 0;
   const moreMarkerHead = moreColsCount > 0 ? `<th class="more-col-marker" title="他${moreColsCount}列が省略されています">⋯</th>` : '';
   const moreMarkerCell = moreColsCount > 0 ? `<td class="more-col-marker" onclick="event.stopPropagation();loadViewById('${viewId}')" title="エディタで全列を表示">⋯</td>` : '';
-  const dateMeta = colVisible ? buildDateColMeta(colVisible) : null;
+  const dateMeta = (!isMultiMeasure && colVisible) ? buildDateColMeta(colVisible) : null;
   let head = `<tr><th ${onClick('row')}>${truncLabel(cfg.row?.name || '項目', 16)}${sortIcon(sortKey==='row', sortDir)}</th>`;
   if (colVisible) colVisible.forEach((c, i) => {
     const label = dateMeta ? dateMeta.labels[i] : truncLabel(c, 16);
     head += `<th ${onClick('c'+i)}>${label}${sortIcon(sortKey==='c'+i, sortDir)}</th>`;
   });
   head += moreMarkerHead;
-  head += `<th class="total" ${onClick('total')}>合計${sortIcon(sortKey==='total', sortDir)}</th></tr>`;
+  if (!isMultiMeasure) head += `<th class="total" ${onClick('total')}>合計${sortIcon(sortKey==='total', sortDir)}</th>`;
+  head += `</tr>`;
   let body = '';
   data.forEach(d => {
     let cells = `<td class="row-header">${truncLabel(d.rowName, 16)}</td>`;
-    if (colVisible) d.cells.forEach(v => cells += `<td>${formatValue(valName, v)}</td>`);
+    if (colVisible) d.cells.forEach((v, i) => cells += `<td>${formatValue(colMeasureName(i), v)}</td>`);
     cells += moreMarkerCell;
-    cells += `<td class="total">${formatValue(valName, d.total)}</td>`;
+    if (!isMultiMeasure) cells += `<td class="total">${formatValue(valName, d.total)}</td>`;
     body += `<tr>${cells}</tr>`;
   });
   const moreRows = rowListAll.length - data.length;
   const moreCols = colListAll ? colListAll.length - colVisible.length : 0;
   // 省略行マーカー: 縦3点を3行に渡って表示し、行省略を明示
   if (moreRows > 0) {
-    const totalDataCols = (colVisible ? colVisible.length : 0) + (moreCols > 0 ? 1 : 0) + 1;
+    const totalDataCols = (colVisible ? colVisible.length : 0) + (moreCols > 0 ? 1 : 0) + (isMultiMeasure ? 0 : 1);
     const dotRow = (label) => {
       let cells = `<td class="row-header">${label}</td>`;
       for (let i = 0; i < totalDataCols; i++) cells += `<td>⋮</td>`;
@@ -1802,11 +1895,13 @@ function renderViewTable(cfg, viewId) {
     body += dotRow('⋮');
     body += dotRow('⋮');
   }
-  const totalCols = (colListAll ? colListAll.length : 0) + 1;
-  const visibleCols = (colVisible ? colVisible.length : 0) + 1;
+  const totalCols = (colListAll ? colListAll.length : 0) + (isMultiMeasure ? 0 : 1);
+  const visibleCols = (colVisible ? colVisible.length : 0) + (isMultiMeasure ? 0 : 1);
+  const measureBadge = isMultiMeasure ? `<span class="badge" style="background:#f59e0b;color:white;">📊 ${vals.length}指標併記</span>` : '';
   const summaryBar = `<div class="preview-summary-bar">
     <span>📊 概要 (詳細は ✎ エディタで)</span>
     <span>
+      ${measureBadge}
       ${moreCols > 0 ? `<span class="badge warn">列 ${visibleCols}/${totalCols}</span>` : `<span class="badge">列 ${visibleCols}</span>`}
       ${moreRows > 0 ? `<span class="badge warn">行 ${data.length}/${rowListAll.length}</span>` : `<span class="badge">行 ${data.length}</span>`}
     </span>
@@ -1823,7 +1918,9 @@ function renderViewTable(cfg, viewId) {
 }
 
 function renderViewBar(cfg, viewId) {
-  const valName = cfg.val.name;
+  const vals = cfg.vals && cfg.vals.length > 0 ? cfg.vals : (cfg.val ? [cfg.val] : []);
+  const valName = vals[0].name;
+  const isMultiMeasure = vals.length > 1;
   const listAll = cfg.row ? getZoneMembersFromCfg(cfg, cfg.row) : ['(全体)'];
   const cacheKey = viewId ? `b_${viewId}` : null;
   let pairs;
@@ -1846,9 +1943,11 @@ function renderViewBar(cfg, viewId) {
   const sortKey = sort?.key, sortDir = sort?.dir;
   const onClick = (key) => viewId ? `onclick="event.stopPropagation();previewSortBy('${viewId}','${key}')" style="cursor:pointer;"` : '';
   const more = listAll.length - view.length;
+  const measureBadge = isMultiMeasure ? `<span class="badge" style="background:#f59e0b;color:white;">📊 ${vals.length}指標 (1番目を表示)</span>` : '';
   const summaryBar = `<div class="preview-summary-bar">
     <span>📊 概要 (詳細は ✎ エディタで)</span>
     <span>
+      ${measureBadge}
       ${more > 0 ? `<span class="badge warn">${view.length}/${listAll.length}件</span>` : `<span class="badge">${view.length}件</span>`}
       ${viewId ? `<span ${onClick('label')} style="margin-left:6px;">項目${sortIcon(sortKey==='label', sortDir)}</span>` : ''}
       ${viewId ? `<span ${onClick('value')} style="margin-left:6px;">${truncLabel(valName)}${sortIcon(sortKey==='value', sortDir)}</span>` : ''}
@@ -1899,7 +1998,7 @@ function renderConfigList() {
     const summary = [
       cfg.row ? `📐${cfg.row.name}` : '',
       cfg.col ? `➡️${cfg.col.name}` : '',
-      cfg.val ? `📊${cfg.val.name}` : '',
+      (cfg.vals && cfg.vals.length > 0) ? `📊${cfg.vals.length > 1 ? cfg.vals.length + '指標: ' : ''}${cfg.vals.map(x=>x.name).join(' / ')}` : (cfg.val ? `📊${cfg.val.name}` : ''),
     ].filter(Boolean).join(' × ');
     const screenBadge = c.screen === 'both' ? '🟢🟠 両方' : (c.screen === 'company' ? '🟢 会社' : '🟠 店舗');
     const row = document.createElement('div');
@@ -1993,7 +2092,7 @@ function openViewListModal() {
       const summary = [
         cfg.row ? `📐${cfg.row.name}` : '',
         cfg.col ? `➡️${cfg.col.name}` : '',
-        cfg.val ? `📊${cfg.val.name}` : '',
+        (cfg.vals && cfg.vals.length > 0) ? `📊${cfg.vals.length > 1 ? cfg.vals.length + '指標: ' : ''}${cfg.vals.map(x=>x.name).join(' / ')}` : (cfg.val ? `📊${cfg.val.name}` : ''),
       ].filter(Boolean).join(' × ');
       const screenLabel = v.screen === 'both' ? '🟢🟠 両方' : (v.screen === 'store' ? '🟠 店舗' : '🟢 会社');
       const pinnedBadge = v.pinned ? '<span style="background:#f59e0b;color:white;font-size:9px;padding:2px 6px;border-radius:3px;">📌固定中</span>' : '';
@@ -2021,10 +2120,11 @@ function loadView(idx) {
   if (!v) return;
   zones.row = v.config.row;
   zones.col = v.config.col;
-  zones.val = v.config.val;
+  zones.vals = v.config.vals ? v.config.vals.map(x => ({...x})) : (v.config.val ? [{...v.config.val}] : []);
   zones.filter = v.config.filter ? [...v.config.filter] : [];
   dimFilters = {...v.config.dimFilters};
   currentChart = v.config.chart || 'table';
+  resetTableCache();
   renderZoneContent();
   renderFilterContent();
   document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
@@ -2067,7 +2167,9 @@ function applyAI(rowName, colName, valName) {
   };
   zones.row = findAny(rowName);
   zones.col = findAny(colName);
-  zones.val = findAny(valName);
+  const v = findAny(valName);
+  zones.vals = v ? [v] : [];
+  resetTableCache();
   renderZoneContent();
   updateTable();
   showToast(`✅ AI提案を適用`);
