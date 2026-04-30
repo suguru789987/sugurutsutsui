@@ -1411,6 +1411,13 @@ function renderTable() {
     </div>`;
   }
 
+  // 日付列の圧縮 (列の年月共通分をバナーに集約)
+  const dateMeta = colList ? buildDateColMeta(colList) : null;
+  let dateBanner = '';
+  if (dateMeta && dateMeta.bannerText) {
+    dateBanner = `<div style="background:#f0fdf4;border:1px solid #d1fae5;border-radius:6px;padding:6px 12px;margin-bottom:6px;font-size:12px;color:#065f46;font-weight:600;">${dateMeta.bannerText}</div>`;
+  }
+
   // ヘッダー (行ディメン名/列ヘッダ/合計列すべてソート可)
   const rowHeaderText = zones.row?.name || '項目';
   const rowLabelSorted = tableSort.axis === 'rows-by-label';
@@ -1421,10 +1428,11 @@ function renderTable() {
   let head = `<tr>
     <th onclick="sortTableBy('rows-by-label','')" style="cursor:pointer;${rowLabelSorted?'background:#10b981;color:white;':'background:#f1f5f9;'}" title="${rowSortTitle}">${rowHeaderText} ${sortIcon('rows-by-label','')}</th>`;
   if (colList) {
-    colOrder.forEach(idx => {
+    colOrder.forEach((idx, displayIdx) => {
       const c = colList[idx];
+      const displayLabel = dateMeta ? dateMeta.labels[idx] : c;
       const isSorted = tableSort.axis === 'rows-by-col' && String(tableSort.key) === String(idx);
-      head += `<th onclick="sortTableBy('rows-by-col','${idx}')" style="cursor:pointer;${isSorted?'background:#10b981;color:white;':''}" title="クリックで「${c}」の値で行をソート">${c} ${sortIcon('rows-by-col', idx)}</th>`;
+      head += `<th onclick="sortTableBy('rows-by-col','${idx}')" style="cursor:pointer;${isSorted?'background:#10b981;color:white;':''}" title="クリックで「${c}」の値で行をソート">${displayLabel} ${sortIcon('rows-by-col', idx)}</th>`;
     });
   }
   const totalSorted = tableSort.axis === 'rows-by-total';
@@ -1449,7 +1457,7 @@ function renderTable() {
     body += `<tr>${cells}</tr>`;
   });
 
-  return `${sortStatusBar}<table class="cross-table">${head}${body}</table>`;
+  return `${sortStatusBar}${dateBanner}<table class="cross-table">${head}${body}</table>`;
 }
 
 function renderBar() {
@@ -1716,6 +1724,45 @@ function renderViewSnapshot(view) {
   return renderViewTable(cfg, view.id);
 }
 
+// === 日付ラベルの圧縮 (年/年月の共通プレフィックスをバナーに集約) ===
+function parseDateLabel(s) {
+  const m = String(s).match(/^(\d{4})[\/\-年.](\d{1,2})(?:[\/\-月.](\d{1,2})日?)?$/);
+  if (!m) return null;
+  return { year: m[1], month: m[2].padStart(2, '0'), day: m[3] ? m[3].padStart(2, '0') : null };
+}
+function buildDateColMeta(colList) {
+  if (!colList || colList.length === 0) return null;
+  const parsed = colList.map(c => ({ raw: c, parts: parseDateLabel(c) }));
+  if (!parsed.every(p => p.parts)) return null;
+  const years = [...new Set(parsed.map(p => p.parts.year))];
+  const months = [...new Set(parsed.map(p => p.parts.year + '/' + p.parts.month))];
+  if (years.length === 1 && months.length === 1) {
+    const y = parsed[0].parts.year, m = parsed[0].parts.month;
+    return {
+      bannerText: `📅 ${y}年${parseInt(m, 10)}月`,
+      labels: parsed.map(p => p.parts.day ? p.parts.day + '日' : (parseInt(p.parts.month, 10) + '月'))
+    };
+  }
+  if (years.length === 1) {
+    const y = parsed[0].parts.year;
+    return {
+      bannerText: `📅 ${y}年`,
+      labels: parsed.map(p => p.parts.day ? `${parseInt(p.parts.month, 10)}/${p.parts.day}` : `${parseInt(p.parts.month, 10)}月`)
+    };
+  }
+  // 複数年: 年が変わる位置の列にのみ年を表記
+  let lastYear = null;
+  return {
+    bannerText: null,
+    labels: parsed.map(p => {
+      const showYear = p.parts.year !== lastYear;
+      lastYear = p.parts.year;
+      const md = p.parts.day ? `${parseInt(p.parts.month, 10)}/${p.parts.day}` : `${parseInt(p.parts.month, 10)}月`;
+      return showYear ? `${p.parts.year}年 ${md}` : md;
+    })
+  };
+}
+
 function truncLabel(s, max = 10) {
   if (s == null) return '';
   s = String(s);
@@ -1771,8 +1818,13 @@ function renderViewTable(cfg, viewId) {
   const moreColsCount = colListAll ? (colListAll.length - colVisible.length) : 0;
   const moreMarkerHead = moreColsCount > 0 ? `<th class="more-col-marker" title="他${moreColsCount}列が省略されています">⋯</th>` : '';
   const moreMarkerCell = moreColsCount > 0 ? `<td class="more-col-marker" onclick="event.stopPropagation();loadViewById('${viewId}')" title="エディタで全列を表示">⋯</td>` : '';
+  // 日付列の圧縮メタ
+  const dateMeta = colVisible ? buildDateColMeta(colVisible) : null;
   let head = `<tr><th ${onClick('row')}>${truncLabel(cfg.row?.name || '項目', 16)}${sortIcon(sortKey==='row', sortDir)}</th>`;
-  if (colVisible) colVisible.forEach((c, i) => head += `<th ${onClick('c'+i)}>${truncLabel(c, 16)}${sortIcon(sortKey==='c'+i, sortDir)}</th>`);
+  if (colVisible) colVisible.forEach((c, i) => {
+    const label = dateMeta ? dateMeta.labels[i] : truncLabel(c, 16);
+    head += `<th ${onClick('c'+i)}>${label}${sortIcon(sortKey==='c'+i, sortDir)}</th>`;
+  });
   head += moreMarkerHead;
   head += `<th class="total" ${onClick('total')}>合計${sortIcon(sortKey==='total', sortDir)}</th></tr>`;
   let body = '';
@@ -1813,8 +1865,10 @@ function renderViewTable(cfg, viewId) {
     moreLink = `<div class="preview-more-link" onclick="event.stopPropagation();loadViewById('${viewId}')">💡 ${moreRows>0?`他${moreRows}行`:''}${moreRows>0&&moreCols>0?' / ':''}${moreCols>0?`他${moreCols}列`:''} … エディタで全表示 →</div>`;
   }
   const fadeClasses = moreRows > 0 ? 'has-row-fade' : '';
-  // colSpan の colSpan 計算用に moreLink を再構築 (省略列マーカー1列分追加)
-  return `${summaryBar}<div class="preview-table-wrap ${fadeClasses}"><table class="cross-table">${head}${body}</table></div>${moreLink}`;
+  const dateBanner = (dateMeta && dateMeta.bannerText)
+    ? `<div style="background:#f0fdf4;border:1px solid #d1fae5;border-radius:4px;padding:3px 8px;margin:0 0 4px;font-size:10px;color:#065f46;font-weight:600;">${dateMeta.bannerText}</div>`
+    : '';
+  return `${summaryBar}${dateBanner}<div class="preview-table-wrap ${fadeClasses}"><table class="cross-table">${head}${body}</table></div>${moreLink}`;
 }
 
 function renderViewBar(cfg, viewId) {
