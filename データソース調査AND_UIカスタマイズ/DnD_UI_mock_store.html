@@ -314,6 +314,10 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
 .cross-table th.more-col-marker, .cross-table td.more-col-marker { width: 22px; text-align: center; color: #94a3b8; font-weight: 400; background: #f8fafc; padding: 3px 0 !important; }
 .cross-table td.more-col-marker { color: #cbd5e1; cursor: pointer; }
 .cross-table td.more-col-marker:hover { background: #f1f5f9; color: #64748b; }
+/* 省略行マーカー: 縦3点を行として表示 */
+.cross-table tr.more-rows-marker td { color: #cbd5e1; text-align: center; padding: 1px 0 !important; line-height: 1.0; font-size: 12px; background: #f8fafc; cursor: pointer; }
+.cross-table tr.more-rows-marker td:first-child { color: #94a3b8; }
+.cross-table tr.more-rows-marker:hover td { background: #f1f5f9; color: #64748b; }
 .preview-bar-wrap.has-row-fade::after { content: ''; position: absolute; left: 0; right: 0; bottom: 14px; height: 14px; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.92) 80%); pointer-events: none; }
 .preview-more-link { display: block; text-align: center; color: #f59e0b; font-size: 9px; padding: 3px; cursor: pointer; font-weight: 600; }
 .preview-more-link:hover { background: #fff7ed; }
@@ -1737,6 +1741,18 @@ function renderViewTable(cfg, viewId) {
   });
   const moreRows = rowListAll.length - data.length;
   const moreCols = colListAll ? colListAll.length - colVisible.length : 0;
+  // 省略行マーカー: 縦3点を3行に渡って表示し、行省略を明示
+  if (moreRows > 0) {
+    const totalDataCols = (colVisible ? colVisible.length : 0) + (moreCols > 0 ? 1 : 0) + 1;
+    const dotRow = (label) => {
+      let cells = `<td class="row-header">${label}</td>`;
+      for (let i = 0; i < totalDataCols; i++) cells += `<td>⋮</td>`;
+      return `<tr class="more-rows-marker" onclick="event.stopPropagation();loadViewById('${viewId}')" title="エディタで全行を表示">${cells}</tr>`;
+    };
+    body += dotRow('⋮');
+    body += dotRow('⋮');
+    body += dotRow('⋮');
+  }
   const totalCols = (colListAll ? colListAll.length : 0) + 1;
   const visibleCols = (colVisible ? colVisible.length : 0) + 1;
   const summaryBar = `<div class="preview-summary-bar">
