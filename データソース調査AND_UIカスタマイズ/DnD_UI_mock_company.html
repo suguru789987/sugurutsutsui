@@ -1935,19 +1935,14 @@ function buildDateColMeta(colList) {
   const parsed = colList.map(c => ({ raw: c, parts: parseDateLabel(c) }));
   if (!parsed.every(p => p.parts)) return null;
   const years = [...new Set(parsed.map(p => p.parts.year))];
-  const months = [...new Set(parsed.map(p => p.parts.year + '/' + p.parts.month))];
-  if (years.length === 1 && months.length === 1) {
-    const y = parsed[0].parts.year, m = parsed[0].parts.month;
-    return {
-      bannerText: `📅 ${y}年${parseInt(m, 10)}月`,
-      labels: parsed.map(p => p.parts.day ? p.parts.day + '日' : (parseInt(p.parts.month, 10) + '月'))
-    };
-  }
+  // 西暦のみバナーに集約 → 列は M/D 表記 (例: 4/1, 4/2)
   if (years.length === 1) {
     const y = parsed[0].parts.year;
     return {
       bannerText: `📅 ${y}年`,
-      labels: parsed.map(p => p.parts.day ? `${parseInt(p.parts.month, 10)}/${p.parts.day}` : `${parseInt(p.parts.month, 10)}月`)
+      labels: parsed.map(p => p.parts.day
+        ? `${parseInt(p.parts.month, 10)}/${parseInt(p.parts.day, 10)}`
+        : `${parseInt(p.parts.month, 10)}月`)
     };
   }
   // 複数年: 年が変わる位置の列にのみ年を表記
@@ -1957,7 +1952,9 @@ function buildDateColMeta(colList) {
     labels: parsed.map(p => {
       const showYear = p.parts.year !== lastYear;
       lastYear = p.parts.year;
-      const md = p.parts.day ? `${parseInt(p.parts.month, 10)}/${p.parts.day}` : `${parseInt(p.parts.month, 10)}月`;
+      const md = p.parts.day
+        ? `${parseInt(p.parts.month, 10)}/${parseInt(p.parts.day, 10)}`
+        : `${parseInt(p.parts.month, 10)}月`;
       return showYear ? `${p.parts.year}年 ${md}` : md;
     })
   };
