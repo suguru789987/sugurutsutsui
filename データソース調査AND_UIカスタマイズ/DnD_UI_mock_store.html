@@ -907,12 +907,15 @@ function inferDimSystem(dimId) {
 }
 function inferMetricSystem(name) {
   const n = name || '';
+  // 予実共通メジャー (費目ディメンと組合せ可) - 早期判定
+  if (n.includes('予算') || n.includes('達成率') || n.includes('進捗率') ||
+      n.includes('予実') || n.includes('構成比') || n.includes('前年') ||
+      n === '費用（実績）' || n === '費用') return 'budget';
   if (n.includes('PA人件費') || n.includes('人件費') || n.includes('シフト')) return 'labor';
   if (n.includes('FD仕入') || n.includes('原価') || n.includes('棚卸') || n.includes('仕入')) return 'cost-material';
   if (n.includes('光熱費') || n.includes('賃料') || n.includes('通信費') || n.includes('保険料') ||
       n.includes('広告宣伝費') || n.includes('消耗品') || n.includes('その他経費') || n.includes('経費') ||
       n.includes('地代') || n.includes('資材費') || n.includes('減価償却')) return 'cost-other';
-  if (n.includes('予算') || n.includes('達成率') || n.includes('進捗率') || n.includes('前年')) return 'budget';
   if (n.includes('FL率') || n.includes('FD率') || n.includes('効率') || n.includes('坪月商') || n.includes('ROI')) return 'efficiency';
   if (n.includes('営業利益') || n.includes('粗利') || n.includes('利益')) return 'profit';
   if (n.includes('客数') || n.includes('客単価') || n.includes('販売点数')) return 'volume';
@@ -920,11 +923,11 @@ function inferMetricSystem(name) {
   return 'other';
 }
 const COMPAT_MATRIX = {
-  'cost':   { 'cost-material':'ok', 'cost-other':'ok',  'labor':'ok',
-              'sales':'block', 'volume':'block', 'budget':'block', 'efficiency':'block', 'profit':'block', 'other':'block' },
-  'labor':  { 'labor':'ok',  'sales':'warn', 'volume':'warn',
-              'cost-material':'block', 'cost-other':'block', 'budget':'block', 'efficiency':'block', 'profit':'block', 'other':'block' },
-  'sales':  { 'sales':'ok',  'volume':'ok',  'profit':'ok', 'efficiency':'ok', 'budget':'warn',
+  'cost':   { 'cost-material':'ok', 'cost-other':'ok',  'labor':'ok', 'budget':'ok',
+              'sales':'block', 'volume':'block', 'efficiency':'block', 'profit':'block', 'other':'block' },
+  'labor':  { 'labor':'ok',  'sales':'warn', 'volume':'warn', 'budget':'ok',
+              'cost-material':'block', 'cost-other':'block', 'efficiency':'block', 'profit':'block', 'other':'block' },
+  'sales':  { 'sales':'ok',  'volume':'ok',  'profit':'ok', 'efficiency':'ok', 'budget':'ok',
               'cost-material':'warn', 'cost-other':'block', 'labor':'block', 'other':'block' },
   'common': { 'sales':'ok',  'volume':'ok',  'cost-material':'ok', 'cost-other':'ok',
               'labor':'ok',  'budget':'ok',  'efficiency':'ok', 'profit':'ok', 'other':'ok' },
@@ -945,9 +948,9 @@ function metSysLabel(s) {
            'efficiency':'効率性','profit':'収益性','other':'その他'})[s] || s;
 }
 function describeAllow(dimSys) {
-  if (dimSys === 'cost')  return '原価系/経費系/人件費系メトリクス';
-  if (dimSys === 'labor') return '人件費系メトリクス (売上系は担当者運用前提で警告のみ)';
-  if (dimSys === 'sales') return '売上系/客数系/効率/収益性メトリクス';
+  if (dimSys === 'cost')  return '原価系/経費系/人件費系/予実系メトリクス';
+  if (dimSys === 'labor') return '人件費系/予実系メトリクス (売上系は担当者運用前提で警告のみ)';
+  if (dimSys === 'sales') return '売上系/客数系/効率/収益性/予実系メトリクス';
   return '全メトリクス';
 }
 function inferMetricCategory(name) { return metSysLabel(inferMetricSystem(name)); }
