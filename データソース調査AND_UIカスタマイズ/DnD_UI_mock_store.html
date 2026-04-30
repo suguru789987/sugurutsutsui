@@ -307,9 +307,11 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
 .preview-summary-bar .badge { background: #fed7aa; color: #9a3412; padding: 1px 6px; border-radius: 8px; font-weight: 600; margin-left: 4px; }
 .preview-summary-bar .badge.warn { background: #fef3c7; color: #92400e; }
 .preview-table-wrap, .preview-bar-wrap { position: relative; }
-.preview-table-wrap.has-col-fade::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 32px; background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.95) 70%); pointer-events: none; }
-.preview-table-wrap.has-col-fade .col-fade-marker { position: absolute; top: 50%; right: 4px; transform: translateY(-50%); background: #f59e0b; color: white; font-size: 8px; font-weight: 700; padding: 2px 4px; border-radius: 3px; pointer-events: none; z-index: 2; line-height: 1; }
 .preview-table-wrap.has-row-fade::before { content: ''; position: absolute; left: 0; right: 0; bottom: 18px; height: 16px; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.92) 80%); pointer-events: none; z-index: 1; }
+/* 省略列マーカー: 表示中の最終データ列と合計列の間に挟む */
+.cross-table th.more-col-marker { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #92400e; font-size: 9px; font-weight: 700; text-align: center; padding: 4px 2px !important; width: 36px; border-left: 2px dashed #f59e0b; border-right: 2px dashed #f59e0b; }
+.cross-table td.more-col-marker { background: repeating-linear-gradient(45deg, #fffbeb, #fffbeb 4px, #fef3c7 4px, #fef3c7 8px); color: #92400e; font-size: 9px; text-align: center; padding: 3px 2px !important; border-left: 2px dashed #f59e0b; border-right: 2px dashed #f59e0b; cursor: pointer; }
+.cross-table td.more-col-marker:hover { background: #fef3c7; }
 .preview-bar-wrap.has-row-fade::after { content: ''; position: absolute; left: 0; right: 0; bottom: 14px; height: 14px; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.92) 80%); pointer-events: none; }
 .preview-more-link { display: block; text-align: center; color: #f59e0b; font-size: 9px; padding: 3px; cursor: pointer; font-weight: 600; }
 .preview-more-link:hover { background: #fff7ed; }
@@ -1663,13 +1665,18 @@ function renderViewTable(cfg, viewId) {
   const data = allData.slice(0, 4);
   const sortKey = sort?.key, sortDir = sort?.dir;
   const onClick = (key) => viewId ? `onclick="event.stopPropagation();previewSortBy('${viewId}','${key}')" style="cursor:pointer;"` : '';
+  const moreColsCount = colListAll ? (colListAll.length - colVisible.length) : 0;
+  const moreMarkerHead = moreColsCount > 0 ? `<th class="more-col-marker" title="他${moreColsCount}列が省略されています">⋯+${moreColsCount}列</th>` : '';
+  const moreMarkerCell = moreColsCount > 0 ? `<td class="more-col-marker" onclick="event.stopPropagation();loadViewById('${viewId}')" title="エディタで全列を表示">⋯</td>` : '';
   let head = `<tr><th ${onClick('row')}>${truncLabel(cfg.row?.name || '項目')}${sortIcon(sortKey==='row', sortDir)}</th>`;
   if (colVisible) colVisible.forEach((c, i) => head += `<th ${onClick('c'+i)}>${truncLabel(c)}${sortIcon(sortKey==='c'+i, sortDir)}</th>`);
+  head += moreMarkerHead;
   head += `<th class="total" ${onClick('total')}>合計${sortIcon(sortKey==='total', sortDir)}</th></tr>`;
   let body = '';
   data.forEach(d => {
     let cells = `<td class="row-header">${truncLabel(d.rowName)}</td>`;
     if (colVisible) d.cells.forEach(v => cells += `<td>${truncLabel(formatValue(valName, v))}</td>`);
+    cells += moreMarkerCell;
     cells += `<td class="total">${truncLabel(formatValue(valName, d.total))}</td>`;
     body += `<tr>${cells}</tr>`;
   });
@@ -1688,12 +1695,8 @@ function renderViewTable(cfg, viewId) {
   if (moreRows > 0 || moreCols > 0) {
     moreLink = `<div class="preview-more-link" onclick="event.stopPropagation();loadViewById('${viewId}')">💡 ${moreRows>0?`他${moreRows}行`:''}${moreRows>0&&moreCols>0?' / ':''}${moreCols>0?`他${moreCols}列`:''} … エディタで全表示 →</div>`;
   }
-  const fadeClasses = [
-    moreCols > 0 ? 'has-col-fade' : '',
-    moreRows > 0 ? 'has-row-fade' : ''
-  ].filter(Boolean).join(' ');
-  const colMarker = moreCols > 0 ? `<span class="col-fade-marker">+${moreCols}列 →</span>` : '';
-  return `${summaryBar}<div class="preview-table-wrap ${fadeClasses}"><table class="cross-table">${head}${body}</table>${colMarker}</div>${moreLink}`;
+  const fadeClasses = moreRows > 0 ? 'has-row-fade' : '';
+  return `${summaryBar}<div class="preview-table-wrap ${fadeClasses}"><table class="cross-table">${head}${body}</table></div>${moreLink}`;
 }
 
 function renderViewBar(cfg, viewId) {
