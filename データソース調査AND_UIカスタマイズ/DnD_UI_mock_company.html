@@ -300,9 +300,19 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
 .dashboard-card { background: white; border: 1.5px solid #d1fae5; border-radius: 6px; padding: 10px 12px; transition: all 0.2s; }
 .dashboard-card:hover { box-shadow: 0 2px 8px rgba(16,185,129,0.15); }
 .dashboard-card.size-full, .dashboard-card.size-half { grid-column: auto; }
-.dashboard-card-body { min-height: 130px; max-height: 170px; overflow: hidden; }
+.dashboard-card-body { min-height: 130px; max-height: 200px; overflow: hidden; }
 .dashboard-card-body table.cross-table { width: 100%; table-layout: fixed; }
 .dashboard-card-body table.cross-table th, .dashboard-card-body table.cross-table td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.preview-summary-bar { display: flex; justify-content: space-between; align-items: center; font-size: 9px; color: #64748b; padding: 2px 4px 4px; margin-bottom: 4px; border-bottom: 1px dashed #e2e8f0; }
+.preview-summary-bar .badge { background: #d1fae5; color: #065f46; padding: 1px 6px; border-radius: 8px; font-weight: 600; margin-left: 4px; }
+.preview-summary-bar .badge.warn { background: #fef3c7; color: #92400e; }
+.preview-table-wrap, .preview-bar-wrap { position: relative; }
+.preview-table-wrap.has-col-fade::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 32px; background: linear-gradient(to right, rgba(255,255,255,0), rgba(255,255,255,0.95) 70%); pointer-events: none; }
+.preview-table-wrap.has-col-fade .col-fade-marker { position: absolute; top: 50%; right: 4px; transform: translateY(-50%) rotate(0deg); background: #f59e0b; color: white; font-size: 8px; font-weight: 700; padding: 2px 4px; border-radius: 3px; pointer-events: none; z-index: 2; line-height: 1; }
+.preview-table-wrap.has-row-fade::before { content: ''; position: absolute; left: 0; right: 0; bottom: 18px; height: 16px; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.92) 80%); pointer-events: none; z-index: 1; }
+.preview-bar-wrap.has-row-fade::after { content: ''; position: absolute; left: 0; right: 0; bottom: 14px; height: 14px; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.92) 80%); pointer-events: none; }
+.preview-more-link { display: block; text-align: center; color: #10b981; font-size: 9px; padding: 3px; cursor: pointer; font-weight: 600; }
+.preview-more-link:hover { background: #ecfdf5; }
 .dashboard-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #e2e8f0; }
 .dashboard-card-title { font-size: 12px; font-weight: 700; color: #065f46; flex: 1; }
 .dashboard-card-meta { font-size: 9px; color: #94a3b8; }
@@ -1707,11 +1717,27 @@ function renderViewTable(cfg, viewId) {
   });
   const moreRows = rowListAll.length - data.length;
   const moreCols = colListAll ? colListAll.length - colVisible.length : 0;
+  // サマリーバー (上部に省略状況を明示)
+  const totalCols = (colListAll ? colListAll.length : 0) + 1; // +合計列
+  const visibleCols = (colVisible ? colVisible.length : 0) + 1;
+  const summaryBar = `<div class="preview-summary-bar">
+    <span>📊 概要 (詳細は ✎ エディタで)</span>
+    <span>
+      ${moreCols > 0 ? `<span class="badge warn">列 ${visibleCols}/${totalCols}</span>` : `<span class="badge">列 ${visibleCols}</span>`}
+      ${moreRows > 0 ? `<span class="badge warn">行 ${data.length}/${rowListAll.length}</span>` : `<span class="badge">行 ${data.length}</span>`}
+    </span>
+  </div>`;
+  // 末尾「もっと見る」リンク (エディタへ誘導)
+  let moreLink = '';
   if (moreRows > 0 || moreCols > 0) {
-    const colSpan = (colVisible ? colVisible.length : 0) + 2;
-    body += `<tr><td colspan="${colSpan}" style="text-align:center;color:#94a3b8;font-size:9px;padding:2px;">${moreRows>0?`他${moreRows}行`:''}${moreRows>0&&moreCols>0?' / ':''}${moreCols>0?`他${moreCols}列`:''} … エディタで全表示</td></tr>`;
+    moreLink = `<div class="preview-more-link" onclick="event.stopPropagation();loadViewById('${viewId}')">💡 ${moreRows>0?`他${moreRows}行`:''}${moreRows>0&&moreCols>0?' / ':''}${moreCols>0?`他${moreCols}列`:''} … エディタで全表示 →</div>`;
   }
-  return `<table class="cross-table">${head}${body}</table>`;
+  const fadeClasses = [
+    moreCols > 0 ? 'has-col-fade' : '',
+    moreRows > 0 ? 'has-row-fade' : ''
+  ].filter(Boolean).join(' ');
+  const colMarker = moreCols > 0 ? `<span class="col-fade-marker">+${moreCols}列 →</span>` : '';
+  return `${summaryBar}<div class="preview-table-wrap ${fadeClasses}"><table class="cross-table">${head}${body}</table>${colMarker}</div>${moreLink}`;
 }
 
 function renderViewBar(cfg, viewId) {
@@ -1737,20 +1763,24 @@ function renderViewBar(cfg, viewId) {
   const maxVal = Math.max(...view.map(p => p.value), 1);
   const sortKey = sort?.key, sortDir = sort?.dir;
   const onClick = (key) => viewId ? `onclick="event.stopPropagation();previewSortBy('${viewId}','${key}')" style="cursor:pointer;"` : '';
-  let html = `<div class="bar-chart">`;
-  if (viewId) {
-    html += `<div style="display:flex;justify-content:flex-end;gap:8px;font-size:9px;color:#64748b;padding:0 4px 2px;">
-      <span ${onClick('label')}>項目${sortIcon(sortKey==='label', sortDir)}</span>
-      <span ${onClick('value')}>${truncLabel(valName)}${sortIcon(sortKey==='value', sortDir)}</span>
-    </div>`;
-  }
+  const more = listAll.length - view.length;
+  // サマリーバー (上部に省略状況を明示)
+  const summaryBar = `<div class="preview-summary-bar">
+    <span>📊 概要 (詳細は ✎ エディタで)</span>
+    <span>
+      ${more > 0 ? `<span class="badge warn">${view.length}/${listAll.length}件</span>` : `<span class="badge">${view.length}件</span>`}
+      ${viewId ? `<span ${onClick('label')} style="margin-left:6px;">項目${sortIcon(sortKey==='label', sortDir)}</span>` : ''}
+      ${viewId ? `<span ${onClick('value')} style="margin-left:6px;">${truncLabel(valName)}${sortIcon(sortKey==='value', sortDir)}</span>` : ''}
+    </span>
+  </div>`;
+  let html = summaryBar + `<div class="preview-bar-wrap ${more > 0 ? 'has-row-fade' : ''}"><div class="bar-chart">`;
   view.forEach(p => {
     const widthPct = (p.value / maxVal) * 100;
     html += `<div class="bar-row"><div class="bar-label">${truncLabel(p.label)}</div><div class="bar-track"><div class="bar-fill" style="width:${widthPct}%"></div></div><div class="bar-value">${truncLabel(formatValue(valName, p.value))}</div></div>`;
   });
-  const more = listAll.length - view.length;
-  if (more > 0) html += `<div style="text-align:center;color:#94a3b8;font-size:9px;padding:2px;">他${more}件 … エディタで全表示</div>`;
-  return html + '</div>';
+  html += '</div></div>';
+  if (more > 0) html += `<div class="preview-more-link" onclick="event.stopPropagation();loadViewById('${viewId}')">💡 他${more}件 … エディタで全表示 →</div>`;
+  return html;
 }
 
 function getZoneMembersFromCfg(cfg, zone) {
