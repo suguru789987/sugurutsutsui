@@ -301,8 +301,10 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
 .dashboard-card:hover { box-shadow: 0 2px 8px rgba(16,185,129,0.15); }
 .dashboard-card.size-full, .dashboard-card.size-half { grid-column: auto; }
 .dashboard-card-body { min-height: 130px; max-height: 200px; overflow: hidden; }
-.dashboard-card-body table.cross-table { width: 100%; table-layout: fixed; }
-.dashboard-card-body table.cross-table th, .dashboard-card-body table.cross-table td { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.dashboard-card-body table.cross-table { width: 100%; }
+.dashboard-card-body table.cross-table th, .dashboard-card-body table.cross-table td { white-space: nowrap; }
+.dashboard-card-body table.cross-table th { max-width: 110px; overflow: hidden; text-overflow: ellipsis; }
+.dashboard-card-body table.cross-table td.row-header { max-width: 160px; overflow: hidden; text-overflow: ellipsis; }
 .preview-summary-bar { display: flex; justify-content: space-between; align-items: center; font-size: 9px; color: #64748b; padding: 2px 4px 4px; margin-bottom: 4px; border-bottom: 1px dashed #e2e8f0; }
 .preview-summary-bar .badge { background: #d1fae5; color: #065f46; padding: 1px 6px; border-radius: 8px; font-weight: 600; margin-left: 4px; }
 .preview-summary-bar .badge.warn { background: #fef3c7; color: #92400e; }
@@ -1667,7 +1669,16 @@ function renderViewSnapshot(view) {
 function truncLabel(s, max = 10) {
   if (s == null) return '';
   s = String(s);
-  return s.length > max ? s.slice(0, max) + '…' : s;
+  if (s.length <= max) return s;
+  // 括弧 ( / （ を含むラベルは閉じ括弧まで含めて表示 (意味を保つため)
+  const oA = s.indexOf('('), oZ = s.indexOf('（');
+  const o = oA >= 0 ? oA : oZ;
+  if (o >= 0 && o < max + 6) {
+    const cA = s.indexOf(')', o), cZ = s.indexOf('）', o);
+    const c = cA >= 0 ? cA : cZ;
+    if (c >= 0 && c < max + 10) return s.slice(0, c + 1);
+  }
+  return s.slice(0, max) + '…';
 }
 
 function renderViewTable(cfg, viewId) {
@@ -1710,16 +1721,16 @@ function renderViewTable(cfg, viewId) {
   const moreColsCount = colListAll ? (colListAll.length - colVisible.length) : 0;
   const moreMarkerHead = moreColsCount > 0 ? `<th class="more-col-marker" title="他${moreColsCount}列が省略されています">⋯</th>` : '';
   const moreMarkerCell = moreColsCount > 0 ? `<td class="more-col-marker" onclick="event.stopPropagation();loadViewById('${viewId}')" title="エディタで全列を表示">⋯</td>` : '';
-  let head = `<tr><th ${onClick('row')}>${truncLabel(cfg.row?.name || '項目')}${sortIcon(sortKey==='row', sortDir)}</th>`;
-  if (colVisible) colVisible.forEach((c, i) => head += `<th ${onClick('c'+i)}>${truncLabel(c)}${sortIcon(sortKey==='c'+i, sortDir)}</th>`);
+  let head = `<tr><th ${onClick('row')}>${truncLabel(cfg.row?.name || '項目', 16)}${sortIcon(sortKey==='row', sortDir)}</th>`;
+  if (colVisible) colVisible.forEach((c, i) => head += `<th ${onClick('c'+i)}>${truncLabel(c, 16)}${sortIcon(sortKey==='c'+i, sortDir)}</th>`);
   head += moreMarkerHead;
   head += `<th class="total" ${onClick('total')}>合計${sortIcon(sortKey==='total', sortDir)}</th></tr>`;
   let body = '';
   data.forEach(d => {
-    let cells = `<td class="row-header">${truncLabel(d.rowName)}</td>`;
-    if (colVisible) d.cells.forEach(v => cells += `<td>${truncLabel(formatValue(valName, v))}</td>`);
+    let cells = `<td class="row-header">${truncLabel(d.rowName, 16)}</td>`;
+    if (colVisible) d.cells.forEach(v => cells += `<td>${formatValue(valName, v)}</td>`);
     cells += moreMarkerCell;
-    cells += `<td class="total">${truncLabel(formatValue(valName, d.total))}</td>`;
+    cells += `<td class="total">${formatValue(valName, d.total)}</td>`;
     body += `<tr>${cells}</tr>`;
   });
   const moreRows = rowListAll.length - data.length;
@@ -1780,7 +1791,7 @@ function renderViewBar(cfg, viewId) {
   let html = summaryBar + `<div class="preview-bar-wrap ${more > 0 ? 'has-row-fade' : ''}"><div class="bar-chart">`;
   view.forEach(p => {
     const widthPct = (p.value / maxVal) * 100;
-    html += `<div class="bar-row"><div class="bar-label">${truncLabel(p.label)}</div><div class="bar-track"><div class="bar-fill" style="width:${widthPct}%"></div></div><div class="bar-value">${truncLabel(formatValue(valName, p.value))}</div></div>`;
+    html += `<div class="bar-row"><div class="bar-label">${truncLabel(p.label, 16)}</div><div class="bar-track"><div class="bar-fill" style="width:${widthPct}%"></div></div><div class="bar-value">${formatValue(valName, p.value)}</div></div>`;
   });
   html += '</div></div>';
   if (more > 0) html += `<div class="preview-more-link" onclick="event.stopPropagation();loadViewById('${viewId}')">💡 他${more}件 … エディタで全表示 →</div>`;
