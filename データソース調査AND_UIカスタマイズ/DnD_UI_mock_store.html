@@ -651,6 +651,14 @@ const ITEMS = {
     { id: 'dim_expense_cat', name: '費目' },
   ],
   metric: [
+    // === 予実対比 共通メジャー (費目ディメンション/店舗ディメンション等と組合せ可) ===
+    { id: 'M_COST_ACT', name: '費用（実績）' },
+    { id: 'M_COST_BUD', name: '費用予算' },
+    { id: 'M_COST_DIFF', name: '予実差' },
+    { id: 'M_COST_RATE', name: '予実達成率' },
+    { id: 'M_COST_SHARE', name: '構成比' },
+    { id: 'M_COST_YOY', name: '前年比' },
+    // === 売上・原価系 (旧来のトランザクション) ===
     { id: 'S100', name: '売上（税抜）' },
     { id: 'S102', name: '販売点数' },
     { id: 'S112', name: 'フード前月在庫高' },
@@ -802,6 +810,17 @@ function preloadDemoViews() {
       col: null,
       val: { id:'S102', name:'販売点数', type:'metric' },
       filter: [], chart: 'bar', dimFilters: {}
+    }
+  });
+  // ビュー3: 費目別 予実達成率 (新メジャー検証用)
+  savedViews.push({
+    id: 'view_demo3', name: '費目別 予実達成率', desc: '費目ディメンション × 予実メジャー',
+    savedAt: now, screen: 'store', pinned: true, order: 3, size: 'half',
+    config: {
+      row: { id:'dim_expense_cat', name:'費目', type:'dim' },
+      col: null,
+      val: { id:'M_COST_RATE', name:'予実達成率', type:'metric' },
+      filter: [], chart: 'table', dimFilters: {}
     }
   });
 }
@@ -1194,7 +1213,9 @@ function updateTable() {
 // === 指標タイプ別の値生成 ===
 function generateValue(metricName) {
   const n = metricName || '';
-  if (n.includes('率') || n.includes('達成') || n.includes('進捗')) return Math.random() * 40 + 80; // 80-120%
+  if (n.includes('率') || n.includes('達成') || n.includes('進捗') || n.includes('構成比') || n.includes('前年比')) return Math.random() * 40 + 80; // 80-120%
+  if (n.includes('予実差')) return Math.round((Math.random() - 0.4) * 2000000); // -800K..+1.2M
+  if (n.includes('費用予算') || n.includes('費用')) return Math.round(Math.random() * 6000000 + 2000000); // 2M-8M
   if (n.includes('客単価')) return Math.round(Math.random() * 3000 + 2500); // ¥2,500-5,500
   if (n.includes('客数') || n.includes('販売点数') || n.includes('点数')) return Math.round(Math.random() * 9000 + 6000); // 6,000-15,000人
   if (n.includes('シフト時間') || n.includes('時間')) return Math.round(Math.random() * 200 + 100); // 100-300h
@@ -1207,7 +1228,7 @@ function generateValue(metricName) {
 // === 指標タイプ別フォーマット (3桁カンマ区切り) ===
 function formatValue(metricName, rawValue) {
   const n = metricName || '';
-  if (n.includes('率') || n.includes('達成') || n.includes('進捗')) {
+  if (n.includes('率') || n.includes('達成') || n.includes('進捗') || n.includes('構成比') || n.includes('前年比')) {
     return rawValue.toFixed(1) + '%';
   }
   if (n.includes('客数') || n.includes('販売点数') || n.includes('点数')) {
@@ -1215,6 +1236,10 @@ function formatValue(metricName, rawValue) {
   }
   if (n.includes('シフト時間') || n.includes('時間')) {
     return Math.round(rawValue).toLocaleString() + ' h';
+  }
+  if (n.includes('予実差')) {
+    const v = Math.round(rawValue);
+    return (v >= 0 ? '+' : '') + v.toLocaleString() + ' 円';
   }
   // 金額系: 1,234,567 円
   return Math.round(rawValue).toLocaleString() + ' 円';
@@ -1246,7 +1271,7 @@ function renderTable() {
   const rowList = zones.row ? getZoneMembers(zones.row) : ['(集計)'];
   const colList = zones.col ? getZoneMembers(zones.col).slice(0, 6) : null;
   const valName = zones.val?.name || '';
-  const isRatio = valName.includes('率') || valName.includes('達成') || valName.includes('進捗');
+  const isRatio = valName.includes('率') || valName.includes('達成') || valName.includes('進捗') || valName.includes('構成比') || valName.includes('前年比');
 
   // 値を一度だけ生成 (キャッシュキーで安定性確保)
   const cacheKey = `${zones.row?.id||'_'}|${zones.col?.id||'_'}|${zones.val?.id||'_'}`;
@@ -1647,7 +1672,7 @@ function renderViewTable(cfg, viewId) {
   const colListAll = cfg.col ? getZoneMembersFromCfg(cfg, cfg.col) : null;
   const colVisible = colListAll ? colListAll.slice(0, 3) : null;
   const valName = cfg.val.name;
-  const isRatio = valName.includes('率') || valName.includes('達成') || valName.includes('進捗');
+  const isRatio = valName.includes('率') || valName.includes('達成') || valName.includes('進捗') || valName.includes('構成比') || valName.includes('前年比');
   const cacheKey = viewId ? `t_${viewId}` : null;
   let allData;
   if (cacheKey && previewDataCache[cacheKey]) {
