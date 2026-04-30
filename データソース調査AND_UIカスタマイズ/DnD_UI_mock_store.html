@@ -376,7 +376,7 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
     <div class="section">
       <div class="section-title">経営指標</div>
       <div class="kpi-row">
-        <div class="kpi-card"><div class="kpi-label">坪単価</div><div class="kpi-value" style="font-size:18px;">¥174,000</div></div>
+        <div class="kpi-card"><div class="kpi-label">坪単価</div><div class="kpi-value" style="font-size:18px;">174,000 円</div></div>
         <div class="kpi-card"><div class="kpi-label">営業利益率</div><div class="kpi-value">39.0<span class="kpi-unit">%</span></div></div>
         <div class="kpi-card"><div class="kpi-label">経費率</div><div class="kpi-value">5.1<span class="kpi-unit">%</span></div></div>
         <div class="kpi-card"><div class="kpi-label">月次客数</div><div class="kpi-value" style="font-size:18px;">8,453 人</div></div>
@@ -1216,8 +1216,8 @@ function formatValue(metricName, rawValue) {
   if (n.includes('シフト時間') || n.includes('時間')) {
     return Math.round(rawValue).toLocaleString() + ' h';
   }
-  // 金額系: ¥1,234,567
-  return '¥' + Math.round(rawValue).toLocaleString();
+  // 金額系: 1,234,567 円
+  return Math.round(rawValue).toLocaleString() + ' 円';
 }
 
 function getZoneMembers(zone) {

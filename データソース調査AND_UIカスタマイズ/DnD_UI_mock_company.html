@@ -379,7 +379,7 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
         <div class="kpi-card"><div class="kpi-label">経常利益率</div><div class="kpi-value">66.9<span class="kpi-unit">%</span></div></div>
         <div class="kpi-card"><div class="kpi-label">営業利益率</div><div class="kpi-value">33.2<span class="kpi-unit">%</span></div></div>
         <div class="kpi-card"><div class="kpi-label">経費率</div><div class="kpi-value">7.8<span class="kpi-unit">%</span></div></div>
-        <div class="kpi-card"><div class="kpi-label">利益</div><div class="kpi-value" style="font-size:18px;">¥43,146,973</div></div>
+        <div class="kpi-card"><div class="kpi-label">利益</div><div class="kpi-value" style="font-size:18px;">43,146,973 円</div></div>
         <div class="kpi-card"><div class="kpi-label">前年比</div><div class="kpi-value">102.3<span class="kpi-unit">%</span></div></div>
       </div>
     </div>
@@ -1238,8 +1238,8 @@ function formatValue(metricName, rawValue) {
   if (n.includes('シフト時間') || n.includes('時間')) {
     return Math.round(rawValue).toLocaleString() + ' h';
   }
-  // 金額系: ¥1,234,567
-  return '¥' + Math.round(rawValue).toLocaleString();
+  // 金額系: 1,234,567 円
+  return Math.round(rawValue).toLocaleString() + ' 円';
 }
 
 function getZoneMembers(zone) {
