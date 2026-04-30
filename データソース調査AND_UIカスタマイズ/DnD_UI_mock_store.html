@@ -27,6 +27,16 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
 .kpi-value { font-size: 22px; font-weight: bold; color: #1f3a4d; }
 .kpi-unit { font-size: 12px; color: #718096; margin-left: 2px; }
 
+/* === モード切替 (ダッシュボード / 編集) === */
+.mode-edit .section, .mode-edit .dashboard-area { display: none !important; }
+.mode-dashboard .dnd-section { display: none !important; }
+.mode-dashboard .page-action-edit { display: inline-flex; }
+.mode-edit .page-action-edit { display: none; }
+.mode-edit .page-title::before { content: "✏️ "; color: #10b981; }
+.page-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.page-header .page-title { margin: 0; }
+.dashboard-area-empty { text-align: center; padding: 36px 20px; color: #94a3b8; font-size: 12px; background: white; border-radius: 6px; line-height: 1.8; }
+
 /* === D&D ピボットセクション === */
 .dnd-section { background: white; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 12px; overflow: hidden; }
 .dnd-header { background: linear-gradient(90deg, #f59e0b 0%, #fb923c 100%); color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
@@ -321,7 +331,7 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
 .config-screen-badge.both { background: linear-gradient(90deg,#dcfce7 0%,#fed7aa 100%); color: #1f3a4d; }
 </style>
 </head>
-<body>
+<body class="mode-dashboard">
 <div class="app">
 
   <aside class="sidebar">
@@ -341,7 +351,10 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
       <div class="user-icon"></div>
     </div>
 
-    <h1 class="page-title">ダッシュボード</h1>
+    <div class="page-header">
+      <h1 class="page-title">ダッシュボード</h1>
+      <button class="btn page-action-edit" style="background:#10b981;color:white;margin-left:auto;font-size:11px;padding:6px 14px;" onclick="switchMode('edit')">✏️ ウィジェットを編集</button>
+    </div>
 
     <div class="section">
       <div class="section-title">経営指標</div>
@@ -355,17 +368,18 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
     </div>
 
     <!-- ダッシュボード複数ビュー表示エリア -->
-    <div class="dashboard-area" id="dashboardArea" style="display:none;">
+    <div class="dashboard-area" id="dashboardArea">
       <div class="dashboard-area-header">
         <div class="dashboard-area-title">📊 ダッシュボード <span id="dashboardCount" style="background:#f59e0b;color:white;padding:2px 8px;border-radius:10px;font-size:11px;margin-left:6px;">0件</span></div>
-        <button class="btn btn-secondary" style="font-size:11px;padding:5px 10px;" onclick="openDashboardConfigModal()">⚙️ ダッシュボード設定</button>
+        <button class="btn btn-secondary" style="font-size:11px;padding:5px 10px;background:#e2e8f0;color:#475569;" onclick="openDashboardConfigModal()">⚙️ ダッシュボード設定</button>
       </div>
       <div class="dashboard-grid" id="dashboardGrid"></div>
     </div>
 
     <div class="dnd-section">
       <div class="dnd-header">
-        <div class="dnd-header-title">🎨 カスタムウィジェット (Excel風ピボット) <span style="background:#ec4899;padding:2px 6px;border-radius:3px;font-size:9px;margin-left:8px;">v3.3</span></div>
+        <button class="btn" style="background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.4);font-size:11px;padding:5px 10px;" onclick="switchMode('dashboard')">← ダッシュボードに戻る</button>
+        <div class="dnd-header-title" style="flex:1;text-align:center;">🎨 カスタムウィジェット 編集モード <span style="background:#ec4899;padding:2px 6px;border-radius:3px;font-size:9px;margin-left:8px;">v3.4</span></div>
         <div style="display: flex; gap: 8px;">
           <button class="btn btn-secondary" onclick="openDashboardConfigModal()">⚙️ ダッシュボード設定</button>
           <button class="btn btn-secondary" onclick="openViewListModal()">📋 ビュー一覧</button>
@@ -739,6 +753,13 @@ function init() {
   renderAll();
   preloadDemoViews();
   renderDashboard();
+}
+
+// === モード切替 (dashboard: 表示専用 / edit: D&D編集) ===
+function switchMode(mode) {
+  document.body.className = 'mode-' + mode;
+  if (mode === 'dashboard') renderDashboard();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function preloadDemoViews() {
@@ -1497,10 +1518,13 @@ function renderDashboard() {
   const countEl = document.getElementById('dashboardCount');
   if (!area || !grid) return;
   const pinned = getPinnedViews();
-  if (pinned.length === 0) { area.style.display = 'none'; return; }
   area.style.display = 'block';
   countEl.textContent = `${pinned.length}件`;
   grid.innerHTML = '';
+  if (pinned.length === 0) {
+    grid.innerHTML = `<div class="dashboard-area-empty" style="grid-column:1 / -1;">📭 まだダッシュボードに表示するビューがありません<br><span style="font-size:11px;">「✏️ ウィジェットを編集」から作成→「💾 保存」で📌固定するとここに表示されます</span></div>`;
+    return;
+  }
   pinned.forEach(v => {
     const card = document.createElement('div');
     card.className = `dashboard-card size-${v.size || 'half'}`;
@@ -1533,7 +1557,10 @@ function toggleDashCardCollapse(viewId) {
 }
 function loadViewById(viewId) {
   const idx = savedViews.findIndex(v => v.id === viewId);
-  if (idx >= 0) loadView(idx);
+  if (idx >= 0) {
+    switchMode('edit');
+    loadView(idx);
+  }
 }
 function unpinView(viewId) {
   const v = savedViews.find(x => x.id === viewId);
@@ -1757,6 +1784,7 @@ function loadView(idx) {
   if (cb) cb.classList.add('active');
   updateTable();
   document.getElementById('viewListModal').classList.remove('show');
+  switchMode('edit');
   showToast(`📂 ビュー「${v.name}」を読み込みました`);
 }
 
