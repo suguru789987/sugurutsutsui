@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>会社画面ダッシュボード - D&D UI モック</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif; }
+body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
+.app { display: flex; min-height: 100vh; }
+
+/* === 左サイドバー === */
+.sidebar { width: 200px; background: #1f3a4d; color: #cbd5e0; padding: 16px 0; }
+.logo { padding: 0 16px 20px; font-weight: bold; color: white; font-size: 14px; }
+.nav-item { padding: 10px 16px; cursor: pointer; font-size: 12px; }
+.nav-item:hover { background: #2d4a5d; }
+.nav-item.active { background: #14b8a6; color: white; }
+
+/* === メイン === */
+.main { flex: 1; padding: 16px 24px; overflow: auto; }
+.top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.company-select { display: flex; align-items: center; gap: 8px; padding: 6px 12px; background: white; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 12px; }
+.user-icon { width: 28px; height: 28px; background: #10b981; border-radius: 50%; }
+.alert-banner { background: #fef3c7; border: 1px solid #fcd34d; padding: 8px 12px; border-radius: 6px; font-size: 11px; color: #92400e; margin-bottom: 12px; }
+.page-title { font-size: 18px; font-weight: bold; margin-bottom: 12px; }
+.period-selector { display: inline-flex; gap: 8px; padding: 4px 10px; background: white; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 12px; margin-bottom: 16px; }
+
+/* === セクション (既存) === */
+.section { background: white; border-radius: 8px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+.section-title { display: flex; align-items: center; gap: 6px; font-weight: bold; font-size: 13px; color: #1f3a4d; margin-bottom: 12px; }
+.section-title::before { content: ""; display: inline-block; width: 4px; height: 14px; background: #10b981; border-radius: 2px; }
+.kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.kpi-card { background: #f7fafc; border-radius: 6px; padding: 12px; text-align: center; }
+.kpi-label { font-size: 10px; color: #718096; margin-bottom: 4px; }
+.kpi-value { font-size: 22px; font-weight: bold; color: #1f3a4d; }
+.kpi-unit { font-size: 12px; color: #718096; margin-left: 2px; }
+.kpi-sub { font-size: 10px; color: #94a3b8; margin-top: 4px; }
+.green { color: #10b981; }
+.red { color: #ef4444; }
+
+/* === D&D セクション === */
+.dnd-section { background: white; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); margin-bottom: 12px; overflow: hidden; }
+.dnd-header { background: linear-gradient(90deg, #10b981 0%, #14b8a6 100%); color: white; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; }
+.dnd-header-title { font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+.dnd-header-actions { display: flex; gap: 8px; }
+.btn { padding: 4px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; border: none; }
+.btn-primary { background: white; color: #10b981; font-weight: bold; }
+.btn-secondary { background: rgba(255,255,255,0.2); color: white; }
+.btn-icon { background: transparent; color: white; padding: 4px; }
+
+.dnd-body { display: grid; grid-template-columns: 240px 1fr 240px; min-height: 500px; }
+
+/* === 左パレット === */
+.palette { border-right: 1px solid #e2e8f0; padding: 12px; background: #fafbfc; overflow-y: auto; max-height: 700px; }
+.palette-search { width: 100%; padding: 6px 8px; border: 1px solid #cbd5e0; border-radius: 4px; font-size: 11px; margin-bottom: 8px; }
+.palette-tabs { display: flex; gap: 0; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; }
+.palette-tab { flex: 1; padding: 6px 4px; text-align: center; font-size: 10px; cursor: pointer; border-bottom: 2px solid transparent; color: #718096; }
+.palette-tab.active { color: #10b981; border-bottom-color: #10b981; font-weight: bold; }
+.palette-group { margin-bottom: 8px; }
+.palette-group-title { font-size: 10px; color: #718096; padding: 4px 0; cursor: pointer; user-select: none; }
+.palette-group-title::before { content: "▼ "; font-size: 8px; }
+.palette-item { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-radius: 4px; cursor: grab; font-size: 11px; margin-bottom: 2px; border: 1px solid transparent; }
+.palette-item:hover { background: #ecfdf5; border-color: #10b981; }
+.palette-item.dim { background: #eff6ff; }
+.palette-item.dim:hover { background: #dbeafe; border-color: #3b82f6; }
+.palette-item.tag { background: #fef3c7; }
+.palette-item.tag:hover { background: #fde68a; border-color: #f59e0b; }
+.palette-item.metric { background: #f3e8ff; }
+.palette-item.metric:hover { background: #e9d5ff; border-color: #8b5cf6; }
+.palette-icon { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+.palette-icon.dim { background: #3b82f6; }
+.palette-icon.tag { background: #f59e0b; }
+.palette-icon.metric { background: #8b5cf6; }
+.palette-restriction { margin-left: auto; font-size: 9px; }
+
+/* === 中央キャンバス === */
+.canvas { padding: 12px; background: #f5f6f8; overflow-y: auto; max-height: 700px; }
+.widget { background: white; border-radius: 6px; padding: 12px; margin-bottom: 12px; border: 2px dashed transparent; transition: all 0.2s; position: relative; }
+.widget.draggable { border-color: #10b981; }
+.widget-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-weight: bold; font-size: 12px; }
+.widget-actions { display: flex; gap: 4px; }
+.widget-action { width: 22px; height: 22px; background: #f1f5f9; border-radius: 3px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #64748b; }
+.widget-action:hover { background: #10b981; color: white; }
+.widget-content { min-height: 120px; }
+.empty-canvas { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 300px; border: 2px dashed #cbd5e0; border-radius: 8px; color: #94a3b8; font-size: 12px; }
+.empty-canvas-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.4; }
+
+/* テーブルウィジェット */
+.cross-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.cross-table th { background: #f1f5f9; padding: 6px 8px; text-align: left; font-weight: 600; border-bottom: 1px solid #e2e8f0; color: #475569; }
+.cross-table td { padding: 6px 8px; border-bottom: 1px solid #f1f5f9; }
+.cross-table tr:hover td { background: #f9fafb; }
+
+/* バーチャート */
+.bar-chart { display: flex; flex-direction: column; gap: 6px; padding: 8px 0; }
+.bar-row { display: flex; align-items: center; gap: 8px; font-size: 11px; }
+.bar-label { width: 100px; color: #475569; }
+.bar-track { flex: 1; height: 16px; background: #f1f5f9; border-radius: 2px; overflow: hidden; position: relative; }
+.bar-fill { height: 100%; background: linear-gradient(90deg, #10b981, #14b8a6); border-radius: 2px; }
+.bar-value { width: 60px; text-align: right; font-weight: 600; color: #1f3a4d; }
+
+/* === 右設定パネル === */
+.config-panel { border-left: 1px solid #e2e8f0; padding: 12px; background: #fafbfc; overflow-y: auto; max-height: 700px; }
+.config-section { margin-bottom: 12px; }
+.config-label { font-size: 10px; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; font-weight: 600; }
+.dropzone { background: white; border: 2px dashed #cbd5e0; border-radius: 4px; padding: 8px; min-height: 36px; transition: all 0.2s; }
+.dropzone.active { border-color: #10b981; background: #ecfdf5; }
+.dropzone.has-item { border-style: solid; border-color: #10b981; }
+.dropzone-empty { color: #94a3b8; font-size: 10px; text-align: center; }
+.dropped-item { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; background: #ecfdf5; border: 1px solid #10b981; border-radius: 3px; font-size: 11px; color: #047857; margin: 2px; }
+.dropped-item .remove { cursor: pointer; opacity: 0.6; font-size: 10px; }
+.dropped-item .remove:hover { opacity: 1; }
+
+.config-restrictions { margin-top: 12px; padding: 10px; background: #fffbeb; border: 1px solid #fcd34d; border-radius: 4px; font-size: 10px; color: #92400e; }
+.config-restrictions-title { font-weight: bold; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+
+/* AIアシスト */
+.ai-assist { margin-top: 12px; padding: 10px; background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); border-radius: 4px; }
+.ai-assist-title { font-weight: bold; font-size: 11px; color: #6b21a8; margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+.ai-assist-input { width: 100%; padding: 6px; border: 1px solid #c084fc; border-radius: 3px; font-size: 11px; resize: none; }
+.ai-suggestion { padding: 6px 8px; background: white; border: 1px solid #e9d5ff; border-radius: 3px; font-size: 10px; margin-top: 6px; cursor: pointer; }
+.ai-suggestion:hover { border-color: #8b5cf6; background: #f3e8ff; }
+
+/* レジェンド */
+.legend { padding: 8px 12px; background: #fef3c7; border-radius: 4px; font-size: 10px; color: #92400e; margin-bottom: 8px; }
+.tag-restr { display: inline-block; padding: 1px 6px; border-radius: 2px; font-size: 9px; margin-left: 4px; }
+.tag-green { background: #d1fae5; color: #065f46; }
+.tag-yellow { background: #fef3c7; color: #92400e; }
+.tag-red { background: #fee2e2; color: #991b1b; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- 左サイドバー -->
+  <aside class="sidebar">
+    <div class="logo">ラクミー 経営管理</div>
+    <div class="nav-item active">📊 ダッシュボード</div>
+    <div class="nav-item">💰 売上一覧</div>
+    <div class="nav-item">📈 利益一覧</div>
+    <div class="nav-item">🎯 戦略指標</div>
+    <div class="nav-item">📐 ラベル</div>
+    <div class="nav-item">🛒 商品</div>
+    <div class="nav-item">📅 シフト</div>
+    <div class="nav-item">📦 棚卸</div>
+    <div class="nav-item">🏢 店舗管理</div>
+    <div class="nav-item">👥 ユーザー</div>
+    <div class="nav-item">💴 売上連携</div>
+    <div class="nav-item">⚙️ 経営方針</div>
+    <div class="nav-item">📋 売上</div>
+  </aside>
+
+  <!-- メイン -->
+  <main class="main">
+    <div class="top-bar">
+      <div class="company-select">🏢 株式会社コロワイド ▾</div>
+      <div class="user-icon"></div>
+    </div>
+    <div class="alert-banner">⚠️ お客様が現在ご使用しているラクミーシステムについて、メンテナンスのため利用ができない時期があります</div>
+
+    <h1 class="page-title">ダッシュボード</h1>
+    <div class="period-selector">📅 2026/04/01 - 2026/04/27 ▾</div>
+
+    <!-- === 既存セクション (経営指標) === -->
+    <div class="section">
+      <div class="section-title">経営指標</div>
+      <div class="kpi-row">
+        <div class="kpi-card"><div class="kpi-label">経常利益率</div><div class="kpi-value">66.9<span class="kpi-unit">%/月</span></div><div class="kpi-sub green">前月比 -2.1%</div></div>
+        <div class="kpi-card"><div class="kpi-label">営業利益率</div><div class="kpi-value">33.2<span class="kpi-unit">%</span></div><div class="kpi-sub red">予算比 -3.1%</div></div>
+        <div class="kpi-card"><div class="kpi-label">経費率</div><div class="kpi-value">7.8<span class="kpi-unit">%</span></div><div class="kpi-sub green">前月比 -1.2%</div></div>
+        <div class="kpi-card"><div class="kpi-label">利益</div><div class="kpi-value">43,146,972.7</div><div class="kpi-sub">百万円</div></div>
+        <div class="kpi-card"><div class="kpi-label">前年同月比</div><div class="kpi-value">102.3<span class="kpi-unit">%</span></div><div class="kpi-sub green">+2.3%</div></div>
+      </div>
+    </div>
+
+    <!-- === D&D セクション (新規追加) === -->
+    <div class="dnd-section">
+      <div class="dnd-header">
+        <div class="dnd-header-title">🎨 カスタムウィジェット (Drag & Drop)</div>
+        <div class="dnd-header-actions">
+          <button class="btn btn-secondary">📋 ビュー一覧</button>
+          <button class="btn btn-secondary">💾 ビュー保存</button>
+          <button class="btn btn-primary">+ 新規ウィジェット</button>
+        </div>
+      </div>
+
+      <div class="dnd-body">
+
+        <!-- 左パレット -->
+        <aside class="palette">
+          <input class="palette-search" placeholder="🔍 指標を検索...">
+          <div class="palette-tabs">
+            <div class="palette-tab active">全て</div>
+            <div class="palette-tab">ディメン</div>
+            <div class="palette-tab">タグ</div>
+            <div class="palette-tab">指標</div>
+          </div>
+
+          <div class="palette-group">
+            <div class="palette-group-title">📐 ディメン (12)</div>
+            <div class="palette-item dim"><div class="palette-icon dim"></div>店舗 <span class="tag-restr tag-green">🟢</span></div>
+            <div class="palette-item dim"><div class="palette-icon dim"></div>月</div>
+            <div class="palette-item dim"><div class="palette-icon dim"></div>日</div>
+            <div class="palette-item dim"><div class="palette-icon dim"></div>商品</div>
+            <div class="palette-item dim"><div class="palette-icon dim"></div>仕入先 <span class="tag-restr tag-red">🔴</span></div>
+            <div class="palette-item dim"><div class="palette-icon dim"></div>業態 <span class="tag-restr tag-yellow">🟠</span></div>
+            <div class="palette-item dim"><div class="palette-icon dim"></div>店舗ラベル <span class="tag-restr tag-yellow">🟡</span></div>
+          </div>
+
+          <div class="palette-group">
+            <div class="palette-group-title">🏷️ カスタムタグ (6)</div>
+            <div class="palette-item tag"><div class="palette-icon tag"></div>指標バンドル</div>
+            <div class="palette-item tag"><div class="palette-icon tag"></div>店舗バンドル</div>
+            <div class="palette-item tag"><div class="palette-icon tag"></div>商品バンドル</div>
+            <div class="palette-item tag"><div class="palette-icon tag"></div>期間バンドル</div>
+            <div class="palette-item tag"><div class="palette-icon tag"></div>仕入先バンドル <span class="tag-restr tag-red">🔴</span></div>
+            <div class="palette-item tag"><div class="palette-icon tag"></div>ラベルグループ</div>
+          </div>
+
+          <div class="palette-group">
+            <div class="palette-group-title">📊 トランザクション (490)</div>
+            <div class="palette-item metric"><div class="palette-icon metric"></div>売上(税抜)</div>
+            <div class="palette-item metric"><div class="palette-icon metric"></div>売上(税込)</div>
+            <div class="palette-item metric"><div class="palette-icon metric"></div>客数</div>
+            <div class="palette-item metric"><div class="palette-icon metric"></div>客単価 <span class="tag-restr tag-yellow">🟡加重</span></div>
+            <div class="palette-item metric"><div class="palette-icon metric"></div>達成率 <span class="tag-restr tag-yellow">🟡予実</span></div>
+            <div class="palette-item metric"><div class="palette-icon metric"></div>FD率 <span class="tag-restr tag-yellow">🟡加重</span></div>
+            <div class="palette-item metric"><div class="palette-icon metric"></div>営業利益</div>
+            <div class="palette-item metric"><div class="palette-icon metric"></div>...</div>
+          </div>
+        </aside>
+
+        <!-- 中央キャンバス -->
+        <section class="canvas">
+          <div class="legend">
+            💡 <strong>使い方</strong>: 左パレットから要素を右の「行」「列」「値」スロットへドラッグ。AIアシストで「売上が落ちている店舗を分析」のように自然言語で指示も可能。
+          </div>
+
+          <!-- ウィジェット1: 2軸クロス集計 -->
+          <div class="widget draggable">
+            <div class="widget-title">
+              <span>📊 店舗 × 月 × 売上(税抜)</span>
+              <div class="widget-actions">
+                <div class="widget-action">⚙️</div>
+                <div class="widget-action">📋</div>
+                <div class="widget-action">⤢</div>
+                <div class="widget-action">✕</div>
+              </div>
+            </div>
+            <div class="widget-content">
+              <table class="cross-table">
+                <thead>
+                  <tr><th>店舗</th><th>2026/01</th><th>2026/02</th><th>2026/03</th><th>2026/04</th><th>合計</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>THE ATTACHMENT 渋谷店</td><td>¥15,658,805</td><td>¥14,892,300</td><td>¥16,231,540</td><td>¥13,860,000</td><td><strong>¥60,642,645</strong></td></tr>
+                  <tr><td>Japan dining Mr.gentleman</td><td>¥14,813,403</td><td>¥13,543,210</td><td>¥15,902,184</td><td>¥14,000,000</td><td><strong>¥58,258,797</strong></td></tr>
+                  <tr><td>Attachment 2nd</td><td>¥10,144,461</td><td>¥9,832,180</td><td>¥10,765,432</td><td>¥10,049,737</td><td><strong>¥40,791,810</strong></td></tr>
+                  <tr><td>あなたに会えてよかった。</td><td>¥13,122,018</td><td>¥12,983,402</td><td>¥13,512,890</td><td>¥12,400,000</td><td><strong>¥52,018,310</strong></td></tr>
+                  <tr><td>THE ATTACHMENT 池袋店</td><td>¥12,275,763</td><td>¥11,234,560</td><td>¥12,890,432</td><td>¥12,300,000</td><td><strong>¥48,700,755</strong></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ウィジェット2: 棒グラフ -->
+          <div class="widget draggable">
+            <div class="widget-title">
+              <span>📊 店舗ラベル × 営業利益率</span>
+              <div class="widget-actions">
+                <div class="widget-action">⚙️</div>
+                <div class="widget-action">📋</div>
+                <div class="widget-action">⤢</div>
+                <div class="widget-action">✕</div>
+              </div>
+            </div>
+            <div class="widget-content">
+              <div class="bar-chart">
+                <div class="bar-row"><div class="bar-label">新店除き</div><div class="bar-track"><div class="bar-fill" style="width:93%"></div></div><div class="bar-value">93.1%</div></div>
+                <div class="bar-row"><div class="bar-label">全店</div><div class="bar-track"><div class="bar-fill" style="width:83%"></div></div><div class="bar-value">83.5%</div></div>
+                <div class="bar-row"><div class="bar-label">③近藤</div><div class="bar-track"><div class="bar-fill" style="width:99%"></div></div><div class="bar-value">99.2%</div></div>
+                <div class="bar-row"><div class="bar-label">担当者A</div><div class="bar-track"><div class="bar-fill" style="width:78%"></div></div><div class="bar-value">78.4%</div></div>
+                <div class="bar-row"><div class="bar-label">担当者B</div><div class="bar-track"><div class="bar-fill" style="width:88%"></div></div><div class="bar-value">88.2%</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 空ウィジェット (ドロップ待ち) -->
+          <div class="widget" style="border: 2px dashed #cbd5e0;">
+            <div class="empty-canvas">
+              <div class="empty-canvas-icon">🎯</div>
+              <div>ここに要素をドロップして新規ウィジェット作成</div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- 右設定パネル -->
+        <aside class="config-panel">
+          <div class="config-section">
+            <div class="config-label">📌 選択中: 店舗 × 月 × 売上(税抜)</div>
+          </div>
+
+          <div class="config-section">
+            <div class="config-label">行 (Row)</div>
+            <div class="dropzone has-item">
+              <span class="dropped-item">📐 店舗 <span class="remove">✕</span></span>
+            </div>
+          </div>
+
+          <div class="config-section">
+            <div class="config-label">列 (Column)</div>
+            <div class="dropzone has-item">
+              <span class="dropped-item">📐 月 <span class="remove">✕</span></span>
+            </div>
+          </div>
+
+          <div class="config-section">
+            <div class="config-label">値 (Value)</div>
+            <div class="dropzone has-item">
+              <span class="dropped-item">📊 売上(税抜) <span class="remove">✕</span></span>
+            </div>
+          </div>
+
+          <div class="config-section">
+            <div class="config-label">フィルタ (Filter)</div>
+            <div class="dropzone">
+              <div class="dropzone-empty">ここに要素をドロップ</div>
+            </div>
+          </div>
+
+          <div class="config-restrictions">
+            <div class="config-restrictions-title">⚠️ 制限・注意</div>
+            <div>🟢 制限なし - そのまま集計可能</div>
+            <div style="margin-top:4px; font-size: 9px;">推奨スナップ: snap_shop_month</div>
+          </div>
+
+          <!-- AI アシスト -->
+          <div class="ai-assist">
+            <div class="ai-assist-title">🤖 AIアシスト</div>
+            <textarea class="ai-assist-input" rows="2" placeholder="例: 売上が落ちている店舗を見つけたい"></textarea>
+            <div class="ai-suggestion">💡 <strong>提案1</strong>: 店舗 × 月 × 売上前年比</div>
+            <div class="ai-suggestion">💡 <strong>提案2</strong>: 店舗ラベル × 達成率</div>
+            <div class="ai-suggestion">💡 <strong>提案3</strong>: 店舗 × 商品 × 売上構成比</div>
+          </div>
+
+          <div class="config-section" style="margin-top: 12px;">
+            <div class="config-label">表示形式</div>
+            <select style="width:100%; padding: 4px; border: 1px solid #cbd5e0; border-radius: 4px; font-size: 11px;">
+              <option>マトリクス表</option>
+              <option>ヒートマップ</option>
+              <option>折れ線グラフ</option>
+              <option>棒グラフ</option>
+            </select>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+
+    <!-- === 既存セクション (店舗別サマリー) === -->
+    <div class="section">
+      <div class="section-title">店舗別サマリー</div>
+      <table class="cross-table">
+        <thead>
+          <tr><th>店舗・グループ</th><th>利益</th><th>売上(税抜)</th><th>売上目標</th><th>売上達成率</th><th>売上進捗率</th><th>FD仕入率</th><th>人件費率</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>THE ATTACHMENT 渋谷店</td><td>¥6,243,032</td><td>¥15,658,805</td><td>¥13,860,000</td><td class="green">113%</td><td>101%</td><td class="red">27.4%</td><td class="green">19.2%</td></tr>
+          <tr><td>Japan dining Mr.gentleman</td><td>¥5,829,793</td><td>¥14,813,403</td><td>¥14,000,000</td><td class="green">105.8%</td><td>95.3%</td><td class="red">30.7%</td><td class="green">20.9%</td></tr>
+          <tr><td>Attachment 2nd</td><td>¥4,965,482</td><td>¥10,144,461</td><td>¥10,049,737</td><td class="green">100.9%</td><td>92.2%</td><td class="red">26.4%</td><td class="green">18.7%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </main>
+</div>
+</body>
+</html>

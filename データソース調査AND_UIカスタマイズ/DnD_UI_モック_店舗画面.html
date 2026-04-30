@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>店舗画面ダッシュボード - D&D UI モック</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif; }
+body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
+.app { display: flex; min-height: 100vh; }
+
+/* === 左サイドバー === */
+.sidebar { width: 200px; background: #1f3a4d; color: #cbd5e0; padding: 16px 0; }
+.logo { padding: 0 16px 20px; font-weight: bold; color: white; font-size: 14px; }
+.nav-item { padding: 10px 16px; cursor: pointer; font-size: 12px; }
+.nav-item:hover { background: #2d4a5d; }
+.nav-item.active { background: #14b8a6; color: white; }
+
+/* === メイン === */
+.main { flex: 1; padding: 16px 24px; overflow: auto; }
+.top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.shop-select { display: flex; align-items: center; gap: 8px; padding: 6px 12px; background: white; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 12px; }
+.user-icon { width: 28px; height: 28px; background: #f59e0b; border-radius: 50%; }
+.page-title { font-size: 18px; font-weight: bold; margin-bottom: 12px; }
+.period-selector { display: inline-flex; gap: 8px; padding: 4px 10px; background: white; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 12px; margin-bottom: 16px; }
+
+/* === セクション === */
+.section { background: white; border-radius: 8px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+.section-title { display: flex; align-items: center; gap: 6px; font-weight: bold; font-size: 13px; color: #1f3a4d; margin-bottom: 12px; }
+.section-title::before { content: ""; display: inline-block; width: 4px; height: 14px; background: #f59e0b; border-radius: 2px; }
+.kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.kpi-card { background: #fefce8; border-radius: 6px; padding: 12px; text-align: center; }
+.kpi-label { font-size: 10px; color: #718096; margin-bottom: 4px; }
+.kpi-value { font-size: 22px; font-weight: bold; color: #1f3a4d; }
+.kpi-unit { font-size: 12px; color: #718096; margin-left: 2px; }
+.kpi-sub { font-size: 10px; color: #94a3b8; margin-top: 4px; }
+.green { color: #10b981; }
+.red { color: #ef4444; }
+.amber { color: #f59e0b; }
+
+/* === D&D セクション === */
+.dnd-section { background: white; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); margin-bottom: 12px; overflow: hidden; }
+.dnd-header { background: linear-gradient(90deg, #f59e0b 0%, #fb923c 100%); color: white; padding: 10px 16px; display: flex; justify-content: space-between; align-items: center; }
+.dnd-header-title { font-weight: bold; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+.dnd-header-actions { display: flex; gap: 8px; }
+.btn { padding: 4px 10px; border-radius: 4px; font-size: 11px; cursor: pointer; border: none; }
+.btn-primary { background: white; color: #f59e0b; font-weight: bold; }
+.btn-secondary { background: rgba(255,255,255,0.2); color: white; }
+
+.dnd-body { display: grid; grid-template-columns: 240px 1fr 240px; min-height: 500px; }
+
+/* === 左パレット === */
+.palette { border-right: 1px solid #e2e8f0; padding: 12px; background: #fafbfc; overflow-y: auto; max-height: 700px; }
+.palette-search { width: 100%; padding: 6px 8px; border: 1px solid #cbd5e0; border-radius: 4px; font-size: 11px; margin-bottom: 8px; }
+.palette-tabs { display: flex; gap: 0; margin-bottom: 8px; border-bottom: 1px solid #e2e8f0; }
+.palette-tab { flex: 1; padding: 6px 4px; text-align: center; font-size: 10px; cursor: pointer; border-bottom: 2px solid transparent; color: #718096; }
+.palette-tab.active { color: #f59e0b; border-bottom-color: #f59e0b; font-weight: bold; }
+.palette-group { margin-bottom: 8px; }
+.palette-group-title { font-size: 10px; color: #718096; padding: 4px 0; cursor: pointer; user-select: none; }
+.palette-group-title::before { content: "▼ "; font-size: 8px; }
+.palette-item { display: flex; align-items: center; gap: 6px; padding: 6px 8px; border-radius: 4px; cursor: grab; font-size: 11px; margin-bottom: 2px; border: 1px solid transparent; }
+.palette-item:hover { background: #fef3c7; border-color: #f59e0b; }
+.palette-item.dim { background: #eff6ff; }
+.palette-item.dim:hover { background: #dbeafe; border-color: #3b82f6; }
+.palette-item.tag { background: #fef3c7; }
+.palette-item.tag:hover { background: #fde68a; border-color: #f59e0b; }
+.palette-item.metric { background: #f3e8ff; }
+.palette-item.metric:hover { background: #e9d5ff; border-color: #8b5cf6; }
+.palette-icon { width: 12px; height: 12px; border-radius: 2px; flex-shrink: 0; }
+.palette-icon.dim { background: #3b82f6; }
+.palette-icon.tag { background: #f59e0b; }
+.palette-icon.metric { background: #8b5cf6; }
+.palette-restriction { margin-left: auto; font-size: 9px; }
+
+/* === 中央キャンバス === */
+.canvas { padding: 12px; background: #f5f6f8; overflow-y: auto; max-height: 700px; }
+.widget { background: white; border-radius: 6px; padding: 12px; margin-bottom: 12px; border: 2px dashed transparent; transition: all 0.2s; position: relative; }
+.widget.draggable { border-color: #f59e0b; }
+.widget-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-weight: bold; font-size: 12px; }
+.widget-actions { display: flex; gap: 4px; }
+.widget-action { width: 22px; height: 22px; background: #f1f5f9; border-radius: 3px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 11px; color: #64748b; }
+.widget-action:hover { background: #f59e0b; color: white; }
+.widget-content { min-height: 120px; }
+.empty-canvas { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 200px; border: 2px dashed #cbd5e0; border-radius: 8px; color: #94a3b8; font-size: 12px; }
+.empty-canvas-icon { font-size: 48px; margin-bottom: 12px; opacity: 0.4; }
+
+/* ヒートマップ */
+.heatmap { display: grid; grid-template-columns: 80px repeat(7, 1fr); gap: 1px; font-size: 10px; }
+.heatmap-cell { padding: 6px 4px; text-align: center; }
+.heatmap-header { background: #f1f5f9; font-weight: 600; color: #475569; }
+.heatmap-row-label { background: #f8fafc; padding: 6px 8px; font-weight: 500; color: #475569; text-align: left; }
+.h0 { background: #fef3c7; }
+.h1 { background: #fde68a; }
+.h2 { background: #fcd34d; }
+.h3 { background: #fbbf24; color: white; }
+.h4 { background: #f59e0b; color: white; font-weight: 600; }
+.h5 { background: #d97706; color: white; font-weight: 600; }
+
+/* カレンダー */
+.calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; font-size: 10px; }
+.cal-cell { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 3px; padding: 6px 4px; min-height: 45px; }
+.cal-day { font-weight: 600; color: #475569; }
+.cal-data { color: #94a3b8; font-size: 9px; margin-top: 2px; }
+.cal-data.green { color: #10b981; font-weight: 600; }
+.cal-data.red { color: #ef4444; font-weight: 600; }
+
+/* テーブル */
+.cross-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+.cross-table th { background: #f1f5f9; padding: 6px 8px; text-align: left; font-weight: 600; border-bottom: 1px solid #e2e8f0; color: #475569; }
+.cross-table td { padding: 6px 8px; border-bottom: 1px solid #f1f5f9; }
+
+/* === 右設定パネル === */
+.config-panel { border-left: 1px solid #e2e8f0; padding: 12px; background: #fafbfc; overflow-y: auto; max-height: 700px; }
+.config-section { margin-bottom: 12px; }
+.config-label { font-size: 10px; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; font-weight: 600; }
+.dropzone { background: white; border: 2px dashed #cbd5e0; border-radius: 4px; padding: 8px; min-height: 36px; transition: all 0.2s; }
+.dropzone.has-item { border-style: solid; border-color: #f59e0b; }
+.dropzone-empty { color: #94a3b8; font-size: 10px; text-align: center; }
+.dropped-item { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; background: #fef3c7; border: 1px solid #f59e0b; border-radius: 3px; font-size: 11px; color: #92400e; margin: 2px; }
+.dropped-item .remove { cursor: pointer; opacity: 0.6; font-size: 10px; }
+
+.config-restrictions { margin-top: 12px; padding: 10px; background: #fef2f2; border: 1px solid #fca5a5; border-radius: 4px; font-size: 10px; color: #991b1b; }
+.config-restrictions-title { font-weight: bold; margin-bottom: 4px; display: flex; align-items: center; gap: 4px; }
+
+.ai-assist { margin-top: 12px; padding: 10px; background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); border-radius: 4px; }
+.ai-assist-title { font-weight: bold; font-size: 11px; color: #6b21a8; margin-bottom: 6px; display: flex; align-items: center; gap: 4px; }
+.ai-assist-input { width: 100%; padding: 6px; border: 1px solid #c084fc; border-radius: 3px; font-size: 11px; resize: none; }
+.ai-suggestion { padding: 6px 8px; background: white; border: 1px solid #e9d5ff; border-radius: 3px; font-size: 10px; margin-top: 6px; cursor: pointer; }
+.ai-suggestion:hover { border-color: #8b5cf6; }
+
+.legend { padding: 8px 12px; background: #fef3c7; border-radius: 4px; font-size: 10px; color: #92400e; margin-bottom: 8px; }
+.tag-restr { display: inline-block; padding: 1px 6px; border-radius: 2px; font-size: 9px; margin-left: 4px; }
+.tag-green { background: #d1fae5; color: #065f46; }
+.tag-yellow { background: #fef3c7; color: #92400e; }
+.tag-red { background: #fee2e2; color: #991b1b; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- 左サイドバー -->
+  <aside class="sidebar">
+    <div class="logo">ラクミー 経営管理</div>
+    <div class="nav-item active">📊 ダッシュボード</div>
+    <div class="nav-item">📅 当月実績</div>
+    <div class="nav-item">📅 月次レポート</div>
+    <div class="nav-item">📊 当年推移</div>
+    <div class="nav-item">📐 ラベル</div>
+    <div class="nav-item">🛒 商品管理</div>
+    <div class="nav-item">👥 シフト管理</div>
+    <div class="nav-item">📦 棚卸詳細</div>
+    <div class="nav-item">💰 費用実績入力</div>
+    <div class="nav-item">📈 経営指標</div>
+    <div class="nav-item">⚙️ 経営方針</div>
+    <div class="nav-item">📋 売上</div>
+  </aside>
+
+  <!-- メイン -->
+  <main class="main">
+    <div class="top-bar">
+      <div class="shop-select">🏪 Cafe&Dining Cheese chinese Worker 千葉店 ▾</div>
+      <div class="user-icon"></div>
+    </div>
+
+    <h1 class="page-title">ダッシュボード</h1>
+    <div class="period-selector">📅 2026/04/01 - 2026/04/27 ▾</div>
+
+    <!-- === 既存セクション (経営指標) === -->
+    <div class="section">
+      <div class="section-title">経営指標</div>
+      <div class="kpi-row">
+        <div class="kpi-card"><div class="kpi-label">坪単価</div><div class="kpi-value">17.4<span class="kpi-unit">万円</span></div></div>
+        <div class="kpi-card"><div class="kpi-label">営業利益率</div><div class="kpi-value">39.0<span class="kpi-unit">%</span></div></div>
+        <div class="kpi-card"><div class="kpi-label">経費率</div><div class="kpi-value">5.1<span class="kpi-unit">%</span></div></div>
+        <div class="kpi-card"><div class="kpi-label">利益</div><div class="kpi-value">0<span class="kpi-unit">%</span></div></div>
+        <div class="kpi-card"><div class="kpi-label">前年同月比</div><div class="kpi-value">98.5<span class="kpi-unit">%</span></div><div class="kpi-sub red">-1.5%</div></div>
+      </div>
+    </div>
+
+    <!-- === D&D セクション (新規追加) === -->
+    <div class="dnd-section">
+      <div class="dnd-header">
+        <div class="dnd-header-title">🎨 カスタムウィジェット (Drag & Drop)</div>
+        <div class="dnd-header-actions">
+          <button class="btn btn-secondary">📋 ビュー一覧</button>
+          <button class="btn btn-secondary">💾 ビュー保存</button>
+          <button class="btn btn-primary">+ 新規ウィジェット</button>
+        </div>
+      </div>
+
+      <div class="dnd-body">
+
+        <!-- 左パレット -->
+        <aside class="palette">
+          <input class="palette-search" placeholder="🔍 指標を検索...">
+          <div class="palette-tabs">
+            <div class="palette-tab active">全て</div>
+            <div class="palette-tab">ディメン</div>
+            <div class="palette-tab">タグ</div>
+            <div class="palette-tab">指標</div>
+          </div>
+
+          <div class="palette-group">
+            <div class="palette-group-title">📐 ディメン (14)</div>
+            <div class="palette-item dim"><div class="palette-icon dim"></div>月</div>
+            <div class="palette-item dim"><div class="palette-icon dim"></div>日</div>
+            <div class="palette-item dim"><div class="palette-icon dim"></div>時間帯</div>
+            <div class="palette-item dim"><div class="palette-icon dim"></div>曜日</div>
+            <div class="palette-item dim"><div class="palette-icon dim"></div>商品</div>
+            <div class="palette-item dim"><div class="palette-icon dim"></div>費目</div>
+            <div class="palette-item dim"><div class="palette-icon dim"></div>スタッフ <span class="tag-restr tag-red">🔴連携</span></div>
+            <div class="palette-item dim"><div class="palette-icon dim"></div>仕入先 <span class="tag-restr tag-red">🔴連携</span></div>
+            <div class="palette-item dim"><div class="palette-icon dim"></div>仕入先ラベル <span class="tag-restr tag-red">🔴</span></div>
+            <div class="palette-item dim"><div class="palette-icon dim"></div>スタッフラベル <span class="tag-restr tag-red">🔴</span></div>
+          </div>
+
+          <div class="palette-group">
+            <div class="palette-group-title">🏷️ カスタムタグ (6)</div>
+            <div class="palette-item tag"><div class="palette-icon tag"></div>指標バンドル</div>
+            <div class="palette-item tag"><div class="palette-icon tag"></div>商品バンドル</div>
+            <div class="palette-item tag"><div class="palette-icon tag"></div>時間帯バンドル</div>
+            <div class="palette-item tag"><div class="palette-icon tag"></div>スタッフバンドル <span class="tag-restr tag-red">🔴</span></div>
+            <div class="palette-item tag"><div class="palette-icon tag"></div>仕入先バンドル</div>
+            <div class="palette-item tag"><div class="palette-icon tag"></div>期間バンドル</div>
+          </div>
+
+          <div class="palette-group">
+            <div class="palette-group-title">📊 トランザクション (720)</div>
+            <div class="palette-item metric"><div class="palette-icon metric"></div>売上(税抜)</div>
+            <div class="palette-item metric"><div class="palette-icon metric"></div>客数</div>
+            <div class="palette-item metric"><div class="palette-icon metric"></div>客単価 <span class="tag-restr tag-yellow">🟡加重</span></div>
+            <div class="palette-item metric"><div class="palette-icon metric"></div>PA人件費</div>
+            <div class="palette-item metric"><div class="palette-icon metric"></div>FD率 <span class="tag-restr tag-yellow">🟡加重</span></div>
+            <div class="palette-item metric"><div class="palette-icon metric"></div>シフト時間</div>
+            <div class="palette-item metric"><div class="palette-icon metric"></div>棚卸金額 <span class="tag-restr tag-yellow">🟡STOCK</span></div>
+            <div class="palette-item metric"><div class="palette-icon metric"></div>...</div>
+          </div>
+        </aside>
+
+        <!-- 中央キャンバス -->
+        <section class="canvas">
+          <div class="legend">
+            💡 <strong>使い方</strong>: 左パレットから「時間帯」「曜日」「客数」をドラッグして、ピーク時間帯のヒートマップを作成可能。AIアシストで「シフトを最適化したい」と入力すれば自動提案も。
+          </div>
+
+          <!-- ウィジェット1: ヒートマップ (時間帯×曜日×客数) -->
+          <div class="widget draggable">
+            <div class="widget-title">
+              <span>🔥 時間帯 × 曜日 × 客数 (ヒートマップ)</span>
+              <div class="widget-actions">
+                <div class="widget-action">⚙️</div>
+                <div class="widget-action">📋</div>
+                <div class="widget-action">⤢</div>
+                <div class="widget-action">✕</div>
+              </div>
+            </div>
+            <div class="widget-content">
+              <div class="heatmap">
+                <div class="heatmap-cell heatmap-header"></div>
+                <div class="heatmap-cell heatmap-header">月</div><div class="heatmap-cell heatmap-header">火</div><div class="heatmap-cell heatmap-header">水</div><div class="heatmap-cell heatmap-header">木</div><div class="heatmap-cell heatmap-header">金</div><div class="heatmap-cell heatmap-header">土</div><div class="heatmap-cell heatmap-header">日</div>
+
+                <div class="heatmap-cell heatmap-row-label">11-13時</div>
+                <div class="heatmap-cell h2">42</div><div class="heatmap-cell h2">38</div><div class="heatmap-cell h3">52</div><div class="heatmap-cell h3">49</div><div class="heatmap-cell h4">68</div><div class="heatmap-cell h5">95</div><div class="heatmap-cell h5">88</div>
+
+                <div class="heatmap-cell heatmap-row-label">13-15時</div>
+                <div class="heatmap-cell h1">22</div><div class="heatmap-cell h1">19</div><div class="heatmap-cell h1">21</div><div class="heatmap-cell h1">25</div><div class="heatmap-cell h2">35</div><div class="heatmap-cell h3">52</div><div class="heatmap-cell h3">48</div>
+
+                <div class="heatmap-cell heatmap-row-label">15-17時</div>
+                <div class="heatmap-cell h0">8</div><div class="heatmap-cell h0">12</div><div class="heatmap-cell h0">10</div><div class="heatmap-cell h0">15</div><div class="heatmap-cell h1">22</div><div class="heatmap-cell h2">38</div><div class="heatmap-cell h2">32</div>
+
+                <div class="heatmap-cell heatmap-row-label">17-19時</div>
+                <div class="heatmap-cell h2">35</div><div class="heatmap-cell h2">42</div><div class="heatmap-cell h3">55</div><div class="heatmap-cell h3">62</div><div class="heatmap-cell h4">78</div><div class="heatmap-cell h5">112</div><div class="heatmap-cell h4">85</div>
+
+                <div class="heatmap-cell heatmap-row-label">19-21時</div>
+                <div class="heatmap-cell h3">58</div><div class="heatmap-cell h3">62</div><div class="heatmap-cell h4">75</div><div class="heatmap-cell h4">82</div><div class="heatmap-cell h5">105</div><div class="heatmap-cell h5">142</div><div class="heatmap-cell h4">98</div>
+
+                <div class="heatmap-cell heatmap-row-label">21-23時</div>
+                <div class="heatmap-cell h2">28</div><div class="heatmap-cell h2">32</div><div class="heatmap-cell h2">38</div><div class="heatmap-cell h3">45</div><div class="heatmap-cell h4">62</div><div class="heatmap-cell h5">88</div><div class="heatmap-cell h3">52</div>
+              </div>
+              <div style="margin-top: 8px; font-size: 10px; color: #94a3b8;">凡例: <span class="h0" style="padding:2px 6px;">少</span> → <span class="h5" style="padding:2px 6px;">多</span></div>
+            </div>
+          </div>
+
+          <!-- ウィジェット2: 予実カレンダー -->
+          <div class="widget draggable">
+            <div class="widget-title">
+              <span>📅 予実カレンダー (日 × 売上 vs 予算)</span>
+              <div class="widget-actions">
+                <div class="widget-action">⚙️</div>
+                <div class="widget-action">⤢</div>
+                <div class="widget-action">✕</div>
+              </div>
+            </div>
+            <div class="widget-content">
+              <div class="calendar">
+                <div class="cal-cell"><div class="cal-day">月 1</div><div class="cal-data">¥285K</div><div class="cal-data green">+12%</div></div>
+                <div class="cal-cell"><div class="cal-day">火 2</div><div class="cal-data">¥220K</div><div class="cal-data red">-5%</div></div>
+                <div class="cal-cell"><div class="cal-day">水 3</div><div class="cal-data">¥260K</div><div class="cal-data green">+3%</div></div>
+                <div class="cal-cell"><div class="cal-day">木 4</div><div class="cal-data">¥315K</div><div class="cal-data green">+18%</div></div>
+                <div class="cal-cell"><div class="cal-day">金 5</div><div class="cal-data">¥420K</div><div class="cal-data green">+25%</div></div>
+                <div class="cal-cell"><div class="cal-day">土 6</div><div class="cal-data">¥580K</div><div class="cal-data green">+32%</div></div>
+                <div class="cal-cell"><div class="cal-day">日 7</div><div class="cal-data">¥495K</div><div class="cal-data green">+22%</div></div>
+                <div class="cal-cell"><div class="cal-day">月 8</div><div class="cal-data">¥275K</div><div class="cal-data green">+8%</div></div>
+                <div class="cal-cell"><div class="cal-day">火 9</div><div class="cal-data">¥210K</div><div class="cal-data red">-8%</div></div>
+                <div class="cal-cell"><div class="cal-day">水 10</div><div class="cal-data">¥255K</div><div class="cal-data">±0</div></div>
+                <div class="cal-cell"><div class="cal-day">木 11</div><div class="cal-data">¥320K</div><div class="cal-data green">+15%</div></div>
+                <div class="cal-cell"><div class="cal-day">金 12</div><div class="cal-data">¥445K</div><div class="cal-data green">+28%</div></div>
+                <div class="cal-cell"><div class="cal-day">土 13</div><div class="cal-data">¥625K</div><div class="cal-data green">+38%</div></div>
+                <div class="cal-cell"><div class="cal-day">日 14</div><div class="cal-data">¥510K</div><div class="cal-data green">+25%</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 空ウィジェット -->
+          <div class="widget" style="border: 2px dashed #cbd5e0;">
+            <div class="empty-canvas">
+              <div class="empty-canvas-icon">🎯</div>
+              <div>ここに要素をドロップして新規ウィジェット作成</div>
+            </div>
+          </div>
+
+        </section>
+
+        <!-- 右設定パネル -->
+        <aside class="config-panel">
+          <div class="config-section">
+            <div class="config-label">📌 選択中: 時間帯 × 曜日 × 客数</div>
+          </div>
+
+          <div class="config-section">
+            <div class="config-label">行 (Row)</div>
+            <div class="dropzone has-item">
+              <span class="dropped-item">📐 時間帯 <span class="remove">✕</span></span>
+            </div>
+          </div>
+
+          <div class="config-section">
+            <div class="config-label">列 (Column)</div>
+            <div class="dropzone has-item">
+              <span class="dropped-item">📐 曜日 <span class="remove">✕</span></span>
+            </div>
+          </div>
+
+          <div class="config-section">
+            <div class="config-label">値 (Value)</div>
+            <div class="dropzone has-item">
+              <span class="dropped-item">📊 客数 <span class="remove">✕</span></span>
+            </div>
+          </div>
+
+          <div class="config-section">
+            <div class="config-label">フィルタ (Filter)</div>
+            <div class="dropzone">
+              <div class="dropzone-empty">期間バンドル等をドロップ</div>
+            </div>
+          </div>
+
+          <div class="config-restrictions">
+            <div class="config-restrictions-title">⚠️ 制限・注意</div>
+            <div>🟡 STOCK指標 - 棚卸/在庫は期末値、SUM不可</div>
+            <div style="margin-top:4px;">🟡 仮値あり - 営業中は仮値表示</div>
+            <div style="margin-top:4px; font-size: 9px;">推奨スナップ: snap_shop_day_timeslot</div>
+          </div>
+
+          <div class="ai-assist">
+            <div class="ai-assist-title">🤖 AIアシスト</div>
+            <textarea class="ai-assist-input" rows="2" placeholder="例: シフトを最適化したい"></textarea>
+            <div class="ai-suggestion">💡 <strong>提案1</strong>: スタッフ × 時間帯 × 客数</div>
+            <div class="ai-suggestion">💡 <strong>提案2</strong>: 時間帯 × 曜日 × PA人件費率</div>
+            <div class="ai-suggestion">💡 <strong>提案3</strong>: スタッフ × 月 × 個人売上</div>
+          </div>
+
+          <div class="config-section" style="margin-top: 12px;">
+            <div class="config-label">表示形式</div>
+            <select style="width:100%; padding: 4px; border: 1px solid #cbd5e0; border-radius: 4px; font-size: 11px;">
+              <option selected>ヒートマップ</option>
+              <option>マトリクス表</option>
+              <option>折れ線グラフ</option>
+              <option>棒グラフ</option>
+            </select>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+
+  </main>
+</div>
+</body>
+</html>
