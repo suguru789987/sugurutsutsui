@@ -47,7 +47,7 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
 .btn-secondary { background: rgba(255,255,255,0.25); color: white; }
 
 /* === ピボットレイアウト === */
-.pivot-layout { display: grid; grid-template-columns: 200px 1fr; min-height: 480px; }
+.pivot-layout { display: grid; grid-template-columns: minmax(180px, 14%) 1fr; min-height: 480px; }
 
 /* === 左パレット === */
 .palette { border-right: 1px solid #e2e8f0; background: #f8fafc; padding: 10px; overflow-y: auto; max-height: 540px; }
@@ -165,8 +165,9 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
   padding: 4px 10px;
   min-height: 42px;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
   transition: all 0.2s;
   box-shadow: inset 0 0 0 1px rgba(245,158,11,0.15);
   position: relative;
@@ -197,13 +198,9 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
 
 .empty-hint { color: #94a3b8; font-size: 10px; font-style: italic; text-align: center; flex: 1; line-height: 1.3; }
 
-.dropped-tag { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; background: white; border: 1px solid #10b981; border-radius: 4px; font-size: 11px; color: #047857; font-weight: 600; cursor: grab; }
-.dropped-tag .remove { cursor: pointer; opacity: 0.5; font-size: 12px; padding-left: 2px; }
-.dropped-tag .remove:hover { opacity: 1; color: #ef4444; }
-
-.dropped-value { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; background: white; border: 2px solid #10b981; border-radius: 5px; font-size: 13px; color: #047857; font-weight: 800; box-shadow: 0 2px 4px rgba(16,185,129,0.2); letter-spacing: 0.3px; }
-.dropped-value .remove { cursor: pointer; opacity: 0.5; font-size: 14px; padding-left: 4px; }
-.dropped-value .remove:hover { opacity: 1; color: #ef4444; }
+.dropped-tag, .dropped-value { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; background: white; border: 1px solid #10b981; border-radius: 4px; font-size: 11px; color: #047857; font-weight: 600; cursor: grab; }
+.dropped-tag .remove, .dropped-value .remove { cursor: pointer; opacity: 0.5; font-size: 12px; padding-left: 2px; }
+.dropped-tag .remove:hover, .dropped-value .remove:hover { opacity: 1; color: #ef4444; }
 
 /* テーブル */
 .cross-table { width: 100%; border-collapse: collapse; font-size: 12px; }
@@ -1366,30 +1363,45 @@ function getZoneMembers(zone) {
 function renderTable() {
   const rowList = zones.row ? getZoneMembers(zones.row) : ['(集計)'];
   const isMultiMeasure = zones.vals.length > 1;
-  // 複数メジャー時はメジャー軸を列に展開し、列ディメンは無視
-  const colListBase = zones.col ? getZoneMembers(zones.col).slice(0, 6) : null;
-  const colList = isMultiMeasure ? zones.vals.map(v => v.name) : colListBase;
-  const colMeasureName = (idx) => isMultiMeasure ? zones.vals[idx].name : (zones.vals[0]?.name || '');
+  const colDimList = zones.col ? getZoneMembers(zones.col).slice(0, 6) : null;
+  // 列構造:
+  //   [単一メジャー][列ディメン無] → 列無し
+  //   [単一メジャー][列ディメン有] → colDimList (列=メンバー)
+  //   [複数メジャー][列ディメン無] → vals.map(name) (列=メジャー)
+  //   [複数メジャー][列ディメン有] → colDimList × vals (2段ヘッダー)
+  const useCrossLayout = isMultiMeasure && colDimList; // 列ディメン × メジャー
+  const colList = isMultiMeasure
+    ? (colDimList ? colDimList : zones.vals.map(v => v.name))
+    : colDimList;
+  // セル(行, 列インデックス)に対応するメジャー名を返す
+  const cellMeasureName = (colIdx) => {
+    if (useCrossLayout) return zones.vals[colIdx % zones.vals.length].name;
+    if (isMultiMeasure) return zones.vals[colIdx].name;
+    return zones.vals[0]?.name || '';
+  };
+  const totalCellCount = useCrossLayout
+    ? colDimList.length * zones.vals.length
+    : (colList ? colList.length : 0);
   const valName = zones.vals[0]?.name || '';
   const isRatio = valName.includes('率') || valName.includes('達成') || valName.includes('進捗') || valName.includes('構成比') || valName.includes('前年比');
 
   // 値を一度だけ生成 (キャッシュキーで安定性確保)
   const valsKey = zones.vals.map(v => v.id).join(',');
-  const cacheKey = `${zones.row?.id||'_'}|${isMultiMeasure?'M':(zones.col?.id||'_')}|${valsKey||'_'}`;
+  const cacheKey = `${zones.row?.id||'_'}|${zones.col?.id||'_'}|${valsKey||'_'}`;
   if (!cachedTableData || cachedTableData.key !== cacheKey) {
     const data = rowList.map(rowName => {
       let total = 0;
       let cells = [];
-      if (colList && zones.vals.length > 0) {
-        cells = colList.map((_, i) => {
-          const v = generateValue(colMeasureName(i));
+      if (zones.vals.length > 0 && totalCellCount > 0) {
+        for (let i = 0; i < totalCellCount; i++) {
+          const v = generateValue(cellMeasureName(i));
+          cells.push(v);
           total += v;
-          return v;
-        });
+        }
       } else if (zones.vals.length > 0) {
         total = generateValue(valName);
       }
-      const totalDisplay = isRatio && colList && !isMultiMeasure ? (total / colList.length) : total;
+      const totalDisplay = isRatio && totalCellCount > 0 && !isMultiMeasure ? (total / totalCellCount) : total;
       return { rowName, cells, total: totalDisplay };
     });
     cachedTableData = { key: cacheKey, data };
@@ -1465,8 +1477,9 @@ function renderTable() {
     </div>`;
   }
 
-  // 日付列の圧縮 (列の年月共通分をバナーに集約 / 複数メジャー時はスキップ)
-  const dateMeta = (!isMultiMeasure && colList) ? buildDateColMeta(colList) : null;
+  // 日付列の圧縮 (cross layout の場合は colDimList に対して適用)
+  const dateMetaTarget = useCrossLayout ? colDimList : (!isMultiMeasure ? colList : null);
+  const dateMeta = dateMetaTarget ? buildDateColMeta(dateMetaTarget) : null;
   let dateBanner = '';
   if (dateMeta && dateMeta.bannerText) {
     dateBanner = `<div style="background:#f0fdf4;border:1px solid #d1fae5;border-radius:6px;padding:6px 12px;margin-bottom:6px;font-size:12px;color:#065f46;font-weight:600;">${dateMeta.bannerText}</div>`;
@@ -1474,8 +1487,10 @@ function renderTable() {
   // 複数メジャー時のヒント
   let multiMeasureBar = '';
   if (isMultiMeasure) {
-    const colSkipped = zones.col ? `<span style="margin-left:8px;color:#92400e;">⚠️ 列「${zones.col.name}」は複数メジャー併記中のため非表示</span>` : '';
-    multiMeasureBar = `<div style="background:#ecfdf5;border:1.5px solid #10b981;border-radius:6px;padding:6px 12px;margin-bottom:6px;font-size:11px;color:#065f46;">📊 複数メジャー併記モード (${zones.vals.length}指標)${colSkipped}</div>`;
+    const layoutLabel = useCrossLayout
+      ? `<span style="margin-left:8px;color:#065f46;">⊞ 「${zones.col.name}」 × メジャー の2段ヘッダー</span>`
+      : `<span style="margin-left:8px;color:#065f46;">列=メジャー軸 (列ディメン未配置)</span>`;
+    multiMeasureBar = `<div style="background:#ecfdf5;border:1.5px solid #10b981;border-radius:6px;padding:6px 12px;margin-bottom:6px;font-size:11px;color:#065f46;">📊 複数メジャー併記モード (${zones.vals.length}指標)${layoutLabel}</div>`;
   }
 
   // ヘッダー (行ディメン名/列ヘッダ/合計列すべてソート可)
@@ -1485,31 +1500,57 @@ function renderTable() {
   const rowSortTitle = rowIsDate
     ? `${rowHeaderText}で並び替え (クリック: 最新→古い順 / 再クリック: 古い順→最新)`
     : `${rowHeaderText}で並び替え`;
-  let head = `<tr>
-    <th onclick="sortTableBy('rows-by-label','')" style="cursor:pointer;${rowLabelSorted?'background:#10b981;color:white;':'background:#f1f5f9;'}" title="${rowSortTitle}">${rowHeaderText} ${sortIcon('rows-by-label','')}</th>`;
-  if (colList) {
-    colOrder.forEach((idx, displayIdx) => {
-      const c = colList[idx];
-      const displayLabel = dateMeta ? dateMeta.labels[idx] : c;
-      const isSorted = tableSort.axis === 'rows-by-col' && String(tableSort.key) === String(idx);
-      head += `<th onclick="sortTableBy('rows-by-col','${idx}')" style="cursor:pointer;${isSorted?'background:#10b981;color:white;':''}" title="クリックで「${c}」の値で行をソート">${displayLabel} ${sortIcon('rows-by-col', idx)}</th>`;
+  let head = '';
+  // 2段ヘッダー (cross layout のみ)
+  if (useCrossLayout) {
+    head += `<tr>
+      <th rowspan="2" onclick="sortTableBy('rows-by-label','')" style="cursor:pointer;${rowLabelSorted?'background:#10b981;color:white;':'background:#f1f5f9;'}" title="${rowSortTitle}">${rowHeaderText} ${sortIcon('rows-by-label','')}</th>`;
+    colDimList.forEach((c, di) => {
+      const displayLabel = dateMeta ? dateMeta.labels[di] : c;
+      head += `<th colspan="${zones.vals.length}" style="text-align:center;background:#f0fdf4;color:#065f46;border-left:1px solid #bbf7d0;border-right:1px solid #bbf7d0;">${displayLabel}</th>`;
     });
+    head += `</tr><tr>`;
+    colDimList.forEach((c, di) => {
+      zones.vals.forEach((m, mi) => {
+        const ci = di * zones.vals.length + mi;
+        const isSorted = tableSort.axis === 'rows-by-col' && String(tableSort.key) === String(ci);
+        head += `<th onclick="sortTableBy('rows-by-col','${ci}')" style="cursor:pointer;font-size:10px;${isSorted?'background:#10b981;color:white;':'background:#ecfdf5;'}" title="クリックで「${c} × ${m.name}」の値で行をソート">${truncLabel(m.name, 10)} ${sortIcon('rows-by-col', ci)}</th>`;
+      });
+    });
+    head += `</tr>`;
+  } else {
+    head += `<tr>
+      <th onclick="sortTableBy('rows-by-label','')" style="cursor:pointer;${rowLabelSorted?'background:#10b981;color:white;':'background:#f1f5f9;'}" title="${rowSortTitle}">${rowHeaderText} ${sortIcon('rows-by-label','')}</th>`;
+    if (colList) {
+      colOrder.forEach((idx, displayIdx) => {
+        const c = colList[idx];
+        const displayLabel = (!isMultiMeasure && dateMeta) ? dateMeta.labels[idx] : c;
+        const isSorted = tableSort.axis === 'rows-by-col' && String(tableSort.key) === String(idx);
+        head += `<th onclick="sortTableBy('rows-by-col','${idx}')" style="cursor:pointer;${isSorted?'background:#10b981;color:white;':''}" title="クリックで「${c}」の値で行をソート">${displayLabel} ${sortIcon('rows-by-col', idx)}</th>`;
+      });
+    }
+    const totalSorted = tableSort.axis === 'rows-by-total';
+    if (!isMultiMeasure) {
+      head += `<th class="total" onclick="sortTableBy('rows-by-total','')" style="cursor:pointer;${totalSorted?'background:#10b981;color:white;':''}" title="合計値で行をソート">${valName ? valName + '合計' : '値'} ${sortIcon('rows-by-total','')}</th>`;
+    }
+    head += `</tr>`;
   }
-  // 合計列は単一メジャー時のみ表示 (複数メジャー時は意味的に合算不可)
-  const totalSorted = tableSort.axis === 'rows-by-total';
-  if (!isMultiMeasure) {
-    head += `<th class="total" onclick="sortTableBy('rows-by-total','')" style="cursor:pointer;${totalSorted?'background:#10b981;color:white;':''}" title="合計値で行をソート">${valName ? valName + '合計' : '値'} ${sortIcon('rows-by-total','')}</th>`;
-  }
-  head += `</tr>`;
 
-  // ボディ (行ラベルは表示のみ、個別ソートアイコン無し)
+  // ボディ
   let body = '';
   sortedData.forEach(d => {
     let cells = `<td class="row-header">${d.rowName}</td>`;
-    if (colList) {
+    if (useCrossLayout) {
+      for (let ci = 0; ci < d.cells.length; ci++) {
+        const v = d.cells[ci];
+        const measureName = cellMeasureName(ci);
+        const borderL = (ci % zones.vals.length === 0) ? 'border-left:1px solid #bbf7d0;' : '';
+        cells += `<td style="${borderL}">${formatValue(measureName, v)}</td>`;
+      }
+    } else if (colList) {
       colOrder.forEach((colIdx, displayIdx) => {
         const v = d.cells[colIdx];
-        const measureName = colMeasureName(colIdx);
+        const measureName = cellMeasureName(colIdx);
         if (zones.vals.length > 0 && v !== undefined) cells += `<td>${formatValue(measureName, v)}</td>`;
         else cells += `<td class="empty-cell">―</td>`;
       });
