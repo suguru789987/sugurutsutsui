@@ -294,8 +294,15 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
 .dashboard-area-title { font-size: 14px; font-weight: 700; color: #065f46; flex: 1; }
 .dashboard-area-empty { text-align: center; color: #64748b; padding: 24px; font-size: 12px; line-height: 1.6; }
 .dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
-.dashboard-card { background: white; border: 1.5px solid #d1fae5; border-radius: 6px; padding: 10px 12px; transition: all 0.2s; }
+.dashboard-card { background: white; border: 1.5px solid #d1fae5; border-radius: 6px; padding: 10px 12px; transition: all 0.2s; cursor: grab; }
+.dashboard-card:active { cursor: grabbing; }
 .dashboard-card:hover { box-shadow: 0 2px 8px rgba(16,185,129,0.15); }
+.dashboard-card.dragging { opacity: 0.4; transform: scale(0.98); }
+.dashboard-card.drag-over-top { border-top: 4px solid #10b981; padding-top: 7px; }
+.dashboard-card.drag-over-bottom { border-bottom: 4px solid #10b981; padding-bottom: 7px; }
+.config-row.dragging { opacity: 0.4; }
+.config-row.drag-over-top { border-top: 3px solid #10b981; }
+.config-row.drag-over-bottom { border-bottom: 3px solid #10b981; }
 .dashboard-card.size-full, .dashboard-card.size-half { grid-column: auto; }
 .dashboard-card-body { min-height: 130px; max-height: 200px; overflow: hidden; }
 .dashboard-card-body table.cross-table { width: 100%; }
@@ -1766,6 +1773,8 @@ function renderDashboard() {
     const card = document.createElement('div');
     card.className = `dashboard-card size-${v.size || 'half'}`;
     card.id = `dashCard_${v.id}`;
+    card.draggable = true;
+    card.dataset.viewId = v.id;
     const cfg = v.config;
     const summary = [
       cfg.row ? `📐${cfg.row.name}` : '',
@@ -1774,18 +1783,73 @@ function renderDashboard() {
     ].filter(Boolean).join(' × ');
     card.innerHTML = `
       <div class="dashboard-card-header">
+        <span style="color:#94a3b8;font-size:14px;cursor:grab;margin-right:4px;" title="ドラッグで並び替え">⋮⋮</span>
         <div class="dashboard-card-title">📌 ${v.name}</div>
         <div class="dashboard-card-meta">${summary}</div>
         <div class="dashboard-card-actions">
-          <button class="dashboard-card-btn" onclick="toggleDashCardCollapse('${v.id}')">▼</button>
-          <button class="dashboard-card-btn" onclick="loadViewById('${v.id}')" title="エディタで開く">✎</button>
-          <button class="dashboard-card-btn" onclick="unpinView('${v.id}')" title="ダッシュボードから外す">📌×</button>
+          <button class="dashboard-card-btn" onclick="event.stopPropagation();toggleDashCardCollapse('${v.id}')">▼</button>
+          <button class="dashboard-card-btn" onclick="event.stopPropagation();loadViewById('${v.id}')" title="エディタで開く">✎</button>
+          <button class="dashboard-card-btn" onclick="event.stopPropagation();unpinView('${v.id}')" title="ダッシュボードから外す">📌×</button>
         </div>
       </div>
       <div class="dashboard-card-body">${renderViewSnapshot(v)}</div>
     `;
+    card.addEventListener('dragstart', (e) => onDashCardDragStart(e, v.id));
+    card.addEventListener('dragend', (e) => onDashCardDragEnd(e));
+    card.addEventListener('dragover', (e) => onDashCardDragOver(e, card));
+    card.addEventListener('dragleave', (e) => onDashCardDragLeave(e, card));
+    card.addEventListener('drop', (e) => onDashCardDrop(e, v.id, card));
     grid.appendChild(card);
   });
+}
+
+// === ダッシュボードカードのドラッグ並び替え ===
+let _dashDragViewId = null;
+function onDashCardDragStart(e, viewId) {
+  _dashDragViewId = viewId;
+  e.dataTransfer.effectAllowed = 'move';
+  e.target.classList.add('dragging');
+}
+function onDashCardDragEnd(e) {
+  e.target.classList.remove('dragging');
+  document.querySelectorAll('.dashboard-card').forEach(c => {
+    c.classList.remove('drag-over-top', 'drag-over-bottom');
+  });
+  _dashDragViewId = null;
+}
+function onDashCardDragOver(e, card) {
+  if (!_dashDragViewId || card.dataset.viewId === _dashDragViewId) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const rect = card.getBoundingClientRect();
+  const isTop = (e.clientY - rect.top) < rect.height / 2;
+  card.classList.toggle('drag-over-top', isTop);
+  card.classList.toggle('drag-over-bottom', !isTop);
+}
+function onDashCardDragLeave(e, card) {
+  card.classList.remove('drag-over-top', 'drag-over-bottom');
+}
+function onDashCardDrop(e, targetId, card) {
+  e.preventDefault();
+  card.classList.remove('drag-over-top', 'drag-over-bottom');
+  if (!_dashDragViewId || _dashDragViewId === targetId) return;
+  const rect = card.getBoundingClientRect();
+  const isTop = (e.clientY - rect.top) < rect.height / 2;
+  reorderPinnedView(_dashDragViewId, targetId, isTop ? 'before' : 'after');
+}
+function reorderPinnedView(srcId, tgtId, position) {
+  const pinned = getPinnedViews();
+  const srcIdx = pinned.findIndex(v => v.id === srcId);
+  const tgtIdx = pinned.findIndex(v => v.id === tgtId);
+  if (srcIdx < 0 || tgtIdx < 0) return;
+  const [moved] = pinned.splice(srcIdx, 1);
+  let insertAt = pinned.findIndex(v => v.id === tgtId);
+  if (insertAt < 0) insertAt = pinned.length;
+  if (position === 'after') insertAt += 1;
+  pinned.splice(insertAt, 0, moved);
+  pinned.forEach((v, i) => { v.order = i + 1; });
+  renderDashboard();
+  showToast(`🔀 「${moved.name}」を並び替えました`);
 }
 
 // === ダッシュボードカードプレビューのソート ===
@@ -2110,7 +2174,10 @@ function renderConfigList() {
     const screenBadge = c.screen === 'both' ? '🟢🟠 両方' : (c.screen === 'company' ? '🟢 会社' : '🟠 店舗');
     const row = document.createElement('div');
     row.className = `config-row ${c.pinned ? 'pinned' : ''}`;
+    row.draggable = true;
+    row.dataset.configIdx = idx;
     row.innerHTML = `
+      <span style="cursor:grab;color:#94a3b8;font-size:14px;padding:0 4px;" title="ドラッグで並び替え">⋮⋮</span>
       <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
         <button class="config-order-btn" ${idx===0?'disabled':''} onclick="moveConfig(${idx},-1)">▲</button>
         <span style="font-size:9px;color:#94a3b8;">${idx+1}</span>
@@ -2139,8 +2206,47 @@ function renderConfigList() {
       <label class="config-pin-toggle"><input type="checkbox" ${c.pinned?'checked':''} onchange="setConfigField(${idx},'pinned',this.checked)">📌固定</label>
       <button class="dashboard-card-btn" style="background:#fee2e2;color:#991b1b;" onclick="deleteConfigView('${c.id}')">🗑️</button>
     `;
+    row.addEventListener('dragstart', (e) => onConfigRowDragStart(e, idx));
+    row.addEventListener('dragend', (e) => onConfigRowDragEnd(e));
+    row.addEventListener('dragover', (e) => onConfigRowDragOver(e, row));
+    row.addEventListener('dragleave', (e) => row.classList.remove('drag-over-top','drag-over-bottom'));
+    row.addEventListener('drop', (e) => onConfigRowDrop(e, idx, row));
     listEl.appendChild(row);
   });
+}
+
+let _configDragSrcIdx = null;
+function onConfigRowDragStart(e, idx) {
+  _configDragSrcIdx = idx;
+  e.dataTransfer.effectAllowed = 'move';
+  e.target.classList.add('dragging');
+}
+function onConfigRowDragEnd(e) {
+  e.target.classList.remove('dragging');
+  document.querySelectorAll('.config-row').forEach(r => r.classList.remove('drag-over-top','drag-over-bottom'));
+  _configDragSrcIdx = null;
+}
+function onConfigRowDragOver(e, row) {
+  if (_configDragSrcIdx === null) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const rect = row.getBoundingClientRect();
+  const isTop = (e.clientY - rect.top) < rect.height / 2;
+  row.classList.toggle('drag-over-top', isTop);
+  row.classList.toggle('drag-over-bottom', !isTop);
+}
+function onConfigRowDrop(e, tgtIdx, row) {
+  e.preventDefault();
+  row.classList.remove('drag-over-top','drag-over-bottom');
+  const srcIdx = _configDragSrcIdx;
+  if (srcIdx === null || srcIdx === tgtIdx) return;
+  const rect = row.getBoundingClientRect();
+  const isTop = (e.clientY - rect.top) < rect.height / 2;
+  let insertAt = tgtIdx + (isTop ? 0 : 1);
+  if (srcIdx < insertAt) insertAt -= 1;
+  const [moved] = _configDraft.splice(srcIdx, 1);
+  _configDraft.splice(insertAt, 0, moved);
+  renderConfigList();
 }
 
 function moveConfig(idx, delta) {
