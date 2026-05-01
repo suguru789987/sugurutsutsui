@@ -1,0 +1,2899 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>会社画面 - D&D UI ピボット型 (動作版)</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, "Hiragino Sans", "Noto Sans JP", sans-serif; }
+body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
+.app { display: flex; min-height: 100vh; }
+
+.sidebar { width: 200px; background: #1f3a4d; color: #cbd5e0; padding: 16px 0; }
+.logo { padding: 0 16px 20px; font-weight: bold; color: white; font-size: 14px; }
+.nav-item { padding: 10px 16px; cursor: pointer; font-size: 12px; }
+.nav-item.active { background: #14b8a6; color: white; }
+
+.main { flex: 1; padding: 16px 24px; overflow: auto; }
+.top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.company-select { padding: 6px 12px; background: white; border: 1px solid #e2e8f0; border-radius: 6px; font-size: 12px; }
+.user-icon { width: 28px; height: 28px; background: #10b981; border-radius: 50%; }
+.page-title { font-size: 20px; font-weight: bold; margin-bottom: 12px; }
+
+.section { background: white; border-radius: 8px; padding: 16px; margin-bottom: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+.section-title { font-weight: bold; font-size: 13px; color: #1f3a4d; margin-bottom: 12px; padding-left: 8px; border-left: 3px solid #10b981; }
+.kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.kpi-card { background: #f7fafc; border-radius: 6px; padding: 12px; text-align: center; }
+.kpi-label { font-size: 10px; color: #718096; margin-bottom: 4px; }
+.kpi-value { font-size: 22px; font-weight: bold; color: #1f3a4d; }
+.kpi-unit { font-size: 12px; color: #718096; margin-left: 2px; }
+
+/* === モード切替 (ダッシュボード / 編集) === */
+.mode-edit .section, .mode-edit .dashboard-area { display: none !important; }
+.mode-dashboard .dnd-section { display: none !important; }
+.mode-dashboard .page-action-edit { display: inline-flex; }
+.mode-edit .page-action-edit { display: none; }
+.mode-edit .page-title::before { content: "✏️ "; color: #f59e0b; }
+.page-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.page-header .page-title { margin: 0; }
+.dashboard-area-empty { text-align: center; padding: 36px 20px; color: #94a3b8; font-size: 12px; background: white; border-radius: 6px; line-height: 1.8; }
+
+/* === D&D ピボットセクション === */
+.dnd-section { background: white; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 12px; overflow: hidden; }
+.dnd-header { background: linear-gradient(90deg, #10b981 0%, #14b8a6 100%); color: white; padding: 10px 20px; display: flex; justify-content: space-between; align-items: center; }
+.dnd-header-title { font-weight: bold; font-size: 14px; }
+.btn { padding: 5px 12px; border-radius: 5px; font-size: 11px; cursor: pointer; border: none; font-weight: 600; transition: opacity 0.15s; }
+.btn:hover { opacity: 0.85; }
+.btn-primary { background: white; color: #10b981; }
+.btn-secondary { background: rgba(255,255,255,0.25); color: white; }
+
+/* === ピボットレイアウト === */
+.pivot-layout { display: grid; grid-template-columns: minmax(180px, 14%) 1fr; min-height: 480px; }
+
+/* === 左パレット === */
+.palette { border-right: 1px solid #e2e8f0; background: #f8fafc; padding: 10px; overflow-y: auto; max-height: 540px; }
+.palette-tabs { display: flex; gap: 2px; margin-bottom: 8px; background: white; padding: 2px; border-radius: 5px; border: 1px solid #e2e8f0; }
+.palette-tab { flex: 1; padding: 5px 2px; cursor: pointer; font-size: 10px; font-weight: 600; color: #64748b; text-align: center; border-radius: 3px; transition: all 0.15s; }
+.palette-tab:hover { background: #f1f5f9; }
+.palette-tab.active { background: #10b981; color: white; }
+.palette-tab .count { display: block; font-size: 9px; opacity: 0.85; margin-top: 1px; }
+
+.palette-search { width: 100%; padding: 5px 8px; border: 1px solid #cbd5e0; border-radius: 4px; font-size: 11px; margin-bottom: 8px; background: white; }
+
+.palette-list { display: flex; flex-direction: column; gap: 3px; }
+.palette-card { background: white; border: 1px solid #e2e8f0; border-radius: 4px; padding: 6px 8px; cursor: grab; font-size: 11px; font-weight: 500; color: #1f3a4d; display: flex; align-items: center; gap: 5px; transition: all 0.15s; user-select: none; }
+.palette-card:hover { border-color: #10b981; background: #ecfdf5; transform: translateX(2px); box-shadow: 0 2px 4px rgba(16,185,129,0.12); }
+.palette-card:active { cursor: grabbing; opacity: 0.5; }
+.palette-card.dim { border-left: 3px solid #3b82f6; }
+.palette-card.tag { border-left: 3px solid #f59e0b; }
+.palette-card.metric { border-left: 3px solid #8b5cf6; }
+.palette-card.dragging { opacity: 0.4; }
+.card-icon { font-size: 12px; }
+
+.tag-create-btn { background: white; border: 1.5px dashed #f59e0b; border-radius: 4px; padding: 6px 8px; cursor: pointer; font-size: 11px; font-weight: 600; color: #f59e0b; display: flex; align-items: center; gap: 5px; justify-content: center; }
+.tag-create-btn:hover { background: #fef3c7; }
+
+/* === 中央ピボットエリア === */
+.pivot-main { padding: 12px; background: #fafbfc; }
+
+.help-bar { background: #fffbeb; border: 1px solid #fcd34d; padding: 6px 10px; border-radius: 4px; font-size: 10px; color: #92400e; margin-bottom: 8px; line-height: 1.4; }
+
+.pivot-frame {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  grid-template-rows: 36px 42px auto;
+  grid-template-areas:
+    "corner col"
+    "corner value"
+    "row    table";
+  gap: 4px;
+}
+
+.pivot-corner {
+  grid-area: corner;
+  background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+  border: 2px dashed #10b981;
+  border-radius: 4px;
+  padding: 4px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  font-size: 9px;
+  color: #047857;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.3;
+  gap: 2px;
+  overflow-y: auto;
+  transition: all 0.2s;
+}
+.pivot-corner.has-filter { border-style: solid; background: white; }
+.pivot-corner.drag-over { background: #ecfdf5; border-color: #047857; transform: scale(1.02); }
+.filter-chip { display: flex; align-items: center; gap: 4px; padding: 3px 6px; background: #ecfdf5; border: 1px solid #10b981; border-radius: 3px; font-size: 9px; color: #047857; font-weight: 700; margin-bottom: 2px; cursor: pointer; }
+.filter-chip:hover { background: #d1fae5; }
+.filter-chip-remove { cursor: pointer; opacity: 0.6; font-size: 11px; padding-left: 2px; }
+.filter-chip-remove:hover { opacity: 1; color: #ef4444; }
+.filter-empty-corner { font-size: 9px; color: #047857; padding: 4px 0; }
+
+.pivot-col-zone {
+  grid-area: col;
+  background: white;
+  border: 2px dashed #cbd5e0;
+  border-radius: 4px;
+  padding: 4px 8px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+.pivot-col-zone.has-item { border-style: solid; border-color: #10b981; background: #ecfdf5; }
+.pivot-col-zone.drag-over { border-color: #10b981; background: #ecfdf5; transform: scale(1.01); border-style: solid; }
+.zone-label-tag { font-size: 10px; font-weight: bold; color: #94a3b8; background: white; padding: 1px 5px; border-radius: 3px; border: 1px solid #e2e8f0; flex-shrink: 0; }
+
+.pivot-row-zone {
+  grid-area: row;
+  background: white;
+  border: 2px dashed #cbd5e0;
+  border-radius: 4px;
+  padding: 6px;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  transition: all 0.2s;
+}
+.pivot-row-zone.has-item { border-style: solid; border-color: #10b981; background: #ecfdf5; }
+.pivot-row-zone.drag-over { border-color: #10b981; background: #ecfdf5; border-style: solid; }
+
+.pivot-table-area {
+  grid-area: table;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  padding: 10px;
+  overflow: auto;
+  min-height: 320px;
+}
+
+.pivot-value-zone {
+  grid-area: value;
+  background: linear-gradient(90deg, #fef3c7 0%, #fffbeb 100%);
+  border: 2.5px dashed #f59e0b;
+  border-radius: 4px;
+  padding: 4px 10px;
+  min-height: 42px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s;
+  box-shadow: inset 0 0 0 1px rgba(245,158,11,0.15);
+  position: relative;
+}
+.pivot-value-zone::before {
+  content: "★";
+  position: absolute;
+  top: -6px;
+  right: 8px;
+  background: #ef4444;
+  color: white;
+  font-size: 9px;
+  font-weight: bold;
+  padding: 1px 5px;
+  border-radius: 3px;
+  letter-spacing: 0.3px;
+}
+.pivot-value-zone.has-item {
+  border-style: solid;
+  border-color: #10b981;
+  background: linear-gradient(90deg, #ecfdf5 0%, #f0fdf4 100%);
+  box-shadow: inset 0 0 0 1px rgba(16,185,129,0.2);
+}
+.pivot-value-zone.has-item::before { background: #10b981; content: "✓"; }
+.pivot-value-zone.drag-over { border-color: #10b981; background: #ecfdf5; transform: scale(1.005); border-style: solid; }
+.value-label { font-size: 12px; font-weight: 800; color: #92400e; flex-shrink: 0; padding: 5px 11px; background: #fde68a; border-radius: 4px; letter-spacing: 0.3px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+.pivot-value-zone.has-item .value-label { background: #10b981; color: white; }
+
+.empty-hint { color: #94a3b8; font-size: 10px; font-style: italic; text-align: center; flex: 1; line-height: 1.3; }
+
+.dropped-tag, .dropped-value { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; background: white; border: 1px solid #10b981; border-radius: 4px; font-size: 11px; color: #047857; font-weight: 600; cursor: grab; }
+.dropped-tag .remove, .dropped-value .remove { cursor: pointer; opacity: 0.5; font-size: 12px; padding-left: 2px; }
+.dropped-tag .remove:hover, .dropped-value .remove:hover { opacity: 1; color: #ef4444; }
+
+/* テーブル */
+.cross-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.cross-table th { background: #f1f5f9; padding: 8px 10px; text-align: left; font-weight: 600; border: 1px solid #e2e8f0; color: #475569; position: sticky; top: 0; }
+.cross-table td { padding: 8px 10px; border: 1px solid #e2e8f0; }
+.cross-table .row-header { background: #f8fafc; font-weight: 600; color: #1f3a4d; }
+.cross-table .total { font-weight: 700; color: #10b981; background: #ecfdf5; }
+.cross-table .empty-cell { color: #cbd5e0; text-align: center; }
+
+.bar-chart { display: flex; flex-direction: column; gap: 8px; }
+.bar-row { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+.bar-label { width: 200px; color: #475569; }
+.bar-track { flex: 1; height: 22px; background: #f1f5f9; border-radius: 4px; overflow: hidden; }
+.bar-fill { height: 100%; background: linear-gradient(90deg, #10b981, #14b8a6); border-radius: 4px; transition: width 0.5s; }
+.bar-value { width: 80px; text-align: right; font-weight: 600; color: #1f3a4d; }
+
+/* === ツールバー === */
+.toolbar { display: flex; gap: 4px; align-items: center; margin-top: 8px; padding: 6px 10px; background: white; border-radius: 4px; border: 1px solid #e2e8f0; flex-wrap: wrap; }
+.chart-btn { padding: 4px 10px; background: #f1f5f9; border-radius: 4px; cursor: pointer; font-size: 11px; color: #64748b; border: 1px solid transparent; font-weight: 500; }
+.chart-btn:hover { background: #e2e8f0; }
+.chart-btn.active { background: #ecfdf5; border-color: #10b981; color: #047857; font-weight: 700; }
+.warning-inline { padding: 4px 10px; background: #f0fdf4; border: 1px solid #10b981; border-radius: 3px; font-size: 10px; color: #047857; margin-left: auto; }
+.warning-inline.alert { background: #fef2f2; border-color: #ef4444; color: #991b1b; }
+
+/* AIアシスト */
+.ai-assist { background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%); border-radius: 6px; padding: 10px 12px; margin-top: 8px; }
+.ai-assist-header { font-weight: bold; color: #6b21a8; margin-bottom: 6px; font-size: 12px; }
+.ai-assist-input { width: 100%; padding: 6px 10px; border: 1px solid #c084fc; border-radius: 4px; font-size: 11px; }
+.ai-suggestions { display: flex; gap: 5px; margin-top: 6px; flex-wrap: wrap; }
+.ai-suggestion { padding: 3px 9px; background: white; border: 1px solid #e9d5ff; border-radius: 12px; font-size: 10px; cursor: pointer; color: #6b21a8; }
+.ai-suggestion:hover { border-color: #8b5cf6; background: #faf5ff; }
+
+.toast { position: fixed; bottom: 30px; right: 30px; background: #1f3a4d; color: white; padding: 12px 20px; border-radius: 8px; font-size: 13px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); transform: translateY(100px); opacity: 0; transition: all 0.3s; z-index: 1000; }
+.toast.show { transform: translateY(0); opacity: 1; }
+
+.modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 999; }
+.modal-overlay.show { display: flex; }
+.modal { background: white; border-radius: 12px; width: 720px; max-width: 95%; height: 90vh; max-height: 90vh; overflow-y: auto; padding: 24px; display: flex; flex-direction: column; }
+.modal-title { font-size: 16px; font-weight: bold; margin-bottom: 16px; color: #1f3a4d; position: sticky; top: -24px; background: white; padding-top: 24px; padding-bottom: 12px; margin-top: -24px; z-index: 1; flex-shrink: 0; }
+.modal-form-group { margin-bottom: 16px; }
+.modal-label { display: block; font-size: 12px; color: #475569; margin-bottom: 6px; font-weight: 600; }
+.modal-input, .modal-select { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e0; border-radius: 6px; font-size: 13px; background: white; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; }
+.tag-member-list { border: 1px solid #e2e8f0; border-radius: 6px; padding: 8px; min-height: 60px; max-height: 120px; overflow-y: auto; background: #f8fafc; }
+.tag-member-list.group-mode { max-height: none; min-height: 200px; border: none; padding: 0; background: transparent; overflow-y: visible; }
+.tag-member { display: inline-flex; align-items: center; gap: 4px; background: #ecfdf5; border: 1px solid #10b981; border-radius: 4px; padding: 4px 8px; font-size: 11px; color: #047857; margin: 2px; }
+
+/* ディメンメンバー選択モーダル */
+.member-list-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; max-height: 280px; overflow-y: auto; padding: 8px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; }
+.member-row { display: flex; align-items: center; gap: 6px; padding: 5px 8px; background: white; border: 1px solid #e2e8f0; border-radius: 4px; font-size: 12px; cursor: pointer; }
+.member-row:hover { border-color: #10b981; background: #f0fdf4; }
+.member-row.checked { background: #ecfdf5; border-color: #10b981; }
+.member-row input { margin: 0; }
+.select-all-row { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: #ecfdf5; border: 1.5px solid #10b981; border-radius: 6px; font-size: 13px; font-weight: 700; color: #047857; margin-bottom: 8px; cursor: pointer; }
+.member-count-badge { display: inline-block; background: #10b981; color: white; padding: 1px 6px; border-radius: 8px; font-size: 9px; margin-left: 4px; font-weight: bold; }
+.palette-card .filter-btn { margin-left: auto; padding: 2px 5px; background: #f1f5f9; border-radius: 3px; cursor: pointer; font-size: 10px; color: #64748b; transition: all 0.15s; }
+.palette-card .filter-btn:hover { background: #10b981; color: white; }
+.palette-card.has-filter { border-color: #10b981; background: #f0fdf4; }
+.palette-card.has-filter .card-icon { color: #10b981; }
+.palette-card.group { border-left: 3px solid #ec4899; background: #fdf2f8; }
+.palette-card.group:hover { background: #fce7f3; border-color: #ec4899; }
+
+/* グルーピングタグの順序付きメンバー表示 */
+.ordered-member-list { border: 1.5px solid #e2e8f0; border-radius: 6px; padding: 8px; min-height: 160px; max-height: 320px; overflow-y: auto; background: #f8fafc; margin-top: 6px; }
+.ordered-member-row { display: flex; align-items: center; gap: 8px; padding: 9px 10px; background: white; border: 1.5px solid #ec4899; border-radius: 5px; margin-bottom: 5px; font-size: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); cursor: grab; transition: all 0.15s; }
+.ordered-member-row:hover { background: #fdf2f8; border-color: #db2777; transform: translateX(2px); }
+.ordered-member-row.dragging { opacity: 0.4; cursor: grabbing; }
+.ordered-member-row.drag-over-row { border-top: 3px solid #ec4899; padding-top: 6px; }
+.drag-handle { color: #cbd5e0; font-size: 16px; cursor: grab; padding: 0 2px; }
+.drag-handle:hover { color: #ec4899; }
+.order-num { background: #ec4899; color: white; font-size: 10px; font-weight: bold; padding: 2px 7px; border-radius: 10px; flex-shrink: 0; }
+.ordered-member-name { flex: 1; color: #1f3a4d; font-weight: 500; }
+.order-btn { padding: 2px 6px; background: #f1f5f9; border-radius: 3px; cursor: pointer; font-size: 11px; color: #475569; border: none; }
+.order-btn:hover:not(:disabled) { background: #ec4899; color: white; }
+.order-btn:disabled { opacity: 0.25; cursor: not-allowed; }
+.group-empty-hint { text-align: center; color: #94a3b8; padding: 20px; font-size: 11px; font-style: italic; }
+.group-help { background: #fdf2f8; border: 1px solid #f9a8d4; padding: 8px 12px; border-radius: 4px; font-size: 11px; color: #831843; margin-top: 6px; line-height: 1.5; }
+
+/* === 並び順ツールバー === */
+.sort-toolbar { display: flex; align-items: center; gap: 6px; padding: 8px 10px; background: linear-gradient(90deg, #fdf2f8 0%, #fce7f3 100%); border: 1.5px solid #f9a8d4; border-radius: 6px; margin-top: 8px; flex-wrap: wrap; }
+.sort-toolbar-label { font-size: 12px; font-weight: 700; color: #831843; flex-shrink: 0; }
+.sort-mode-btn { padding: 6px 12px; background: white; border: 1.5px solid #f9a8d4; border-radius: 5px; cursor: pointer; font-size: 11px; color: #831843; font-weight: 600; transition: all 0.15s; display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.sort-mode-btn:hover { background: #fce7f3; }
+.sort-mode-btn.active { background: #ec4899; color: white; border-color: #db2777; box-shadow: 0 2px 4px rgba(236,72,153,0.3); }
+.sort-mode-icon { font-size: 12px; }
+.sort-help-tip { font-size: 10px; color: #831843; font-style: italic; flex-basis: 100%; padding-top: 2px; padding-left: 6px; }
+
+/* === ダッシュボード複数ビュー表示エリア === */
+.dashboard-area { background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%); border: 2px solid #10b981; border-radius: 8px; padding: 14px; margin-bottom: 14px; }
+.dashboard-area-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.dashboard-area-title { font-size: 14px; font-weight: 700; color: #065f46; flex: 1; }
+.dashboard-area-empty { text-align: center; color: #64748b; padding: 24px; font-size: 12px; line-height: 1.6; }
+.dashboard-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
+.dashboard-card { background: white; border: 1.5px solid #d1fae5; border-radius: 6px; padding: 10px 12px; transition: all 0.2s; cursor: grab; }
+.dashboard-card:active { cursor: grabbing; }
+.dashboard-card:hover { box-shadow: 0 2px 8px rgba(16,185,129,0.15); }
+.dashboard-card.dragging { opacity: 0.4; transform: scale(0.98); }
+.dashboard-card.drag-over-top { border-top: 4px solid #10b981; padding-top: 7px; }
+.dashboard-card.drag-over-bottom { border-bottom: 4px solid #10b981; padding-bottom: 7px; }
+.config-row.dragging { opacity: 0.4; }
+.config-row.drag-over-top { border-top: 3px solid #10b981; }
+.config-row.drag-over-bottom { border-bottom: 3px solid #10b981; }
+.dashboard-card.size-full, .dashboard-card.size-half { grid-column: auto; }
+.dashboard-card-body { min-height: 130px; max-height: 200px; overflow: hidden; }
+.dashboard-card-body table.cross-table { width: 100%; }
+.dashboard-card-body table.cross-table th, .dashboard-card-body table.cross-table td { white-space: nowrap; }
+.dashboard-card-body table.cross-table th { max-width: 110px; overflow: hidden; text-overflow: ellipsis; }
+.dashboard-card-body table.cross-table td.row-header { max-width: 160px; overflow: hidden; text-overflow: ellipsis; }
+.preview-summary-bar { display: flex; justify-content: space-between; align-items: center; font-size: 9px; color: #64748b; padding: 2px 4px 4px; margin-bottom: 4px; border-bottom: 1px dashed #e2e8f0; }
+.preview-summary-bar .badge { background: #d1fae5; color: #065f46; padding: 1px 6px; border-radius: 8px; font-weight: 600; margin-left: 4px; }
+.preview-summary-bar .badge.warn { background: #fef3c7; color: #92400e; }
+.preview-table-wrap, .preview-bar-wrap { position: relative; }
+.preview-table-wrap.has-row-fade::before { content: ''; position: absolute; left: 0; right: 0; bottom: 18px; height: 16px; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.92) 80%); pointer-events: none; z-index: 1; }
+/* 省略列マーカー: 最終データ列と合計列の間にセパレーター列として挿入 */
+.cross-table th.more-col-marker, .cross-table td.more-col-marker { width: 22px; text-align: center; color: #94a3b8; font-weight: 400; background: #f8fafc; padding: 3px 0 !important; }
+.cross-table td.more-col-marker { color: #cbd5e1; cursor: pointer; }
+.cross-table td.more-col-marker:hover { background: #f1f5f9; color: #64748b; }
+/* 省略行マーカー: 縦3点を行として表示 */
+.cross-table tr.more-rows-marker td { color: #cbd5e1; text-align: center; padding: 1px 0 !important; line-height: 1.0; font-size: 12px; background: #f8fafc; cursor: pointer; }
+.cross-table tr.more-rows-marker td:first-child { color: #94a3b8; }
+.cross-table tr.more-rows-marker:hover td { background: #f1f5f9; color: #64748b; }
+.preview-bar-wrap.has-row-fade::after { content: ''; position: absolute; left: 0; right: 0; bottom: 14px; height: 14px; background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0.92) 80%); pointer-events: none; }
+.preview-more-link { display: block; text-align: center; color: #10b981; font-size: 9px; padding: 3px; cursor: pointer; font-weight: 600; }
+.preview-more-link:hover { background: #ecfdf5; }
+.dashboard-card-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #e2e8f0; }
+.dashboard-card-title { font-size: 12px; font-weight: 700; color: #065f46; flex: 1; }
+.dashboard-card-meta { font-size: 9px; color: #94a3b8; }
+.dashboard-card-actions { display: flex; gap: 4px; }
+.dashboard-card-btn { background: #f0fdf4; border: 1px solid #d1fae5; border-radius: 3px; padding: 2px 6px; font-size: 9px; cursor: pointer; color: #065f46; transition: all 0.15s; }
+.dashboard-card-btn:hover { background: #10b981; color: white; }
+.dashboard-card-body { font-size: 10px; }
+.dashboard-card-body table.cross-table { font-size: 10px; }
+.dashboard-card-body table.cross-table th { padding: 4px 6px; font-size: 9px; }
+.dashboard-card-body table.cross-table td { padding: 3px 6px; font-size: 9px; }
+.dashboard-card-body .bar-row { font-size: 9px; }
+.dashboard-card.collapsed .dashboard-card-body { display: none; }
+
+/* === ダッシュボード設定モーダル === */
+.config-list { max-height: 60vh; overflow-y: auto; }
+.config-row { display: flex; align-items: center; gap: 8px; padding: 8px 10px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; margin-bottom: 6px; }
+.config-row.pinned { background: #ecfdf5; border-color: #10b981; }
+.config-row-name { flex: 1; font-size: 12px; font-weight: 600; color: #1f3a4d; }
+.config-row-summary { font-size: 10px; color: #64748b; margin-top: 2px; }
+.config-pin-toggle { display: flex; align-items: center; gap: 4px; font-size: 11px; color: #475569; }
+.config-pin-toggle input { accent-color: #10b981; }
+.config-order-btn { background: white; border: 1px solid #cbd5e1; border-radius: 3px; padding: 2px 6px; cursor: pointer; font-size: 11px; }
+.config-order-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.config-order-btn:hover:not(:disabled) { background: #10b981; color: white; border-color: #10b981; }
+.config-select { padding: 3px 6px; border: 1px solid #cbd5e1; border-radius: 3px; font-size: 11px; background: white; }
+.config-screen-badge { font-size: 9px; padding: 2px 6px; border-radius: 3px; font-weight: 600; }
+.config-screen-badge.company { background: #dcfce7; color: #065f46; }
+.config-screen-badge.store { background: #fed7aa; color: #9a3412; }
+.config-screen-badge.both { background: linear-gradient(90deg,#dcfce7 0%,#fed7aa 100%); color: #1f3a4d; }
+</style>
+</head>
+<body class="mode-dashboard">
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="logo">ラクミー 経営管理</div>
+    <div class="nav-item active">📊 ダッシュボード</div>
+    <div class="nav-item">💰 売上一覧</div>
+    <div class="nav-item">📈 利益一覧</div>
+    <div class="nav-item">🎯 戦略指標</div>
+    <div class="nav-item">📐 ラベル</div>
+    <div class="nav-item">🛒 商品</div>
+    <div class="nav-item">🏢 店舗管理</div>
+  </aside>
+
+  <main class="main">
+    <div class="top-bar">
+      <div class="company-select">🏢 株式会社コロワイド ▾</div>
+      <div class="user-icon"></div>
+    </div>
+
+    <div class="page-header">
+      <h1 class="page-title">ダッシュボード</h1>
+      <button class="btn page-action-edit" style="background:#f59e0b;color:white;margin-left:auto;font-size:11px;padding:6px 14px;" onclick="switchMode('edit')">✏️ ウィジェットを編集</button>
+    </div>
+
+    <div class="section">
+      <div class="section-title">経営指標</div>
+      <div class="kpi-row">
+        <div class="kpi-card"><div class="kpi-label">経常利益率</div><div class="kpi-value">66.9<span class="kpi-unit">%</span></div></div>
+        <div class="kpi-card"><div class="kpi-label">営業利益率</div><div class="kpi-value">33.2<span class="kpi-unit">%</span></div></div>
+        <div class="kpi-card"><div class="kpi-label">経費率</div><div class="kpi-value">7.8<span class="kpi-unit">%</span></div></div>
+        <div class="kpi-card"><div class="kpi-label">利益</div><div class="kpi-value" style="font-size:18px;">43,146,973 円</div></div>
+        <div class="kpi-card"><div class="kpi-label">前年比</div><div class="kpi-value">102.3<span class="kpi-unit">%</span></div></div>
+      </div>
+    </div>
+
+    <!-- ダッシュボード複数ビュー表示エリア -->
+    <div class="dashboard-area" id="dashboardArea">
+      <div class="dashboard-area-header">
+        <div class="dashboard-area-title">📊 ダッシュボード <span id="dashboardCount" style="background:#10b981;color:white;padding:2px 8px;border-radius:10px;font-size:11px;margin-left:6px;">0件</span></div>
+        <button class="btn btn-secondary" style="font-size:11px;padding:5px 10px;background:#e2e8f0;color:#475569;" onclick="openDashboardConfigModal()">⚙️ ダッシュボード設定</button>
+      </div>
+      <div class="dashboard-grid" id="dashboardGrid"></div>
+    </div>
+
+    <div class="dnd-section">
+      <div class="dnd-header">
+        <button class="btn" style="background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.4);font-size:11px;padding:5px 10px;" onclick="switchMode('dashboard')">← ダッシュボードに戻る</button>
+        <div class="dnd-header-title" style="flex:1;text-align:center;">🎨 カスタムウィジェット 編集モード <span style="background:#ec4899;padding:2px 6px;border-radius:3px;font-size:9px;margin-left:8px;">v3.4</span></div>
+        <div style="display: flex; gap: 8px;">
+          <button class="btn btn-secondary" onclick="openDashboardConfigModal()">⚙️ ダッシュボード設定</button>
+          <button class="btn btn-secondary" onclick="openViewListModal()">📋 ビュー一覧</button>
+          <button class="btn btn-primary" onclick="saveView()">💾 名前を付けて保存</button>
+        </div>
+      </div>
+
+      <div class="pivot-layout">
+        <!-- 左パレット -->
+        <aside class="palette">
+          <div class="palette-tabs">
+            <div class="palette-tab" data-tab="tag" onclick="switchTab('tag')">🏷️<br>タグ<span class="count">6</span></div>
+            <div class="palette-tab active" data-tab="dim" onclick="switchTab('dim')">📐<br>ディメン<span class="count">12</span></div>
+            <div class="palette-tab" data-tab="metric" onclick="switchTab('metric')">📊<br>トラ<span class="count">8</span></div>
+          </div>
+          <input class="palette-search" placeholder="🔍 検索..." oninput="filterPalette(this.value)">
+          <div class="palette-list" id="paletteList"></div>
+        </aside>
+
+        <!-- 中央ピボット -->
+        <section class="pivot-main">
+          <div class="help-bar">
+            💡 <strong>使い方</strong>: 左のパレットからカードをドラッグして、配置先（行/列/値）にドロップ。テーブルが自動表示されます。
+          </div>
+
+          <div class="pivot-frame">
+            <!-- 左上コーナー (フィルタドロップエリア) -->
+            <div class="pivot-corner" id="zone-filter" data-zone="filter">
+              <div id="filterContent" style="display:flex; flex-direction:column; gap:2px;">
+                <div class="filter-empty-corner">🔍 フィルタ<br><span style="font-size:8px;color:#94a3b8;font-weight:normal;">タグ/ディメンを<br>ドロップ</span></div>
+              </div>
+            </div>
+
+            <!-- 上 = 列ドロップエリア -->
+            <div class="pivot-col-zone" id="zone-col" data-zone="col">
+              <span class="zone-label-tag">➡️ 列</span>
+              <div class="zone-content" id="content-col" style="flex:1; display: flex; align-items: center; gap: 6px;">
+                <span class="empty-hint">ここにディメン/タグをドロップ → 横軸に表示</span>
+              </div>
+            </div>
+
+            <!-- 左 = 行ドロップエリア -->
+            <div class="pivot-row-zone" id="zone-row" data-zone="row">
+              <span class="zone-label-tag">⬇️ 行</span>
+              <div class="zone-content" id="content-row" style="flex:1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; width: 100%;">
+                <span class="empty-hint">ここに<br>ドロップ<br>→ 縦軸に表示</span>
+              </div>
+            </div>
+
+            <!-- 中央 = テーブル本体 -->
+            <div class="pivot-table-area" id="tableArea">
+              <div style="text-align: center; padding: 60px 20px; color: #94a3b8;">
+                <div style="font-size: 42px; margin-bottom: 8px;">📊</div>
+                <div style="font-size: 13px;">行・列・値をドロップすると<br>クロス集計表が表示されます</div>
+              </div>
+            </div>
+
+            <!-- 値ドロップエリア (列の下、視覚強調) -->
+            <div class="pivot-value-zone" id="zone-val" data-zone="val">
+              <span class="value-label">📊 値 (Value)</span>
+              <div class="zone-content" id="content-val" style="flex:1; display: flex; align-items: center; gap: 8px;">
+                <span class="empty-hint" style="color: #92400e; font-weight: 600; font-size: 11px;">トランザクションをドロップ →集計値として表示</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="toolbar">
+            <span style="font-size: 11px; color: #64748b; font-weight: 600; margin-right: 4px;">表示形式:</span>
+            <div class="chart-btn active" data-chart="table" onclick="switchChart('table')">📋 表</div>
+            <div class="chart-btn" data-chart="bar" onclick="switchChart('bar')">📊 棒</div>
+            <div class="chart-btn" data-chart="line" onclick="switchChart('line')">📈 折れ線</div>
+            <div class="chart-btn" data-chart="heatmap" onclick="switchChart('heatmap')">🔥 ヒート</div>
+            <div id="warningInline" class="warning-inline" style="display:none;"></div>
+          </div>
+
+          <div class="ai-assist">
+            <div class="ai-assist-header">🤖 AIアシスト</div>
+            <input class="ai-assist-input" placeholder="例: 売上が落ちている店舗を分析したい" onkeypress="if(event.key==='Enter')askAI(this.value)">
+            <div class="ai-suggestions">
+              <div class="ai-suggestion" onclick="applyAI('店舗','月','売上(税抜)')">💡 店舗別の売上推移</div>
+              <div class="ai-suggestion" onclick="applyAI('商品','月','売上(税抜)')">💡 商品別ABC分析</div>
+              <div class="ai-suggestion" onclick="applyAI('店舗','','達成率')">💡 予実達成率</div>
+              <div class="ai-suggestion" onclick="applyAI('店舗ラベル','','営業利益')">💡 ラベル別利益貢献</div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- ビュー保存モーダル -->
+<div class="modal-overlay" id="saveViewModal">
+  <div class="modal" style="width: 520px; height: auto; max-height: none;">
+    <div class="modal-title">💾 ビューを名前を付けて保存</div>
+    <div class="modal-form-group">
+      <label class="modal-label">ビュー名 <span style="color:#ef4444;">*</span></label>
+      <input class="modal-input" id="viewName" placeholder="例: 店舗別月次売上、関東ブロック予実分析">
+    </div>
+    <div class="modal-form-group">
+      <label class="modal-label">説明 (任意)</label>
+      <input class="modal-input" id="viewDesc" placeholder="例: 月次の売上推移を全店舗で比較">
+    </div>
+    <div class="modal-form-group" style="display:flex;gap:12px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:140px;">
+        <label class="modal-label">表示画面</label>
+        <select class="modal-input" id="viewScreen">
+          <option value="company">🟢 会社画面のみ</option>
+          <option value="store">🟠 店舗画面のみ</option>
+          <option value="both">🟢🟠 両方</option>
+        </select>
+      </div>
+      <div style="flex:1;min-width:140px;">
+        <label class="modal-label">サイズ</label>
+        <select class="modal-input" id="viewSize">
+          <option value="half">半分 (1/2幅)</option>
+          <option value="full">全幅</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-form-group" style="background:#f0fdf4;border:1px solid #10b981;padding:8px 12px;border-radius:6px;">
+      <label style="display:flex;align-items:center;gap:8px;font-size:12px;color:#065f46;cursor:pointer;">
+        <input type="checkbox" id="viewPinned" checked style="accent-color:#10b981;">
+        <strong>📌 ダッシュボードに固定表示する</strong>
+      </label>
+      <div style="font-size:10px;color:#475569;margin-top:4px;">
+        ON: ダッシュボード上部に常時表示 / OFF: ビュー一覧から開く
+      </div>
+    </div>
+    <div class="modal-form-group" id="saveViewSummary" style="background:#f8fafc; padding:10px 12px; border-radius:6px; font-size:11px; color:#475569; line-height:1.6;"></div>
+    <div class="modal-actions">
+      <button class="btn" style="background:#e2e8f0;color:#475569;" onclick="closeSaveViewModal()">キャンセル</button>
+      <button class="btn" style="background:#10b981;color:white;" onclick="confirmSaveView()">💾 保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- ダッシュボード設定モーダル -->
+<div class="modal-overlay" id="dashboardConfigModal">
+  <div class="modal" style="width: 760px; max-height: 85vh; height: auto;">
+    <div class="modal-title">⚙️ ダッシュボード設定</div>
+    <div style="font-size:11px;color:#64748b;margin-bottom:10px;line-height:1.5;">
+      保存ビューをダッシュボードに固定表示するかを管理。表示順は ▲▼ で変更。サイズ/チャート種別/対象画面も切替可。
+    </div>
+    <div class="config-list" id="dashboardConfigList"></div>
+    <div class="modal-actions">
+      <button class="btn" style="background:#e2e8f0;color:#475569;" onclick="document.getElementById('dashboardConfigModal').classList.remove('show')">閉じる</button>
+      <button class="btn" style="background:#10b981;color:white;" onclick="applyDashboardConfig()">💾 設定を反映</button>
+    </div>
+  </div>
+</div>
+
+<!-- ビュー一覧モーダル -->
+<div class="modal-overlay" id="viewListModal">
+  <div class="modal" style="width: 600px; max-height: 80vh; height: auto;">
+    <div class="modal-title">📋 保存済みビュー一覧</div>
+    <div id="savedViewsList" style="max-height: 50vh; overflow-y: auto;"></div>
+    <div class="modal-actions">
+      <button class="btn" style="background:#e2e8f0;color:#475569;" onclick="document.getElementById('viewListModal').classList.remove('show')">閉じる</button>
+    </div>
+  </div>
+</div>
+
+<!-- ディメンメンバー選択モーダル -->
+<div class="modal-overlay" id="dimModal">
+  <div class="modal" style="width: 580px;">
+    <div class="modal-title" id="dimModalTitle">📐 メンバー選択</div>
+    <div style="font-size: 12px; color: #64748b; margin-bottom: 12px;">
+      この軸で表示するメンバーを選択してください。<br>
+      <span style="color: #94a3b8;">※特定メンバーのみ選択するとフィルタになります。再利用したい場合は「+ カスタムタグ作成」へ</span>
+    </div>
+
+    <div class="select-all-row" onclick="toggleAllMembers()">
+      <input type="checkbox" id="dimSelectAll" checked onclick="event.stopPropagation()" onchange="toggleAllMembers()">
+      <span>全選択 / 全解除</span>
+      <span id="dimSelectCount" style="margin-left:auto; font-size: 11px; font-weight: normal; color: #047857;"></span>
+    </div>
+
+    <div class="member-list-grid" id="dimMemberList"></div>
+
+    <div class="modal-actions">
+      <button class="btn" style="background:#e2e8f0;color:#475569;" onclick="closeDimModal()">キャンセル</button>
+      <button class="btn" style="background:#10b981;color:white;" onclick="applyDimFilter()">適用</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="tagModal">
+  <div class="modal">
+    <div class="modal-title" id="tagModalTitle">🏷️ カスタムタグ作成</div>
+    <div class="modal-form-group">
+      <label class="modal-label">タグ名</label>
+      <input class="modal-input" id="tagName" placeholder="例: 重点KPI">
+    </div>
+    <div class="modal-form-group">
+      <label class="modal-label">タグタイプ</label>
+      <select class="modal-select" id="tagType" onchange="updateTagMembers()">
+        <option value="indicator">指標バンドル</option>
+        <option value="shop">店舗バンドル</option>
+        <option value="product">商品バンドル</option>
+        <option value="period">期間バンドル</option>
+        <option value="time_slot">時間帯バンドル</option>
+        <option value="staff">スタッフバンドル</option>
+        <option value="supplier">仕入先バンドル</option>
+        <option value="label_group">ラベルグループ</option>
+        <option value="group">📂 グルーピングタグ (既存タグを束ねる)</option>
+      </select>
+    </div>
+    <div class="modal-form-group">
+      <label class="modal-label" id="tagMembersLabel">メンバー (複数選択可)</label>
+      <div class="select-all-row" id="tagSelectAllRow" onclick="toggleAllTagMembers()">
+        <input type="checkbox" id="tagSelectAll" onclick="event.stopPropagation()" onchange="toggleAllTagMembers()">
+        <span>全選択 / 全解除</span>
+        <span id="tagSelectCount" style="margin-left:auto; font-size: 11px; font-weight: normal; color: #047857;"></span>
+      </div>
+      <div class="tag-member-list" id="tagMembers"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" id="tagDeleteBtn" style="background:#fee2e2;color:#991b1b;display:none;margin-right:auto;" onclick="deleteCustomTag()">🗑️ 削除</button>
+      <button class="btn" style="background:#e2e8f0;color:#475569;" onclick="closeTagModal()">キャンセル</button>
+      <button class="btn" id="tagSaveBtn" style="background:#10b981;color:white;" onclick="createCustomTag()">作成</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const ITEMS = {
+  tag: [
+    { id: 'tag_indicator_bundle', name: '指標バンドルタグ' },
+    { id: 'tag_shop_bundle', name: '店舗バンドルタグ' },
+    { id: 'tag_product_bundle', name: '商品バンドルタグ' },
+    { id: 'tag_supplier_bundle', name: '仕入先バンドルタグ' },
+    { id: 'tag_period_bundle', name: '期間バンドルタグ' },
+    { id: 'tag_label_group', name: 'ラベルグループタグ' },
+  ],
+  dim: [
+    { id: 'dim_date', name: '日' },
+    { id: 'dim_week', name: '週' },
+    { id: 'dim_month', name: '月' },
+    { id: 'dim_quarter', name: '四半期' },
+    { id: 'dim_year', name: '年' },
+    { id: 'dim_shop', name: '店舗' },
+    { id: 'dim_product', name: '商品' },
+    { id: 'dim_supplier', name: '仕入先' },
+    { id: 'dim_label', name: '店舗ラベル' },
+    { id: 'dim_label_group', name: 'ラベルグループ' },
+    { id: 'dim_business_type', name: '業態' },
+    { id: 'dim_expense_cat', name: '費目' },
+  ],
+  metric: [
+    // === 予実対比 共通メジャー (費目ディメンション/店舗ディメンション等と組合せ可) ===
+    { id: 'M_COST_ACT', name: '費用（実績）' },
+    { id: 'M_COST_BUD', name: '費用予算' },
+    { id: 'M_COST_DIFF', name: '予実差' },
+    { id: 'M_COST_RATE', name: '予実達成率' },
+    { id: 'M_COST_SHARE', name: '構成比' },
+    { id: 'M_COST_YOY', name: '前年比' },
+    // === 売上・粗利系 (旧来からのトランザクション) ===
+    { id: 'C45', name: '売上（税抜）' },
+    { id: 'C46', name: '売上構成比率' },
+    { id: 'C47', name: '販売点数' },
+    { id: 'C48', name: '販売点数構成比率' },
+    { id: 'C49', name: '価格' },
+    { id: 'C50', name: '目標PA人件費率' },
+    { id: 'C100', name: 'FD仕入　計' },
+    { id: 'C101', name: '人件費　計' },
+    { id: 'C102', name: 'その他経費　計' },
+    { id: 'C103', name: 'ラクミー利用料' },
+    { id: 'C104', name: 'レジ利用料' },
+    { id: 'C105', name: '借入金返済' },
+    { id: 'C106', name: 'フード売上ランチ' },
+    { id: 'C107', name: 'フード売上ディナー' },
+    { id: 'C108', name: 'ドリンク売上ランチ' },
+    { id: 'C109', name: 'ドリンク売上ディナー' },
+    { id: 'C110', name: 'フード仕入' },
+    { id: 'C111', name: 'ドリンク仕入' },
+    { id: 'C112', name: '固定人件費' },
+    { id: 'C113', name: 'PA人件費' },
+    { id: 'C114', name: 'ヘルプ人件費' },
+    { id: 'C115', name: '地代家賃' },
+    { id: 'C116', name: '資材費' },
+    { id: 'C117', name: '水道光熱費' },
+    { id: 'C118', name: '減価償却費' },
+    { id: 'C119', name: '販促費' },
+    { id: 'C51', name: '総売上' },
+    { id: 'C52', name: 'フード売上' },
+    { id: 'C53', name: 'フード売上ランチ' },
+    { id: 'C54', name: 'フード売上ディナー' },
+    { id: 'C55', name: 'ドリンク売上' },
+    { id: 'C56', name: 'ドリンク売上ランチ' },
+    { id: 'C57', name: 'ドリンク売上ディナー' },
+    { id: 'C58', name: '割引・値引きなど' },
+    { id: 'C59', name: 'FD仕入' },
+    { id: 'C60', name: 'フード仕入' },
+    { id: 'C61', name: 'ドリンク仕入' },
+    { id: 'C62', name: '人件費' },
+    { id: 'C63', name: '固定人件費' },
+    { id: 'C64', name: 'PA人件費' },
+    { id: 'C65', name: 'その他売上（サービス料等）' },
+    { id: 'C66', name: 'その他売上ランチ' },
+    { id: 'C67', name: 'その他売上ディナー' },
+    { id: 'C88', name: 'FD仕入額' },
+    { id: 'C89', name: '人件費額' },
+    { id: 'C90', name: '客単価' },
+    { id: 'C91', name: '客単価（ランチ）' },
+    { id: 'C92', name: '客単価（ディナー）' },
+    { id: 'C93', name: '総売上　計' },
+    { id: 'C94', name: 'フード売上 計' },
+  ],
+};
+let currentTab = 'dim';
+let currentChart = 'table';
+let zones = { row: null, col: null, vals: [], filter: [] };
+let customTags = [];
+let dimFilters = {}; // { dim_id: [selected_members] }
+let currentEditingDim = null;
+let editingTagId = null; // 編集中のカスタムタグID
+let savedViews = []; // 保存ビュー
+
+// === デモ用: 事前カスタムタグサンプル ===
+const PREP_CUSTOM_TAGS = [
+  {
+    id: 'tag_custom_demo_1', name: '渋谷店&田中店長 (1件)', rawName: '渋谷店&田中店長',
+    memberCount: 1, selectedMembers: ['THE ATTACHMENT 渋谷店'], tagType: 'shop'
+  },
+  {
+    id: 'tag_custom_demo_2', name: '池袋店&佐藤店長 (1件)', rawName: '池袋店&佐藤店長',
+    memberCount: 1, selectedMembers: ['THE ATTACHMENT 池袋店'], tagType: 'shop'
+  },
+  {
+    id: 'tag_custom_demo_3', name: '新宿店&鈴木店長 (1件)', rawName: '新宿店&鈴木店長',
+    memberCount: 1, selectedMembers: ['THE ATTACHMENT 新宿店'], tagType: 'shop'
+  },
+  {
+    id: 'tag_custom_demo_4', name: '重点KPI (3件)', rawName: '重点KPI',
+    memberCount: 3, selectedMembers: ['売上(税抜)','営業利益','客単価'], tagType: 'indicator'
+  },
+];
+
+// ディメンメンバーサンプル
+const DIM_MEMBERS = {
+  // 時間系
+  'dim_date': ['2026/04/01','2026/04/02','2026/04/03','2026/04/04','2026/04/05','2026/04/06','2026/04/07','2026/04/08','2026/04/09','2026/04/10'],
+  'dim_week': ['2026年第1週','2026年第2週','2026年第3週','2026年第4週','2026年第5週','2026年第6週'],
+  'dim_month': ['2026/01','2026/02','2026/03','2026/04','2026/05','2026/06','2025/01','2025/02','2025/03','2025/04','2025/05','2025/06'],
+  'dim_quarter': ['2026 Q1','2026 Q2','2026 Q3','2026 Q4','2025 Q1','2025 Q2','2025 Q3','2025 Q4'],
+  'dim_year': ['2024年','2025年','2026年'],
+  // 会社画面用
+  'dim_shop': ['THE ATTACHMENT 渋谷店','Japan dining Mr.gentleman','Attachment 2nd','あなたに会えてよかった。','THE ATTACHMENT 池袋店','THE ATTACHMENT 新宿店','Japan dining 2nd','和食居酒屋 横浜店','カフェ千葉店','レストラン川崎店'],
+  'dim_label': ['新店','旗艦店','フランチャイズ','直営店','コンセプト店'],
+  'dim_label_group': ['担当者軸','エリア軸','業態軸','ステータス軸'],
+  'dim_business_type': ['居酒屋','ダイニング','カフェ','レストラン','バル','ファストフード'],
+  // 共通
+  'dim_product': ['マルゲリータ','カルボナーラ','シーザーサラダ','ティラミス','クリームパスタ','ピザマリナーラ','ボロネーゼ','カプリチョーザ'],
+  'dim_product_group': ['前菜','メイン','パスタ','ピザ','デザート','ドリンク'],
+  'dim_supplier': ['仕入先A (食材)','仕入先B (酒類)','仕入先C (備品)','仕入先D (青果)','仕入先E (鮮魚)'],
+  'dim_supplier_label': ['食材','酒類','備品','清掃用品'],
+  'dim_expense_cat': ['原材料費','人件費','光熱費','賃料','広告宣伝費','消耗品費','通信費','保険料'],
+  // 店舗画面用
+  'dim_time_slot': ['11-13時 (ランチ)','13-15時 (アイドル)','15-17時 (アイドル)','17-19時 (ディナー前)','19-21時 (ディナー)','21-23時 (深夜)'],
+  'dim_weekday': ['月','火','水','木','金','土','日'],
+  'dim_staff': ['山田太郎','佐藤花子','鈴木一郎','田中二郎','高橋三郎','伊藤四郎'],
+  'dim_staff_label': ['社員','バイト','店長','マネージャー'],
+  // 旧ID互換
+  'dim_shop_label': ['新店','旗艦店','フランチャイズ','直営店','コンセプト店'],
+  'dim_format': ['居酒屋','ダイニング','カフェ','レストラン','バル','ファストフード'],
+  'dim_expense_item': ['原材料費','人件費','光熱費','賃料','広告宣伝費','消耗品費'],
+  'dim_dow': ['月','火','水','木','金','土','日'],
+};
+
+function init() {
+  // デモ用: 事前にサンプルカスタムタグをロード (グルーピング動作確認用)
+  customTags = [...PREP_CUSTOM_TAGS];
+  renderPalette();
+  renderAll();
+  // デモ用: ダッシュボードに事前ピン留めビューを2件追加
+  preloadDemoViews();
+  renderDashboard();
+}
+
+// === モード切替 (dashboard: 表示専用 / edit: D&D編集) ===
+function switchMode(mode) {
+  document.body.className = 'mode-' + mode;
+  if (mode === 'dashboard') renderDashboard();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function preloadDemoViews() {
+  if (savedViews.length > 0) return;
+  const now = new Date().toISOString().slice(0,16).replace('T',' ');
+  // ビュー1: 月別店舗売上
+  savedViews.push({
+    id: 'view_demo1', name: '月別×店舗 売上推移', desc: '主要店舗の月次売上トレンド',
+    savedAt: now, screen: 'company', pinned: true, order: 1, size: 'half',
+    config: {
+      row: { id:'dim_month', name:'月', type:'dim' },
+      col: { id:'dim_shop', name:'店舗', type:'dim' },
+      val: { id:'C45', name:'売上（税抜）', type:'metric' },
+      filter: [], chart: 'table', dimFilters: {}
+    }
+  });
+  // ビュー2: 店舗別営業利益
+  savedViews.push({
+    id: 'view_demo2', name: '店舗別 営業利益ランキング', desc: '当月実績の店舗ランキング',
+    savedAt: now, screen: 'company', pinned: true, order: 2, size: 'half',
+    config: {
+      row: { id:'dim_shop', name:'店舗', type:'dim' },
+      col: null,
+      val: { id:'C113', name:'営業利益', type:'metric' },
+      filter: [], chart: 'bar', dimFilters: {}
+    }
+  });
+  // ビュー3: 費目別 予実達成率 (新メジャー検証用)
+  savedViews.push({
+    id: 'view_demo3', name: '費目別 予実達成率', desc: '費目ディメンション × 予実メジャー',
+    savedAt: now, screen: 'company', pinned: true, order: 3, size: 'half',
+    config: {
+      row: { id:'dim_expense_cat', name:'費目', type:'dim' },
+      col: null,
+      val: { id:'M_COST_RATE', name:'予実達成率', type:'metric' },
+      filter: [], chart: 'table', dimFilters: {}
+    }
+  });
+}
+
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.palette-tab').forEach(t => t.classList.remove('active'));
+  document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+  renderPalette();
+}
+
+function renderPalette(filter='') {
+  const list = document.getElementById('paletteList');
+  list.innerHTML = '';
+  const items = currentTab === 'tag' ? [...ITEMS.tag, ...customTags] : ITEMS[currentTab];
+  const filtered = items.filter(i => i.name.toLowerCase().includes(filter.toLowerCase()));
+  filtered.forEach(item => {
+    const card = document.createElement('div');
+    const filterCount = dimFilters[item.id]?.length;
+    const totalCount = DIM_MEMBERS[item.id]?.length;
+    const hasFilter = filterCount !== undefined && filterCount < totalCount;
+    card.className = `palette-card ${currentTab}${hasFilter ? ' has-filter' : ''}`;
+    card.draggable = true;
+    const icon = currentTab === 'tag' ? '🏷️' : (currentTab === 'dim' ? '📐' : '📊');
+    let displayName = item.name;
+    if (hasFilter) displayName += ` <span class="member-count-badge">${filterCount}/${totalCount}</span>`;
+
+    if (currentTab === 'dim' && DIM_MEMBERS[item.id]) {
+      card.innerHTML = `<span class="card-icon">${icon}</span><span style="flex:1;">${displayName}</span><span class="filter-btn" title="メンバー選択">⋯</span>`;
+      card.querySelector('.filter-btn').onclick = (e) => { e.stopPropagation(); openDimModal(item); };
+      card.onclick = () => openDimModal(item);
+    } else if (currentTab === 'tag' && item.id.startsWith('tag_custom_')) {
+      // 編集可能なカスタムタグ
+      if (item.tagType === 'group') card.classList.add('group');
+      const groupBadge = item.tagType === 'group' ? '<span class="member-count-badge" style="background:#ec4899;">📂GRP</span> ' : '';
+      const cardIcon = item.tagType === 'group' ? '📂' : icon;
+      card.innerHTML = `<span class="card-icon">${cardIcon}</span><span style="flex:1;">${groupBadge}${item.rawName || item.name}</span><span class="filter-btn" title="編集">⋯</span>`;
+      card.querySelector('.filter-btn').onclick = (e) => { e.stopPropagation(); openTagEditModal(item); };
+      card.onclick = () => openTagEditModal(item);
+    } else if (currentTab === 'tag') {
+      // ビルトインタグ (テンプレート) - クリックで新規作成
+      card.innerHTML = `<span class="card-icon">${icon}</span><span style="flex:1;">${item.name}</span><span class="filter-btn" title="このタイプで新規作成">+</span>`;
+      card.onclick = () => openTagCreateFromTemplate(item);
+    } else {
+      card.innerHTML = `<span class="card-icon">${icon}</span>${displayName}`;
+    }
+
+    card.addEventListener('dragstart', e => {
+      e.dataTransfer.setData('itemId', item.id);
+      e.dataTransfer.setData('itemName', item.name);
+      e.dataTransfer.setData('itemType', currentTab);
+      card.classList.add('dragging');
+    });
+    card.addEventListener('dragend', () => card.classList.remove('dragging'));
+    list.appendChild(card);
+  });
+  if (currentTab === 'tag') {
+    const btn = document.createElement('div');
+    btn.className = 'tag-create-btn';
+    btn.innerHTML = '+ 新規タグ作成';
+    btn.onclick = openTagModal;
+    list.appendChild(btn);
+  }
+}
+
+function filterPalette(v) { renderPalette(v); }
+
+function renderAll() {
+  ['row','col','val','filter'].forEach(z => setupZone(z));
+  renderZoneContent();
+  renderFilterContent();
+  updateTable();
+}
+
+// === 指標カテゴリ推定 ===
+// === ディメン系統分類 ===
+// cost   : コスト分析専用 (費目/仕入先など)
+// labor  : 人件費分析専用 (スタッフ系)
+// sales  : 売上分析専用 (商品/業態など)
+// common : 共通 (時系列/店舗など、全て可)
+function inferDimSystem(dimId) {
+  const COST_DIMS  = ['dim_expense_cat','dim_expense_item','dim_supplier','dim_supplier_label'];
+  const LABOR_DIMS = ['dim_staff','dim_staff_label'];
+  const SALES_DIMS = ['dim_product','dim_product_group','dim_business_type','dim_format'];
+  if (COST_DIMS.includes(dimId))  return 'cost';
+  if (LABOR_DIMS.includes(dimId)) return 'labor';
+  if (SALES_DIMS.includes(dimId)) return 'sales';
+  return 'common';
+}
+
+// === 指標系統分類 ===
+// cost-material/cost-other/labor : コスト系
+// sales/volume/profit/efficiency : 売上系
+// budget : 予実系
+function inferMetricSystem(name) {
+  const n = name || '';
+  // 予実共通メジャー (費目ディメンと組合せ可) - 早期判定
+  if (n.includes('予算') || n.includes('達成率') || n.includes('進捗率') ||
+      n.includes('予実') || n.includes('構成比') || n.includes('前年') ||
+      n === '費用（実績）' || n === '費用') return 'budget';
+  if (n.includes('PA人件費') || n.includes('人件費') || n.includes('シフト')) return 'labor';
+  if (n.includes('FD仕入') || n.includes('原価') || n.includes('棚卸') || n.includes('仕入')) return 'cost-material';
+  if (n.includes('光熱費') || n.includes('賃料') || n.includes('通信費') || n.includes('保険料') ||
+      n.includes('広告宣伝費') || n.includes('消耗品') || n.includes('その他経費') || n.includes('経費') ||
+      n.includes('地代') || n.includes('資材費') || n.includes('減価償却')) return 'cost-other';
+  if (n.includes('FL率') || n.includes('FD率') || n.includes('効率') || n.includes('坪月商') || n.includes('ROI')) return 'efficiency';
+  if (n.includes('営業利益') || n.includes('粗利') || n.includes('利益')) return 'profit';
+  if (n.includes('客数') || n.includes('客単価') || n.includes('販売点数')) return 'volume';
+  if (n.includes('売上') || n.includes('価格')) return 'sales';
+  return 'other';
+}
+
+// === 系統互換マトリクス (ディメン系統 × 指標系統) ===
+const COMPAT_MATRIX = {
+  'cost':   { 'cost-material':'ok', 'cost-other':'ok',  'labor':'ok', 'budget':'ok',
+              'sales':'block', 'volume':'block', 'efficiency':'block', 'profit':'block', 'other':'block' },
+  'labor':  { 'labor':'ok',  'sales':'warn', 'volume':'warn', 'budget':'ok',
+              'cost-material':'block', 'cost-other':'block', 'efficiency':'block', 'profit':'block', 'other':'block' },
+  'sales':  { 'sales':'ok',  'volume':'ok',  'profit':'ok', 'efficiency':'ok', 'budget':'ok',
+              'cost-material':'warn', 'cost-other':'block', 'labor':'block', 'other':'block' },
+  'common': { 'sales':'ok',  'volume':'ok',  'cost-material':'ok', 'cost-other':'ok',
+              'labor':'ok',  'budget':'ok',  'efficiency':'ok', 'profit':'ok', 'other':'ok' },
+};
+
+// === ディメン × ディメン (行+列) 系統互換 ===
+const DIM_DIM_COMPAT = {
+  'cost+sales': { sev:'block', msg:'コスト系×売上系ディメンは組合せ不可 (例: 費目×商品)' },
+  'cost+labor': { sev:'block', msg:'コスト系×人件費系ディメンは組合せ不可' },
+  'labor+sales':{ sev:'warn',  msg:'人件費系×売上系ディメンは担当者運用次第' },
+};
+function dimDimCheck(sysA, sysB) {
+  if (sysA === sysB || sysA === 'common' || sysB === 'common') return null;
+  const key = [sysA, sysB].sort().join('+');
+  return DIM_DIM_COMPAT[key] || null;
+}
+
+function dimSysLabel(s) { return ({cost:'コスト系',labor:'人件費系',sales:'売上系',common:'共通'})[s] || s; }
+function metSysLabel(s) {
+  return ({'cost-material':'原価系','cost-other':'経費系','labor':'人件費系',
+           'sales':'売上系','volume':'客数/販売点数系','budget':'予実系',
+           'efficiency':'効率性','profit':'収益性','other':'その他'})[s] || s;
+}
+function describeAllow(dimSys) {
+  if (dimSys === 'cost')  return '原価系/経費系/人件費系/予実系メトリクス';
+  if (dimSys === 'labor') return '人件費系/予実系メトリクス (売上系は担当者運用前提で警告のみ)';
+  if (dimSys === 'sales') return '売上系/客数系/効率/収益性/予実系メトリクス';
+  return '全メトリクス';
+}
+
+// 後方互換 (旧コードが参照していた場合)
+function inferMetricCategory(name) { return metSysLabel(inferMetricSystem(name)); }
+
+// === ディメン × 指標 互換チェック ===
+function validateCombination(dimId, dimName, metricName) {
+  const dimSys = inferDimSystem(dimId);
+  const metSys = inferMetricSystem(metricName);
+  const v = COMPAT_MATRIX[dimSys]?.[metSys];
+  if (v === 'block') {
+    return { ok:false, severity:'block',
+      msg:`🚫 ${dimSysLabel(dimSys)}ディメン × ${metSysLabel(metSys)}指標は不可`,
+      detail:`「${dimName}」(${dimSysLabel(dimSys)})と「${metricName}」(${metSysLabel(metSys)})は組合せ不可です。\n${dimSysLabel(dimSys)}ディメンは ${describeAllow(dimSys)} と組合せてください。` };
+  }
+  if (v === 'warn') {
+    return { ok:true, severity:'warn',
+      msg:`🟡 ${dimSysLabel(dimSys)}×${metSysLabel(metSys)}は注意`,
+      detail:`「${dimName}」と「${metricName}」は配置可能ですが、運用 (担当者紐付/マスタ整備等) 次第で集計結果が変動します。` };
+  }
+  return { ok:true, severity:'none' };
+}
+
+function setupZone(name) {
+  const z = document.getElementById(`zone-${name}`);
+  if (!z) return;
+  z.ondragover = e => { e.preventDefault(); z.classList.add('drag-over'); };
+  z.ondragleave = () => z.classList.remove('drag-over');
+  z.ondrop = e => {
+    e.preventDefault();
+    z.classList.remove('drag-over');
+    const itemType = e.dataTransfer.getData('itemType');
+    const itemId = e.dataTransfer.getData('itemId');
+    const itemName = e.dataTransfer.getData('itemName');
+
+    // === タイプチェック ===
+    if (name === 'val' && itemType !== 'metric') {
+      showAlert(`⚠️ タイプ不一致`, `「値」スロットにはトランザクション(指標)のみドロップ可能です。\n「${itemName}」は ${itemType === 'dim' ? 'ディメンション' : 'カスタムタグ'} なので配置できません。`);
+      return;
+    }
+    if ((name === 'row' || name === 'col' || name === 'filter') && itemType === 'metric') {
+      showAlert(`⚠️ タイプ不一致`, `「${zoneLabel(name)}」スロットにはディメンション/タグのみドロップ可能です。\nトランザクション「${itemName}」は「値」スロットへ配置してください。`);
+      return;
+    }
+
+    // === フィルタは複数追加可、重複だけブロック ===
+    if (name === 'filter') {
+      if (zones.filter.find(f => f.id === itemId)) {
+        showAlert(`🚫 重複配置`, `「${itemName}」は既にフィルタに追加されています。`);
+        return;
+      }
+      // 系統互換チェック (フィルタ × 値: 全メジャーに対して)
+      if (itemType === 'dim') {
+        for (const v of zones.vals) {
+          const r = validateCombination(itemId, itemName, v.name);
+          if (!r.ok) { showAlert(r.msg, r.detail); return; }
+          if (r.severity === 'warn') showToast(r.msg);
+        }
+      }
+      zones.filter.push({ id: itemId, name: itemName, type: itemType });
+      renderFilterContent();
+      updateTable();
+      showToast(`🔍 "${itemName}" をフィルタに追加`);
+      return;
+    }
+
+    // === 重複チェック ===
+    if (name === 'row' && zones.col?.id === itemId) {
+      showAlert(`🚫 重複配置エラー`, `「${itemName}」は既に「列」に配置されています。\n同じ指標を「行」と「列」の両方には配置できません。`);
+      return;
+    }
+    if (name === 'col' && zones.row?.id === itemId) {
+      showAlert(`🚫 重複配置エラー`, `「${itemName}」は既に「行」に配置されています。\n同じ指標を「行」と「列」の両方には配置できません。`);
+      return;
+    }
+    if ((name === 'row' || name === 'col') && zones.vals.some(v => v.id === itemId)) {
+      showAlert(`🚫 重複配置エラー`, `「${itemName}」は既に「値」に配置されています。`);
+      return;
+    }
+    if (name === 'val' && (zones.row?.id === itemId || zones.col?.id === itemId)) {
+      showAlert(`🚫 重複配置エラー`, `「${itemName}」は既に「${zones.row?.id === itemId ? '行' : '列'}」に配置されています。`);
+      return;
+    }
+    if (name === 'val' && zones.vals.some(v => v.id === itemId)) {
+      showAlert(`🚫 重複配置エラー`, `「${itemName}」は既に「値」に追加されています。`);
+      return;
+    }
+
+    // === 系統互換チェック ===
+    // (1) 値ドロップ時: 既存 row/col/filter ディメンとの互換性
+    if (name === 'val' && itemType === 'metric') {
+      const otherDims = [zones.row, zones.col, ...zones.filter].filter(d => d && d.type === 'dim');
+      for (const d of otherDims) {
+        const r = validateCombination(d.id, d.name, itemName);
+        if (!r.ok) { showAlert(r.msg, r.detail); return; }
+        if (r.severity === 'warn') showToast(r.msg);
+      }
+      // (1b) 既存メジャーとの系統一致チェック (異系統併記をブロック)
+      if (zones.vals.length > 0) {
+        const newSys = inferMetricSystem(itemName);
+        const existingSys = inferMetricSystem(zones.vals[0].name);
+        if (newSys !== existingSys) {
+          showAlert('🚫 メジャー系統不一致', `「${itemName}」(${metSysLabel(newSys)}) と既存「${zones.vals[0].name}」(${metSysLabel(existingSys)}) は系統が異なるため併記できません。\n\n理由: 粒度・日付制約・更新タイミングが異なる可能性があります。\n\n同じ系統 (例: 費用実績/費用予算/予実差/達成率) で揃えてください。`);
+          return;
+        }
+      }
+    }
+    // (2) row/col ディメンドロップ時: 既存 vals 全てとの互換性 + 反対側ディメンとの系統互換性
+    if ((name === 'row' || name === 'col') && itemType === 'dim') {
+      for (const v of zones.vals) {
+        const r = validateCombination(itemId, itemName, v.name);
+        if (!r.ok) { showAlert(r.msg, r.detail); return; }
+        if (r.severity === 'warn') showToast(r.msg);
+      }
+      const opp = name === 'row' ? zones.col : zones.row;
+      if (opp && opp.type === 'dim') {
+        const dd = dimDimCheck(inferDimSystem(itemId), inferDimSystem(opp.id));
+        if (dd) {
+          if (dd.sev === 'block') {
+            showAlert(`🚫 ディメン系統不一致`, `${dd.msg}\n「${itemName}」と「${opp.name}」は別系統のため、同時に行/列に配置できません。`);
+            return;
+          }
+          if (dd.sev === 'warn') showToast('🟡 ' + dd.msg);
+        }
+      }
+    }
+
+    if (name === 'val') {
+      zones.vals.push({ id: itemId, name: itemName, type: itemType });
+    } else {
+      zones[name] = { id: itemId, name: itemName, type: itemType };
+    }
+    resetTableCache();
+    renderZoneContent();
+    updateTable();
+    showToast(`✅ "${itemName}" を「${zoneLabel(name)}」に配置`);
+  };
+}
+
+// === フィルタ表示 ===
+function renderFilterContent() {
+  const zone = document.getElementById('zone-filter');
+  const content = document.getElementById('filterContent');
+  if (!zone || !content) return;
+
+  if (zones.filter.length === 0) {
+    zone.classList.remove('has-filter');
+    content.innerHTML = `<div class="filter-empty-corner">🔍 フィルタ<br><span style="font-size:8px;color:#94a3b8;font-weight:normal;">タグ/ディメンを<br>ドロップ</span></div>`;
+    return;
+  }
+  zone.classList.add('has-filter');
+  let html = `<div style="font-size:9px;font-weight:700;color:#047857;padding:2px 0;">🔍 ${zones.filter.length}件</div>`;
+  zones.filter.forEach((f, idx) => {
+    const filterCount = dimFilters[f.id]?.length;
+    const totalCount = DIM_MEMBERS[f.id]?.length;
+    const filterInfo = filterCount !== undefined && filterCount < totalCount ? `(${filterCount}/${totalCount})` : '';
+    const icon = f.type === 'tag' ? '🏷️' : '📐';
+    html += `<div class="filter-chip" onclick="openFilterEdit(${idx})" title="クリックでメンバー絞り込み">
+      ${icon} ${f.name} ${filterInfo}
+      <span class="filter-chip-remove" onclick="event.stopPropagation();removeFilter(${idx})">✕</span>
+    </div>`;
+  });
+  content.innerHTML = html;
+}
+
+function removeFilter(idx) {
+  const removed = zones.filter.splice(idx, 1)[0];
+  renderFilterContent();
+  updateTable();
+  showToast(`🗑️ フィルタ「${removed.name}」を解除`);
+}
+
+function openFilterEdit(idx) {
+  const f = zones.filter[idx];
+  if (!f) return;
+  // システムディメンの場合: メンバー選択モーダル
+  if (DIM_MEMBERS[f.id]) {
+    const dimItem = ITEMS.dim.find(d => d.id === f.id);
+    if (dimItem) openDimModal(dimItem);
+    return;
+  }
+  // カスタムタグの場合: タグ編集モーダル
+  const customTag = customTags.find(t => t.id === f.id);
+  if (customTag) {
+    openTagEditModal(customTag);
+    return;
+  }
+  // ビルトインタグテンプレートの場合
+  const builtInTag = ITEMS.tag.find(t => t.id === f.id);
+  if (builtInTag) {
+    showAlert('ℹ️ ビルトインタグ', `「${f.name}」はテンプレートタグです。\n\nフィルタとして使うには、まずカスタムタグタブで具体的なメンバーを設定したカスタムタグを作成してください。\n\nまたは、システムディメン (📐) からドロップしてフィルタするのがおすすめです。`);
+    return;
+  }
+  showToast(`⚠️ 「${f.name}」の編集は未対応`);
+}
+
+// === アラートモーダル (ブロック時) ===
+function showAlert(title, message) {
+  // 既存モーダルがあれば再利用、なければ作成
+  let alertEl = document.getElementById('alertModal');
+  if (!alertEl) {
+    alertEl = document.createElement('div');
+    alertEl.id = 'alertModal';
+    alertEl.className = 'modal-overlay';
+    alertEl.innerHTML = `
+      <div class="modal" style="width:440px; max-width:90%;">
+        <div class="modal-title" id="alertTitle" style="color:#dc2626;"></div>
+        <div id="alertMessage" style="font-size:13px; line-height:1.6; color:#475569; white-space:pre-line;"></div>
+        <div class="modal-actions">
+          <button class="btn" style="background:#10b981;color:white;" onclick="document.getElementById('alertModal').classList.remove('show')">OK</button>
+        </div>
+      </div>`;
+    document.body.appendChild(alertEl);
+  }
+  document.getElementById('alertTitle').textContent = title;
+  document.getElementById('alertMessage').textContent = message;
+  alertEl.classList.add('show');
+  // 同時にトースト表示
+  showToast(title);
+}
+
+function zoneLabel(z) { return { row: '行', col: '列', val: '値' }[z]; }
+
+function renderZoneContent() {
+  // Row
+  const cr = document.getElementById('content-row');
+  const zr = document.getElementById('zone-row');
+  if (zones.row) {
+    zr.classList.add('has-item');
+    cr.innerHTML = `<span class="dropped-tag">${typeIcon(zones.row.type)} ${zones.row.name} <span class="remove" onclick="removeZone('row')">✕</span></span>`;
+  } else {
+    zr.classList.remove('has-item');
+    cr.innerHTML = `<span class="empty-hint">ここに<br>ドロップ<br>→ 縦軸に表示</span>`;
+  }
+  // Col
+  const cc = document.getElementById('content-col');
+  const zc = document.getElementById('zone-col');
+  if (zones.col) {
+    zc.classList.add('has-item');
+    let sortBtnHTML = '';
+    // 列のソートボタン (日付系で特に意味あり、全タイプで利用可)
+    const colIsDate = ['dim_date','dim_month','dim_year','dim_quarter','dim_week','dim_dow','dim_time_slot'].includes(zones.col.id) ||
+                      ['日','月','年','四半期','週','曜日','時間帯'].includes(zones.col.name);
+    const isSorted = tableSort.axis === 'cols-by-label';
+    const dirIcon = isSorted ? (tableSort.dir === 'asc' ? '🕐 古い→新' : '🆕 新→古い') : '⇅';
+    const btnLabel = colIsDate ? '📅 列の並び順' : '🔤 列の並び順';
+    sortBtnHTML = `<button onclick="sortTableBy('cols-by-label','')" style="margin-left:8px;padding:4px 10px;background:${isSorted?'#10b981':'#f1f5f9'};color:${isSorted?'white':'#475569'};border:1px solid ${isSorted?'#10b981':'#cbd5e0'};border-radius:4px;cursor:pointer;font-size:10px;font-weight:600;" title="列の並び順を切替">${btnLabel}: ${dirIcon}</button>`;
+    cc.innerHTML = `<span class="dropped-tag">${typeIcon(zones.col.type)} ${zones.col.name} <span class="remove" onclick="removeZone('col')">✕</span></span>${sortBtnHTML}`;
+  } else {
+    zc.classList.remove('has-item');
+    cc.innerHTML = `<span class="empty-hint">ここにディメン/タグをドロップ → 横軸に表示</span>`;
+  }
+  // Val (複数メジャー対応)
+  const cv = document.getElementById('content-val');
+  const zv = document.getElementById('zone-val');
+  if (zones.vals.length > 0) {
+    zv.classList.add('has-item');
+    const chips = zones.vals.map((v, i) =>
+      `<span class="dropped-value">${typeIcon(v.type)} ${v.name} <span class="remove" onclick="removeValAt(${i})">✕</span></span>`
+    ).join(' ');
+    const countBadge = zones.vals.length > 1 ? `<span style="background:#10b981;color:white;font-size:9px;padding:1px 6px;border-radius:8px;margin-right:6px;">📊 ${zones.vals.length}指標</span>` : '';
+    cv.innerHTML = countBadge + chips;
+  } else {
+    zv.classList.remove('has-item');
+    const hasExpenseCat = (zones.row && zones.row.id === 'dim_expense_cat') || (zones.col && zones.col.id === 'dim_expense_cat');
+    if (hasExpenseCat) {
+      cv.innerHTML = `<span class="empty-hint" style="color:#92400e;">💡 費目には予実メジャーを推奨 (複数追加可):<br>
+        <button class="btn" style="background:#10b981;color:white;font-size:10px;padding:3px 8px;margin:2px 2px 0 0;" onclick="quickSetVal('M_COST_ACT','費用（実績）')">+ 費用(実績)</button>
+        <button class="btn" style="background:#10b981;color:white;font-size:10px;padding:3px 8px;margin:2px 2px 0 0;" onclick="quickSetVal('M_COST_BUD','費用予算')">+ 費用予算</button>
+        <button class="btn" style="background:#10b981;color:white;font-size:10px;padding:3px 8px;margin:2px 2px 0 0;" onclick="quickSetVal('M_COST_DIFF','予実差')">+ 予実差</button>
+        <button class="btn" style="background:#10b981;color:white;font-size:10px;padding:3px 8px;margin:2px 2px 0 0;" onclick="quickSetVal('M_COST_RATE','予実達成率')">+ 達成率</button>
+      </span>`;
+    } else {
+      cv.innerHTML = `<span class="empty-hint">ここにトランザクションをドロップ → 集計値として表示 (複数追加可)</span>`;
+    }
+  }
+}
+
+// 値スロットのワンクリック追加 (推奨ボタンから)
+function quickSetVal(id, name) {
+  if (zones.vals.some(v => v.id === id)) { showToast(`⚠️ 「${name}」は既に追加済みです`); return; }
+  // 系統不一致ブロック: 既存メジャーと異なる系統は併記不可
+  if (zones.vals.length > 0) {
+    const newSys = inferMetricSystem(name);
+    const existingSys = inferMetricSystem(zones.vals[0].name);
+    if (newSys !== existingSys) {
+      showAlert('🚫 メジャー系統不一致', `「${name}」(${metSysLabel(newSys)}) と既存「${zones.vals[0].name}」(${metSysLabel(existingSys)}) は系統が異なるため併記できません。\n\n理由: 粒度・日付制約・更新タイミングが異なる可能性があります。\n\n同じ系統 (例: 費用実績/費用予算/予実差/達成率) で揃えてください。`);
+      return;
+    }
+  }
+  zones.vals.push({ id, name, type: 'metric' });
+  resetTableCache();
+  renderZoneContent();
+  updateTable();
+}
+
+// 値スロットから個別メジャーを削除
+function removeValAt(idx) {
+  zones.vals.splice(idx, 1);
+  resetTableCache();
+  renderZoneContent();
+  updateTable();
+}
+
+function typeIcon(t) { return t === 'tag' ? '🏷️' : (t === 'dim' ? '📐' : '📊'); }
+
+function removeZone(name) {
+  if (name === 'val') zones.vals = [];
+  else zones[name] = null;
+  resetTableCache();
+  tableSort = { axis: null, key: null, dir: null };
+  renderZoneContent();
+  updateTable();
+}
+
+function updateTable() {
+  const area = document.getElementById('tableArea');
+  const placed = (zones.row?1:0) + (zones.col?1:0) + (zones.vals.length>0?1:0);
+
+  if (placed === 0) {
+    area.innerHTML = `<div style="text-align: center; padding: 60px 20px; color: #94a3b8;"><div style="font-size: 42px; margin-bottom: 8px;">📊</div><div style="font-size: 13px;">行・列・値をドロップすると<br>クロス集計表が表示されます</div></div>`;
+    updateWarning();
+    return;
+  }
+
+  if (currentChart === 'table') {
+    area.innerHTML = renderTable();
+  } else if (currentChart === 'bar') {
+    area.innerHTML = renderBar();
+  } else {
+    area.innerHTML = `<div style="text-align: center; padding: 60px 20px; color: #94a3b8;"><div style="font-size: 42px; margin-bottom: 8px;">${currentChart === 'line' ? '📈' : '🔥'}</div><div>${currentChart === 'line' ? '折れ線グラフ' : 'ヒートマップ'}（モック表示）</div></div>`;
+  }
+  updateWarning();
+}
+
+// === 指標タイプ別の値生成 ===
+function generateValue(metricName) {
+  const n = metricName || '';
+  if (n.includes('率') || n.includes('達成') || n.includes('進捗') || n.includes('構成比') || n.includes('前年比')) return Math.random() * 40 + 80; // 80-120%
+  if (n.includes('予実差')) return Math.round((Math.random() - 0.4) * 2000000); // -800K..+1.2M
+  if (n.includes('費用予算') || n.includes('費用')) return Math.round(Math.random() * 6000000 + 2000000); // 2M-8M
+  if (n.includes('客単価')) return Math.round(Math.random() * 3000 + 2500); // ¥2,500-5,500
+  if (n.includes('客数') || n.includes('販売点数') || n.includes('点数')) return Math.round(Math.random() * 9000 + 6000); // 6,000-15,000人
+  if (n.includes('シフト時間') || n.includes('時間')) return Math.round(Math.random() * 200 + 100); // 100-300h
+  if (n.includes('棚卸金額') || n.includes('棚卸')) return Math.round(Math.random() * 1500000 + 500000); // ¥500K-2M
+  if (n.includes('PA人件費') || n.includes('人件費') || n.includes('原価')) return Math.round(Math.random() * 4000000 + 2000000); // ¥2M-6M
+  // 売上/利益/その他金額系
+  return Math.round(Math.random() * 15000000 + 8000000); // ¥8M-23M
+}
+
+// === 指標タイプ別フォーマット (3桁カンマ区切り) ===
+function formatValue(metricName, rawValue) {
+  const n = metricName || '';
+  if (n.includes('率') || n.includes('達成') || n.includes('進捗') || n.includes('構成比') || n.includes('前年比')) {
+    return rawValue.toFixed(1) + '%';
+  }
+  if (n.includes('客数') || n.includes('販売点数') || n.includes('点数')) {
+    return Math.round(rawValue).toLocaleString() + ' 人';
+  }
+  if (n.includes('シフト時間') || n.includes('時間')) {
+    return Math.round(rawValue).toLocaleString() + ' h';
+  }
+  if (n.includes('予実差')) {
+    const v = Math.round(rawValue);
+    return (v >= 0 ? '+' : '') + v.toLocaleString() + ' 円';
+  }
+  // 金額系: 1,234,567 円
+  return Math.round(rawValue).toLocaleString() + ' 円';
+}
+
+function getZoneMembers(zone) {
+  if (!zone) return null;
+  // ディメンの個別フィルタ適用 (メンバー絞り込み)
+  if (dimFilters[zone.id]) return dimFilters[zone.id];
+  // システムディメン
+  if (DIM_MEMBERS[zone.id]) return DIM_MEMBERS[zone.id].slice(0, 10);
+  // カスタムタグ展開
+  const customTag = customTags.find(t => t.id === zone.id);
+  if (customTag) {
+    // グルーピングタグ: 構成タグの名前を表示順で取得 (カスタム順/メンバー数順 反映済み)
+    if (customTag.tagType === 'group' && customTag.orderedMembers && customTag.orderedMembers.length > 0) {
+      return customTag.orderedMembers.map(m => m.name);
+    }
+    // 通常カスタムタグ: 選択メンバーを返す
+    if (customTag.selectedMembers && customTag.selectedMembers.length > 0) {
+      return customTag.selectedMembers;
+    }
+  }
+  // フォールバック
+  return [zone.name + '_1', zone.name + '_2', zone.name + '_3'];
+}
+
+function renderTable() {
+  const rowList = zones.row ? getZoneMembers(zones.row) : ['(集計)'];
+  const isMultiMeasure = zones.vals.length > 1;
+  const colDimList = zones.col ? getZoneMembers(zones.col).slice(0, 6) : null;
+  // 列構造:
+  //   [単一メジャー][列ディメン無] → 列無し
+  //   [単一メジャー][列ディメン有] → colDimList (列=メンバー)
+  //   [複数メジャー][列ディメン無] → vals.map(name) (列=メジャー)
+  //   [複数メジャー][列ディメン有] → colDimList × vals (2段ヘッダー)
+  const useCrossLayout = isMultiMeasure && colDimList; // 列ディメン × メジャー
+  const colList = isMultiMeasure
+    ? (colDimList ? colDimList : zones.vals.map(v => v.name))
+    : colDimList;
+  // セル(行, 列インデックス)に対応するメジャー名を返す
+  const cellMeasureName = (colIdx) => {
+    if (useCrossLayout) return zones.vals[colIdx % zones.vals.length].name;
+    if (isMultiMeasure) return zones.vals[colIdx].name;
+    return zones.vals[0]?.name || '';
+  };
+  const totalCellCount = useCrossLayout
+    ? colDimList.length * zones.vals.length
+    : (colList ? colList.length : 0);
+  const valName = zones.vals[0]?.name || '';
+  const isRatio = valName.includes('率') || valName.includes('達成') || valName.includes('進捗') || valName.includes('構成比') || valName.includes('前年比');
+
+  // 値を一度だけ生成 (キャッシュキーで安定性確保)
+  const valsKey = zones.vals.map(v => v.id).join(',');
+  const cacheKey = `${zones.row?.id||'_'}|${zones.col?.id||'_'}|${valsKey||'_'}`;
+  if (!cachedTableData || cachedTableData.key !== cacheKey) {
+    const data = rowList.map(rowName => {
+      let total = 0;
+      let cells = [];
+      if (zones.vals.length > 0 && totalCellCount > 0) {
+        for (let i = 0; i < totalCellCount; i++) {
+          const v = generateValue(cellMeasureName(i));
+          cells.push(v);
+          total += v;
+        }
+      } else if (zones.vals.length > 0) {
+        total = generateValue(valName);
+      }
+      const totalDisplay = isRatio && totalCellCount > 0 && !isMultiMeasure ? (total / totalCellCount) : total;
+      return { rowName, cells, total: totalDisplay };
+    });
+    cachedTableData = { key: cacheKey, data };
+  }
+
+  // ソート適用
+  let sortedData = [...cachedTableData.data];
+  let colOrder = colList ? colList.map((_, i) => i) : null;
+
+  if (tableSort.axis !== null) {
+    if (tableSort.axis === 'rows-by-col' && zones.vals.length > 0) {
+      const colIdx = parseInt(tableSort.key);
+      sortedData.sort((a, b) => {
+        const av = a.cells[colIdx] || 0, bv = b.cells[colIdx] || 0;
+        return tableSort.dir === 'asc' ? av - bv : bv - av;
+      });
+    } else if (tableSort.axis === 'rows-by-total' && zones.vals.length > 0) {
+      sortedData.sort((a, b) => tableSort.dir === 'asc' ? a.total - b.total : b.total - a.total);
+    } else if (tableSort.axis === 'rows-by-label') {
+      // 行のラベル名でソート (五十音順/日付順)
+      sortedData.sort((a, b) => {
+        const cmp = a.rowName.localeCompare(b.rowName, 'ja', { numeric: true });
+        return tableSort.dir === 'asc' ? cmp : -cmp;
+      });
+    } else if (tableSort.axis === 'cols-by-label' && colOrder) {
+      // 列のラベル名でソート
+      colOrder.sort((a, b) => {
+        const cmp = colList[a].localeCompare(colList[b], 'ja', { numeric: true });
+        return tableSort.dir === 'asc' ? cmp : -cmp;
+      });
+    }
+  }
+
+  // ソートアイコン
+  const sortIcon = (axis, key) => {
+    if (tableSort.axis !== axis || String(tableSort.key) !== String(key)) return '<span style="opacity:0.3;font-size:9px;">⇅</span>';
+    return tableSort.dir === 'asc' ? '<span style="color:#10b981;">▲</span>' : '<span style="color:#10b981;">▼</span>';
+  };
+
+  // 日付/時間系ディメン判定
+  const isDateLike = (zone) => {
+    if (!zone) return false;
+    if (['dim_date','dim_month','dim_year','dim_quarter','dim_week','dim_dow','dim_time_slot'].includes(zone.id)) return true;
+    if (['日','月','年','四半期','週','曜日','時間帯'].includes(zone.name)) return true;
+    return false;
+  };
+
+  // ソート方向ラベル (日付系なら「最新→古い順」/「古い順→最新」)
+  const dirLabel = (dir, isDate) => {
+    if (isDate) {
+      return dir === 'asc' ? '🕐 古い順 → 最新' : '🆕 最新 → 古い順';
+    }
+    return dir === 'asc' ? '↑ 昇順' : '↓ 降順';
+  };
+
+  // 現在のソート状態表示
+  let sortStatusBar = '';
+  if (tableSort.axis !== null) {
+    let label = '';
+    if (tableSort.axis === 'rows-by-col') {
+      const colName = colList[parseInt(tableSort.key)];
+      label = `🔄 列「<strong>${colName}</strong>」の値で行を ${dirLabel(tableSort.dir, false)} ソート`;
+    } else if (tableSort.axis === 'rows-by-total') {
+      label = `🔄 「<strong>${valName}合計</strong>」の値で行を ${dirLabel(tableSort.dir, false)} ソート`;
+    } else if (tableSort.axis === 'rows-by-label') {
+      label = `🔄 行ラベル「<strong>${zones.row?.name||''}</strong>」で ${dirLabel(tableSort.dir, isDateLike(zones.row))} ソート`;
+    } else if (tableSort.axis === 'cols-by-label') {
+      label = `🔄 列ラベル「<strong>${zones.col?.name||''}</strong>」で ${dirLabel(tableSort.dir, isDateLike(zones.col))} ソート`;
+    }
+    sortStatusBar = `<div style="background:linear-gradient(90deg,#ecfdf5 0%,#f0fdf4 100%); border:1.5px solid #10b981; border-radius:6px; padding:6px 12px; margin-bottom:8px; font-size:11px; color:#047857; display:flex; align-items:center; gap:8px;">
+      ${label}
+      <button class="btn" style="background:white; color:#047857; border:1px solid #10b981; font-size:10px; padding:2px 8px; margin-left:auto;" onclick="clearTableSort()">↩️ ソート解除</button>
+    </div>`;
+  }
+
+  // 日付列の圧縮 (cross layout の場合は colDimList に対して適用)
+  const dateMetaTarget = useCrossLayout ? colDimList : (!isMultiMeasure ? colList : null);
+  const dateMeta = dateMetaTarget ? buildDateColMeta(dateMetaTarget) : null;
+  let dateBanner = '';
+  if (dateMeta && dateMeta.bannerText) {
+    dateBanner = `<div style="background:#f0fdf4;border:1px solid #d1fae5;border-radius:6px;padding:6px 12px;margin-bottom:6px;font-size:12px;color:#065f46;font-weight:600;">${dateMeta.bannerText}</div>`;
+  }
+  // 複数メジャー時のヒント
+  let multiMeasureBar = '';
+  if (isMultiMeasure) {
+    const layoutLabel = useCrossLayout
+      ? `<span style="margin-left:8px;color:#065f46;">⊞ 「${zones.col.name}」 × メジャー の2段ヘッダー</span>`
+      : `<span style="margin-left:8px;color:#065f46;">列=メジャー軸 (列ディメン未配置)</span>`;
+    multiMeasureBar = `<div style="background:#ecfdf5;border:1.5px solid #10b981;border-radius:6px;padding:6px 12px;margin-bottom:6px;font-size:11px;color:#065f46;">📊 複数メジャー併記モード (${zones.vals.length}指標)${layoutLabel}</div>`;
+  }
+
+  // ヘッダー (行ディメン名/列ヘッダ/合計列すべてソート可)
+  const rowHeaderText = zones.row?.name || '項目';
+  const rowLabelSorted = tableSort.axis === 'rows-by-label';
+  const rowIsDate = isDateLike(zones.row);
+  const rowSortTitle = rowIsDate
+    ? `${rowHeaderText}で並び替え (クリック: 最新→古い順 / 再クリック: 古い順→最新)`
+    : `${rowHeaderText}で並び替え`;
+  let head = '';
+  // 2段ヘッダー (cross layout のみ)
+  if (useCrossLayout) {
+    head += `<tr>
+      <th rowspan="2" onclick="sortTableBy('rows-by-label','')" style="cursor:pointer;${rowLabelSorted?'background:#10b981;color:white;':'background:#f1f5f9;'}" title="${rowSortTitle}">${rowHeaderText} ${sortIcon('rows-by-label','')}</th>`;
+    colDimList.forEach((c, di) => {
+      const displayLabel = dateMeta ? dateMeta.labels[di] : c;
+      head += `<th colspan="${zones.vals.length}" style="text-align:center;background:#f0fdf4;color:#065f46;border-left:1px solid #bbf7d0;border-right:1px solid #bbf7d0;">${displayLabel}</th>`;
+    });
+    head += `</tr><tr>`;
+    colDimList.forEach((c, di) => {
+      zones.vals.forEach((m, mi) => {
+        const ci = di * zones.vals.length + mi;
+        const isSorted = tableSort.axis === 'rows-by-col' && String(tableSort.key) === String(ci);
+        head += `<th onclick="sortTableBy('rows-by-col','${ci}')" style="cursor:pointer;font-size:10px;${isSorted?'background:#10b981;color:white;':'background:#ecfdf5;'}" title="クリックで「${c} × ${m.name}」の値で行をソート">${truncLabel(m.name, 10)} ${sortIcon('rows-by-col', ci)}</th>`;
+      });
+    });
+    head += `</tr>`;
+  } else {
+    head += `<tr>
+      <th onclick="sortTableBy('rows-by-label','')" style="cursor:pointer;${rowLabelSorted?'background:#10b981;color:white;':'background:#f1f5f9;'}" title="${rowSortTitle}">${rowHeaderText} ${sortIcon('rows-by-label','')}</th>`;
+    if (colList) {
+      colOrder.forEach((idx, displayIdx) => {
+        const c = colList[idx];
+        const displayLabel = (!isMultiMeasure && dateMeta) ? dateMeta.labels[idx] : c;
+        const isSorted = tableSort.axis === 'rows-by-col' && String(tableSort.key) === String(idx);
+        head += `<th onclick="sortTableBy('rows-by-col','${idx}')" style="cursor:pointer;${isSorted?'background:#10b981;color:white;':''}" title="クリックで「${c}」の値で行をソート">${displayLabel} ${sortIcon('rows-by-col', idx)}</th>`;
+      });
+    }
+    const totalSorted = tableSort.axis === 'rows-by-total';
+    if (!isMultiMeasure) {
+      head += `<th class="total" onclick="sortTableBy('rows-by-total','')" style="cursor:pointer;${totalSorted?'background:#10b981;color:white;':''}" title="合計値で行をソート">${valName ? valName + '合計' : '値'} ${sortIcon('rows-by-total','')}</th>`;
+    }
+    head += `</tr>`;
+  }
+
+  // ボディ
+  let body = '';
+  sortedData.forEach(d => {
+    let cells = `<td class="row-header">${d.rowName}</td>`;
+    if (useCrossLayout) {
+      for (let ci = 0; ci < d.cells.length; ci++) {
+        const v = d.cells[ci];
+        const measureName = cellMeasureName(ci);
+        const borderL = (ci % zones.vals.length === 0) ? 'border-left:1px solid #bbf7d0;' : '';
+        cells += `<td style="${borderL}">${formatValue(measureName, v)}</td>`;
+      }
+    } else if (colList) {
+      colOrder.forEach((colIdx, displayIdx) => {
+        const v = d.cells[colIdx];
+        const measureName = cellMeasureName(colIdx);
+        if (zones.vals.length > 0 && v !== undefined) cells += `<td>${formatValue(measureName, v)}</td>`;
+        else cells += `<td class="empty-cell">―</td>`;
+      });
+    }
+    if (!isMultiMeasure) {
+      if (zones.vals.length > 0) {
+        cells += `<td class="total">${formatValue(valName, d.total)}</td>`;
+      } else {
+        cells += `<td class="empty-cell" style="background:#fffbeb;color:#92400e;">値が必要</td>`;
+      }
+    }
+    body += `<tr>${cells}</tr>`;
+  });
+
+  return `${sortStatusBar}${multiMeasureBar}${dateBanner}<table class="cross-table">${head}${body}</table>`;
+}
+
+function renderBar() {
+  if (zones.vals.length === 0) {
+    return `<div style="text-align: center; padding: 40px 20px; color: #f59e0b;">📊 値が必要です</div>`;
+  }
+  const list = zones.row ? (getZoneMembers(zones.row) || ['(全体)']).slice(0, 8) : ['(全体)'];
+  const isMultiMeasure = zones.vals.length > 1;
+  let html = '<div class="bar-chart">';
+  if (!isMultiMeasure) {
+    const valName = zones.vals[0].name;
+    const values = list.map(() => generateValue(valName));
+    const maxVal = Math.max(...values, 1);
+    list.forEach((s, i) => {
+      const v = values[i];
+      const widthPct = (v / maxVal) * 100;
+      html += `<div class="bar-row"><div class="bar-label">${s}</div><div class="bar-track"><div class="bar-fill" style="width:${widthPct}%"></div></div><div class="bar-value">${formatValue(valName, v)}</div></div>`;
+    });
+  } else {
+    // 複数メジャー: グループバー表示
+    html += `<div style="background:#ecfdf5;border:1.5px solid #10b981;border-radius:6px;padding:6px 12px;margin-bottom:6px;font-size:11px;color:#065f46;">📊 複数メジャー併記モード (${zones.vals.length}指標)</div>`;
+    const colors = ['#10b981','#0ea5e9','#a855f7','#f59e0b','#ec4899','#64748b'];
+    // 全メジャー × 全行で値生成
+    const allVals = zones.vals.map(v => list.map(() => generateValue(v.name)));
+    const maxAll = Math.max(...allVals.flat(), 1);
+    list.forEach((s, i) => {
+      html += `<div style="margin-bottom:6px;"><div class="bar-label" style="font-weight:600;margin-bottom:2px;">${s}</div>`;
+      zones.vals.forEach((m, mi) => {
+        const v = allVals[mi][i];
+        const widthPct = (v / maxAll) * 100;
+        html += `<div class="bar-row" style="margin-left:10px;"><div class="bar-label" style="font-size:9px;color:#64748b;">${m.name}</div><div class="bar-track"><div class="bar-fill" style="width:${widthPct}%;background:${colors[mi % colors.length]};"></div></div><div class="bar-value">${formatValue(m.name, v)}</div></div>`;
+      });
+      html += '</div>';
+    });
+  }
+  html += '</div>';
+  return html;
+}
+
+function switchChart(t) {
+  currentChart = t;
+  document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector(`[data-chart="${t}"]`).classList.add('active');
+  updateTable();
+}
+
+// === テーブルソート (行/列ヘッダクリック対応) ===
+function sortTableBy(axis, key) {
+  // 同じセルクリック → desc → asc → 解除
+  if (tableSort.axis === axis && String(tableSort.key) === String(key)) {
+    if (tableSort.dir === 'desc') tableSort.dir = 'asc';
+    else { tableSort.axis = null; tableSort.key = null; tableSort.dir = null; }
+  } else {
+    tableSort.axis = axis;
+    tableSort.key = key;
+    tableSort.dir = 'desc';
+  }
+  renderZoneContent(); // 列ソートボタンの状態を更新
+  updateTable();
+}
+
+function clearTableSort() {
+  tableSort = { axis: null, key: null, dir: null };
+  updateTable();
+  showToast('↩️ ソート解除');
+}
+
+// 配置変更時はテーブルキャッシュとソートをリセット
+function resetTableCache() {
+  cachedTableData = null;
+}
+
+function updateWarning() {
+  const w = document.getElementById('warningInline');
+  if (zones.vals.length === 0) { w.style.display = 'none'; return; }
+  const v = zones.vals[0].name;
+  w.style.display = 'block';
+  if (zones.vals.length > 1) {
+    w.className = 'warning-inline'; w.style.background = '#ecfdf5'; w.style.borderColor = '#10b981'; w.style.color = '#065f46';
+    w.innerHTML = `📊 ${zones.vals.length}指標併記中 (${metSysLabel(inferMetricSystem(v))})`;
+  } else if (v.includes('率') || v.includes('単価')) {
+    w.className = 'warning-inline'; w.style.background = '#fffbeb'; w.style.borderColor = '#fcd34d'; w.style.color = '#92400e';
+    w.innerHTML = '🟡 加重平均で計算';
+  } else if (zones.col?.name === '時間帯' && zones.row?.name === '月') {
+    w.className = 'warning-inline alert';
+    w.innerHTML = '🔴 月×時間帯は粒度ブロック';
+  } else {
+    w.className = 'warning-inline';
+    w.innerHTML = '🟢 制限なし';
+  }
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(window._toastT);
+  window._toastT = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// 画面種別 (会社画面=company, 店舗画面=store)
+const CURRENT_SCREEN = 'company';
+
+function saveView() {
+  if (zones.vals.length === 0) { showAlert('⚠️ 値が必要', '「値」スロットにトランザクションを配置してから保存してください。'); return; }
+  const parts = [];
+  if (zones.row) parts.push(`📐 行: ${zones.row.name}`);
+  if (zones.col) parts.push(`➡️ 列: ${zones.col.name}`);
+  parts.push(`📊 値: ${zones.vals.map(v => v.name).join(' / ')}`);
+  if (zones.filter.length > 0) parts.push(`🔍 フィルタ: ${zones.filter.map(f => f.name).join(', ')}`);
+  parts.push(`📈 表示: ${({table:'表',bar:'棒グラフ',line:'折れ線',heatmap:'ヒートマップ'})[currentChart]}`);
+
+  document.getElementById('saveViewSummary').innerHTML = `<strong>📌 保存内容:</strong><br>${parts.join('<br>')}`;
+  const valLabel = zones.vals.length > 1 ? `[${zones.vals.length}指標]` : zones.vals[0].name;
+  document.getElementById('viewName').value = `${zones.row?.name||''}${zones.col?' × '+zones.col.name:''} × ${valLabel}`;
+  document.getElementById('viewDesc').value = '';
+  document.getElementById('viewScreen').value = CURRENT_SCREEN;
+  document.getElementById('viewSize').value = 'half';
+  document.getElementById('viewPinned').checked = true;
+  document.getElementById('saveViewModal').classList.add('show');
+}
+
+function closeSaveViewModal() {
+  document.getElementById('saveViewModal').classList.remove('show');
+}
+
+function confirmSaveView() {
+  const name = document.getElementById('viewName').value.trim();
+  if (!name) { showToast('⚠️ ビュー名を入力してください'); return; }
+  const desc = document.getElementById('viewDesc').value.trim();
+  const screen = document.getElementById('viewScreen').value;
+  const size = document.getElementById('viewSize').value;
+  const pinned = document.getElementById('viewPinned').checked;
+  const maxOrder = savedViews.reduce((m, v) => Math.max(m, v.order || 0), 0);
+  const view = {
+    id: `view_${Date.now()}`,
+    name: name,
+    desc: desc,
+    savedAt: new Date().toISOString().slice(0, 16).replace('T', ' '),
+    screen: screen,        // 'company' | 'store' | 'both'
+    pinned: pinned,        // ダッシュボード固定表示
+    order: maxOrder + 1,   // 表示順 (小さいほど上)
+    size: size,            // 'half' | 'full'
+    config: {
+      row: zones.row ? {...zones.row} : null,
+      col: zones.col ? {...zones.col} : null,
+      vals: zones.vals.map(v => ({...v})),
+      filter: zones.filter.map(f => ({...f})),
+      chart: currentChart,
+      dimFilters: JSON.parse(JSON.stringify(dimFilters)),
+    }
+  };
+  savedViews.push(view);
+  closeSaveViewModal();
+  renderDashboard();
+  showToast(`💾 ビュー「${name}」を保存しました (${savedViews.length}件)`);
+}
+
+// === マイグレーション: 旧ビューに新フィールドを補完 ===
+function migrateViews() {
+  let order = 1;
+  savedViews.forEach(v => {
+    if (v.screen === undefined) v.screen = CURRENT_SCREEN;
+    if (v.pinned === undefined) v.pinned = false;
+    if (v.size === undefined) v.size = 'half';
+    if (v.order === undefined) v.order = order++;
+    // v3.10: config.val (単一) → config.vals (配列) マイグレーション
+    if (v.config && !v.config.vals) {
+      v.config.vals = v.config.val ? [v.config.val] : [];
+    }
+  });
+}
+
+// === ダッシュボード描画 (ピン留めビューを順に表示) ===
+function viewMatchesScreen(v) {
+  return v.screen === CURRENT_SCREEN || v.screen === 'both';
+}
+function getPinnedViews() {
+  migrateViews();
+  return savedViews
+    .filter(v => v.pinned && viewMatchesScreen(v))
+    .sort((a, b) => (a.order || 0) - (b.order || 0));
+}
+
+function renderDashboard() {
+  const area = document.getElementById('dashboardArea');
+  const grid = document.getElementById('dashboardGrid');
+  const countEl = document.getElementById('dashboardCount');
+  if (!area || !grid) return;
+  const pinned = getPinnedViews();
+  area.style.display = 'block';
+  countEl.textContent = `${pinned.length}件`;
+  grid.innerHTML = '';
+  if (pinned.length === 0) {
+    grid.innerHTML = `<div class="dashboard-area-empty" style="grid-column:1 / -1;">📭 まだダッシュボードに表示するビューがありません<br><span style="font-size:11px;">「✏️ ウィジェットを編集」から作成→「💾 保存」で📌固定するとここに表示されます</span></div>`;
+    return;
+  }
+  pinned.forEach((v, idx) => {
+    const card = document.createElement('div');
+    card.className = `dashboard-card size-${v.size || 'half'}`;
+    card.id = `dashCard_${v.id}`;
+    card.draggable = true;
+    card.dataset.viewId = v.id;
+    const cfg = v.config;
+    const summary = [
+      cfg.row ? `📐${cfg.row.name}` : '',
+      cfg.col ? `➡️${cfg.col.name}` : '',
+      (cfg.vals && cfg.vals.length > 0) ? `📊${cfg.vals.length > 1 ? cfg.vals.length + '指標: ' : ''}${cfg.vals.map(x=>x.name).join(' / ')}` : (cfg.val ? `📊${cfg.val.name}` : ''),
+    ].filter(Boolean).join(' × ');
+    card.innerHTML = `
+      <div class="dashboard-card-header">
+        <span style="color:#94a3b8;font-size:14px;cursor:grab;margin-right:4px;" title="ドラッグで並び替え">⋮⋮</span>
+        <div class="dashboard-card-title">📌 ${v.name}</div>
+        <div class="dashboard-card-meta">${summary}</div>
+        <div class="dashboard-card-actions">
+          <button class="dashboard-card-btn" onclick="event.stopPropagation();toggleDashCardCollapse('${v.id}')">▼</button>
+          <button class="dashboard-card-btn" onclick="event.stopPropagation();loadViewById('${v.id}')" title="エディタで開く">✎</button>
+          <button class="dashboard-card-btn" onclick="event.stopPropagation();unpinView('${v.id}')" title="ダッシュボードから外す">📌×</button>
+        </div>
+      </div>
+      <div class="dashboard-card-body">${renderViewSnapshot(v)}</div>
+    `;
+    card.addEventListener('dragstart', (e) => onDashCardDragStart(e, v.id));
+    card.addEventListener('dragend', (e) => onDashCardDragEnd(e));
+    card.addEventListener('dragover', (e) => onDashCardDragOver(e, card));
+    card.addEventListener('dragleave', (e) => onDashCardDragLeave(e, card));
+    card.addEventListener('drop', (e) => onDashCardDrop(e, v.id, card));
+    grid.appendChild(card);
+  });
+}
+
+// === ダッシュボードカードのドラッグ並び替え ===
+let _dashDragViewId = null;
+function onDashCardDragStart(e, viewId) {
+  _dashDragViewId = viewId;
+  e.dataTransfer.effectAllowed = 'move';
+  e.target.classList.add('dragging');
+}
+function onDashCardDragEnd(e) {
+  e.target.classList.remove('dragging');
+  document.querySelectorAll('.dashboard-card').forEach(c => {
+    c.classList.remove('drag-over-top', 'drag-over-bottom');
+  });
+  _dashDragViewId = null;
+}
+function onDashCardDragOver(e, card) {
+  if (!_dashDragViewId || card.dataset.viewId === _dashDragViewId) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const rect = card.getBoundingClientRect();
+  const isTop = (e.clientY - rect.top) < rect.height / 2;
+  card.classList.toggle('drag-over-top', isTop);
+  card.classList.toggle('drag-over-bottom', !isTop);
+}
+function onDashCardDragLeave(e, card) {
+  card.classList.remove('drag-over-top', 'drag-over-bottom');
+}
+function onDashCardDrop(e, targetId, card) {
+  e.preventDefault();
+  card.classList.remove('drag-over-top', 'drag-over-bottom');
+  if (!_dashDragViewId || _dashDragViewId === targetId) return;
+  const rect = card.getBoundingClientRect();
+  const isTop = (e.clientY - rect.top) < rect.height / 2;
+  reorderPinnedView(_dashDragViewId, targetId, isTop ? 'before' : 'after');
+}
+function reorderPinnedView(srcId, tgtId, position) {
+  const pinned = getPinnedViews();
+  const srcIdx = pinned.findIndex(v => v.id === srcId);
+  const tgtIdx = pinned.findIndex(v => v.id === tgtId);
+  if (srcIdx < 0 || tgtIdx < 0) return;
+  const [moved] = pinned.splice(srcIdx, 1);
+  let insertAt = pinned.findIndex(v => v.id === tgtId);
+  if (insertAt < 0) insertAt = pinned.length;
+  if (position === 'after') insertAt += 1;
+  pinned.splice(insertAt, 0, moved);
+  pinned.forEach((v, i) => { v.order = i + 1; });
+  renderDashboard();
+  showToast(`🔀 「${moved.name}」を並び替えました`);
+}
+
+// === ダッシュボードカードプレビューのソート ===
+const previewSorts = {};      // { viewId: { key, dir } }
+const previewDataCache = {};  // { viewId: [{rowName, cells, total}] } 値の安定化用
+
+function previewSortBy(viewId, key) {
+  const cur = previewSorts[viewId];
+  if (cur && cur.key === key) {
+    if (cur.dir === 'asc') cur.dir = 'desc';
+    else delete previewSorts[viewId];
+  } else {
+    previewSorts[viewId] = { key, dir: 'asc' };
+  }
+  const view = savedViews.find(x => x.id === viewId);
+  const card = document.getElementById(`dashCard_${viewId}`);
+  if (!view || !card) return;
+  const body = card.querySelector('.dashboard-card-body');
+  if (body) body.innerHTML = renderViewSnapshot(view);
+}
+
+function naturalCompare(a, b) {
+  const am = String(a).match(/-?\d+(\.\d+)?/);
+  const bm = String(b).match(/-?\d+(\.\d+)?/);
+  if (am && bm) {
+    const an = parseFloat(am[0]); const bn = parseFloat(bm[0]);
+    if (an !== bn) return an - bn;
+  }
+  return String(a).localeCompare(String(b), 'ja');
+}
+
+function sortIcon(active, dir) {
+  if (!active) return '<span style="color:#cbd5e1;font-size:8px;margin-left:2px;">↕</span>';
+  return `<span style="color:#10b981;font-size:9px;margin-left:2px;">${dir==='asc'?'▲':'▼'}</span>`;
+}
+
+function toggleDashCardCollapse(viewId) {
+  const card = document.getElementById(`dashCard_${viewId}`);
+  if (card) card.classList.toggle('collapsed');
+}
+
+function loadViewById(viewId) {
+  const idx = savedViews.findIndex(v => v.id === viewId);
+  if (idx >= 0) {
+    switchMode('edit');
+    loadView(idx);
+  }
+}
+
+function unpinView(viewId) {
+  const v = savedViews.find(x => x.id === viewId);
+  if (v) {
+    v.pinned = false;
+    renderDashboard();
+    showToast(`📌× 「${v.name}」をダッシュボードから外しました`);
+  }
+}
+
+// === ビュー単位の表/グラフ描画 (live zones に依存しない) ===
+function renderViewSnapshot(view) {
+  const cfg = view.config;
+  // 互換: vals が無ければ val から導出
+  const vals = cfg && (cfg.vals || (cfg.val ? [cfg.val] : []));
+  if (!cfg || !vals || vals.length === 0) {
+    return `<div style="text-align:center;padding:14px;color:#94a3b8;font-size:11px;">⚠️ 値が未設定</div>`;
+  }
+  const chart = cfg.chart || 'table';
+  if (chart === 'bar') return renderViewBar(cfg, view.id);
+  if (chart === 'line' || chart === 'heatmap') {
+    return `<div style="text-align:center;padding:14px;color:#94a3b8;font-size:11px;">${chart==='line'?'📈':'🔥'} ${chart==='line'?'折れ線':'ヒートマップ'} (モック)</div>`;
+  }
+  return renderViewTable(cfg, view.id);
+}
+
+// === 日付ラベルの圧縮 (年/年月の共通プレフィックスをバナーに集約) ===
+function parseDateLabel(s) {
+  const m = String(s).match(/^(\d{4})[\/\-年.](\d{1,2})(?:[\/\-月.](\d{1,2})日?)?$/);
+  if (!m) return null;
+  return { year: m[1], month: m[2].padStart(2, '0'), day: m[3] ? m[3].padStart(2, '0') : null };
+}
+function buildDateColMeta(colList) {
+  if (!colList || colList.length === 0) return null;
+  const parsed = colList.map(c => ({ raw: c, parts: parseDateLabel(c) }));
+  if (!parsed.every(p => p.parts)) return null;
+  const years = [...new Set(parsed.map(p => p.parts.year))];
+  // 西暦のみバナーに集約 → 列は M/D 表記 (例: 4/1, 4/2)
+  if (years.length === 1) {
+    const y = parsed[0].parts.year;
+    return {
+      bannerText: `📅 ${y}年`,
+      labels: parsed.map(p => p.parts.day
+        ? `${parseInt(p.parts.month, 10)}/${parseInt(p.parts.day, 10)}`
+        : `${parseInt(p.parts.month, 10)}月`)
+    };
+  }
+  // 複数年: 年が変わる位置の列にのみ年を表記
+  let lastYear = null;
+  return {
+    bannerText: null,
+    labels: parsed.map(p => {
+      const showYear = p.parts.year !== lastYear;
+      lastYear = p.parts.year;
+      const md = p.parts.day
+        ? `${parseInt(p.parts.month, 10)}/${parseInt(p.parts.day, 10)}`
+        : `${parseInt(p.parts.month, 10)}月`;
+      return showYear ? `${p.parts.year}年 ${md}` : md;
+    })
+  };
+}
+
+function truncLabel(s, max = 10) {
+  if (s == null) return '';
+  s = String(s);
+  if (s.length <= max) return s;
+  // 括弧 ( / （ を含むラベルは閉じ括弧まで含めて表示 (意味を保つため)
+  const oA = s.indexOf('('), oZ = s.indexOf('（');
+  const o = oA >= 0 ? oA : oZ;
+  if (o >= 0 && o < max + 6) {
+    const cA = s.indexOf(')', o), cZ = s.indexOf('）', o);
+    const c = cA >= 0 ? cA : cZ;
+    if (c >= 0 && c < max + 10) return s.slice(0, c + 1);
+  }
+  return s.slice(0, max) + '…';
+}
+
+function renderViewTable(cfg, viewId) {
+  const rowListAll = cfg.row ? getZoneMembersFromCfg(cfg, cfg.row) : ['(集計)'];
+  // vals 互換 (旧 val 単一形式吸収)
+  const vals = cfg.vals && cfg.vals.length > 0 ? cfg.vals : (cfg.val ? [cfg.val] : []);
+  const isMultiMeasure = vals.length > 1;
+  // 複数メジャー時はメジャー軸を列に展開、列ディメンは無視
+  const colListAll = isMultiMeasure ? vals.map(v => v.name) : (cfg.col ? getZoneMembersFromCfg(cfg, cfg.col) : null);
+  const colVisible = colListAll ? colListAll.slice(0, isMultiMeasure ? 4 : 3) : null;
+  const colMeasureName = (idx) => isMultiMeasure ? vals[idx].name : vals[0].name;
+  const valName = vals[0].name;
+  const isRatio = valName.includes('率') || valName.includes('達成') || valName.includes('進捗') || valName.includes('構成比') || valName.includes('前年比');
+  // 全行データを生成 → ソート → 4行に切詰め (値はビュー単位でキャッシュ)
+  const cacheKey = viewId ? `t_${viewId}` : null;
+  let allData;
+  if (cacheKey && previewDataCache[cacheKey]) {
+    allData = previewDataCache[cacheKey];
+  } else {
+    allData = rowListAll.map(rowName => {
+      let total = 0, cells = [];
+      if (colVisible) {
+        cells = colVisible.map((_, i) => { const m = colMeasureName(i); const v = generateValue(m); total += v; return v; });
+      } else {
+        total = generateValue(valName);
+      }
+      const totalDisplay = isMultiMeasure ? total : (isRatio && colVisible ? total/colVisible.length : total);
+      return { rowName, cells, total: totalDisplay };
+    });
+    if (cacheKey) previewDataCache[cacheKey] = allData;
+  }
+  const sort = viewId ? previewSorts[viewId] : null;
+  if (sort) {
+    const cmp = (a, b) => {
+      let av, bv;
+      if (sort.key === 'row') { av = a.rowName; bv = b.rowName; return naturalCompare(av, bv) * (sort.dir==='asc'?1:-1); }
+      if (sort.key === 'total') { av = a.total; bv = b.total; }
+      else if (sort.key.startsWith('c')) { const i = parseInt(sort.key.slice(1)); av = a.cells[i]; bv = b.cells[i]; }
+      return ((av||0) - (bv||0)) * (sort.dir==='asc'?1:-1);
+    };
+    allData = [...allData].sort(cmp);
+  }
+  const data = allData.slice(0, 4);
+  const sortKey = sort?.key, sortDir = sort?.dir;
+  const onClick = (key) => viewId ? `onclick="event.stopPropagation();previewSortBy('${viewId}','${key}')" style="cursor:pointer;"` : '';
+  const moreColsCount = colListAll ? (colListAll.length - colVisible.length) : 0;
+  const moreMarkerHead = moreColsCount > 0 ? `<th class="more-col-marker" title="他${moreColsCount}列が省略されています">⋯</th>` : '';
+  const moreMarkerCell = moreColsCount > 0 ? `<td class="more-col-marker" onclick="event.stopPropagation();loadViewById('${viewId}')" title="エディタで全列を表示">⋯</td>` : '';
+  // 日付列の圧縮メタ (複数メジャー時は適用しない)
+  const dateMeta = (!isMultiMeasure && colVisible) ? buildDateColMeta(colVisible) : null;
+  let head = `<tr><th ${onClick('row')}>${truncLabel(cfg.row?.name || '項目', 16)}${sortIcon(sortKey==='row', sortDir)}</th>`;
+  if (colVisible) colVisible.forEach((c, i) => {
+    const label = dateMeta ? dateMeta.labels[i] : truncLabel(c, 16);
+    head += `<th ${onClick('c'+i)}>${label}${sortIcon(sortKey==='c'+i, sortDir)}</th>`;
+  });
+  head += moreMarkerHead;
+  if (!isMultiMeasure) head += `<th class="total" ${onClick('total')}>合計${sortIcon(sortKey==='total', sortDir)}</th>`;
+  head += `</tr>`;
+  let body = '';
+  data.forEach(d => {
+    let cells = `<td class="row-header">${truncLabel(d.rowName, 16)}</td>`;
+    if (colVisible) d.cells.forEach((v, i) => cells += `<td>${formatValue(colMeasureName(i), v)}</td>`);
+    cells += moreMarkerCell;
+    if (!isMultiMeasure) cells += `<td class="total">${formatValue(valName, d.total)}</td>`;
+    body += `<tr>${cells}</tr>`;
+  });
+  const moreRows = rowListAll.length - data.length;
+  const moreCols = colListAll ? colListAll.length - colVisible.length : 0;
+  // 省略行マーカー: 縦3点を3行に渡って表示し、行省略を明示
+  if (moreRows > 0) {
+    const totalDataCols = (colVisible ? colVisible.length : 0) + (moreCols > 0 ? 1 : 0) + (isMultiMeasure ? 0 : 1);
+    const dotRow = (label) => {
+      let cells = `<td class="row-header">${label}</td>`;
+      for (let i = 0; i < totalDataCols; i++) cells += `<td>⋮</td>`;
+      return `<tr class="more-rows-marker" onclick="event.stopPropagation();loadViewById('${viewId}')" title="エディタで全行を表示">${cells}</tr>`;
+    };
+    body += dotRow('⋮');
+    body += dotRow('⋮');
+    body += dotRow('⋮');
+  }
+  // サマリーバー (上部に省略状況を明示)
+  const totalCols = (colListAll ? colListAll.length : 0) + (isMultiMeasure ? 0 : 1);
+  const visibleCols = (colVisible ? colVisible.length : 0) + (isMultiMeasure ? 0 : 1);
+  const measureBadge = isMultiMeasure ? `<span class="badge" style="background:#10b981;color:white;">📊 ${vals.length}指標併記</span>` : '';
+  const summaryBar = `<div class="preview-summary-bar">
+    <span>📊 概要 (詳細は ✎ エディタで)</span>
+    <span>
+      ${measureBadge}
+      ${moreCols > 0 ? `<span class="badge warn">列 ${visibleCols}/${totalCols}</span>` : `<span class="badge">列 ${visibleCols}</span>`}
+      ${moreRows > 0 ? `<span class="badge warn">行 ${data.length}/${rowListAll.length}</span>` : `<span class="badge">行 ${data.length}</span>`}
+    </span>
+  </div>`;
+  // 末尾「もっと見る」リンク (エディタへ誘導)
+  let moreLink = '';
+  if (moreRows > 0 || moreCols > 0) {
+    moreLink = `<div class="preview-more-link" onclick="event.stopPropagation();loadViewById('${viewId}')">💡 ${moreRows>0?`他${moreRows}行`:''}${moreRows>0&&moreCols>0?' / ':''}${moreCols>0?`他${moreCols}列`:''} … エディタで全表示 →</div>`;
+  }
+  const fadeClasses = moreRows > 0 ? 'has-row-fade' : '';
+  const dateBanner = (dateMeta && dateMeta.bannerText)
+    ? `<div style="background:#f0fdf4;border:1px solid #d1fae5;border-radius:4px;padding:3px 8px;margin:0 0 4px;font-size:10px;color:#065f46;font-weight:600;">${dateMeta.bannerText}</div>`
+    : '';
+  return `${summaryBar}${dateBanner}<div class="preview-table-wrap ${fadeClasses}"><table class="cross-table">${head}${body}</table></div>${moreLink}`;
+}
+
+function renderViewBar(cfg, viewId) {
+  const vals = cfg.vals && cfg.vals.length > 0 ? cfg.vals : (cfg.val ? [cfg.val] : []);
+  const valName = vals[0].name;
+  const isMultiMeasure = vals.length > 1;
+  const listAll = cfg.row ? getZoneMembersFromCfg(cfg, cfg.row) : ['(全体)'];
+  const cacheKey = viewId ? `b_${viewId}` : null;
+  let pairs;
+  if (cacheKey && previewDataCache[cacheKey]) {
+    pairs = previewDataCache[cacheKey];
+  } else {
+    pairs = listAll.map(s => ({ label: s, value: generateValue(valName) }));
+    if (cacheKey) previewDataCache[cacheKey] = pairs;
+  }
+  const sort = viewId ? previewSorts[viewId] : null;
+  if (sort) {
+    const cmp = (a, b) => {
+      if (sort.key === 'label') return naturalCompare(a.label, b.label) * (sort.dir==='asc'?1:-1);
+      return (a.value - b.value) * (sort.dir==='asc'?1:-1);
+    };
+    pairs = [...pairs].sort(cmp);
+  }
+  const view = pairs.slice(0, 4);
+  const maxVal = Math.max(...view.map(p => p.value), 1);
+  const sortKey = sort?.key, sortDir = sort?.dir;
+  const onClick = (key) => viewId ? `onclick="event.stopPropagation();previewSortBy('${viewId}','${key}')" style="cursor:pointer;"` : '';
+  const more = listAll.length - view.length;
+  // サマリーバー (上部に省略状況を明示)
+  const measureBadge = isMultiMeasure ? `<span class="badge" style="background:#10b981;color:white;">📊 ${vals.length}指標 (1番目を表示)</span>` : '';
+  const summaryBar = `<div class="preview-summary-bar">
+    <span>📊 概要 (詳細は ✎ エディタで)</span>
+    <span>
+      ${measureBadge}
+      ${more > 0 ? `<span class="badge warn">${view.length}/${listAll.length}件</span>` : `<span class="badge">${view.length}件</span>`}
+      ${viewId ? `<span ${onClick('label')} style="margin-left:6px;">項目${sortIcon(sortKey==='label', sortDir)}</span>` : ''}
+      ${viewId ? `<span ${onClick('value')} style="margin-left:6px;">${truncLabel(valName)}${sortIcon(sortKey==='value', sortDir)}</span>` : ''}
+    </span>
+  </div>`;
+  let html = summaryBar + `<div class="preview-bar-wrap ${more > 0 ? 'has-row-fade' : ''}"><div class="bar-chart">`;
+  view.forEach(p => {
+    const widthPct = (p.value / maxVal) * 100;
+    html += `<div class="bar-row"><div class="bar-label">${truncLabel(p.label, 16)}</div><div class="bar-track"><div class="bar-fill" style="width:${widthPct}%"></div></div><div class="bar-value">${formatValue(valName, p.value)}</div></div>`;
+  });
+  html += '</div></div>';
+  if (more > 0) html += `<div class="preview-more-link" onclick="event.stopPropagation();loadViewById('${viewId}')">💡 他${more}件 … エディタで全表示 →</div>`;
+  return html;
+}
+
+function getZoneMembersFromCfg(cfg, zone) {
+  if (!zone) return null;
+  if (cfg.dimFilters && cfg.dimFilters[zone.id]) return cfg.dimFilters[zone.id];
+  if (DIM_MEMBERS[zone.id]) return DIM_MEMBERS[zone.id].slice(0, 8);
+  const customTag = customTags.find(t => t.id === zone.id);
+  if (customTag) {
+    if (customTag.tagType === 'group' && customTag.orderedMembers && customTag.orderedMembers.length > 0) {
+      return customTag.orderedMembers.map(m => m.name);
+    }
+    if (customTag.selectedMembers && customTag.selectedMembers.length > 0) return customTag.selectedMembers;
+  }
+  return [zone.name + '_1', zone.name + '_2', zone.name + '_3'];
+}
+
+// === ダッシュボード設定モーダル ===
+let _configDraft = [];
+
+function openDashboardConfigModal() {
+  migrateViews();
+  // 現在画面に該当するビューのみ操作対象
+  _configDraft = savedViews
+    .filter(viewMatchesScreen)
+    .sort((a, b) => (a.order || 0) - (b.order || 0))
+    .map(v => ({ id: v.id, pinned: v.pinned, order: v.order, size: v.size, screen: v.screen, chart: v.config.chart || 'table' }));
+  renderConfigList();
+  document.getElementById('dashboardConfigModal').classList.add('show');
+}
+
+function renderConfigList() {
+  const listEl = document.getElementById('dashboardConfigList');
+  if (_configDraft.length === 0) {
+    listEl.innerHTML = `<div style="text-align:center;padding:30px;color:#94a3b8;font-size:12px;">📭 この画面に表示できる保存ビューがまだありません<br><span style="font-size:10px;">ビューを保存するとここに表示されます</span></div>`;
+    return;
+  }
+  listEl.innerHTML = '';
+  _configDraft.forEach((c, idx) => {
+    const view = savedViews.find(v => v.id === c.id);
+    if (!view) return;
+    const cfg = view.config;
+    const summary = [
+      cfg.row ? `📐${cfg.row.name}` : '',
+      cfg.col ? `➡️${cfg.col.name}` : '',
+      (cfg.vals && cfg.vals.length > 0) ? `📊${cfg.vals.length > 1 ? cfg.vals.length + '指標: ' : ''}${cfg.vals.map(x=>x.name).join(' / ')}` : (cfg.val ? `📊${cfg.val.name}` : ''),
+    ].filter(Boolean).join(' × ');
+    const screenBadge = c.screen === 'both' ? '🟢🟠 両方' : (c.screen === 'company' ? '🟢 会社' : '🟠 店舗');
+    const row = document.createElement('div');
+    row.className = `config-row ${c.pinned ? 'pinned' : ''}`;
+    row.draggable = true;
+    row.dataset.configIdx = idx;
+    row.innerHTML = `
+      <span style="cursor:grab;color:#94a3b8;font-size:14px;padding:0 4px;" title="ドラッグで並び替え">⋮⋮</span>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+        <button class="config-order-btn" ${idx===0?'disabled':''} onclick="moveConfig(${idx},-1)">▲</button>
+        <span style="font-size:9px;color:#94a3b8;">${idx+1}</span>
+        <button class="config-order-btn" ${idx===_configDraft.length-1?'disabled':''} onclick="moveConfig(${idx},1)">▼</button>
+      </div>
+      <div style="flex:1;">
+        <div class="config-row-name">📌 ${view.name}</div>
+        <div class="config-row-summary">${summary}</div>
+      </div>
+      <span class="config-screen-badge ${c.screen}">${screenBadge}</span>
+      <select class="config-select" onchange="setConfigField(${idx},'screen',this.value)">
+        <option value="company" ${c.screen==='company'?'selected':''}>会社</option>
+        <option value="store" ${c.screen==='store'?'selected':''}>店舗</option>
+        <option value="both" ${c.screen==='both'?'selected':''}>両方</option>
+      </select>
+      <select class="config-select" onchange="setConfigField(${idx},'size',this.value)">
+        <option value="half" ${c.size==='half'?'selected':''}>1/2幅</option>
+        <option value="full" ${c.size==='full'?'selected':''}>全幅</option>
+      </select>
+      <select class="config-select" onchange="setConfigField(${idx},'chart',this.value)">
+        <option value="table" ${c.chart==='table'?'selected':''}>📋表</option>
+        <option value="bar" ${c.chart==='bar'?'selected':''}>📊棒</option>
+        <option value="line" ${c.chart==='line'?'selected':''}>📈折れ線</option>
+        <option value="heatmap" ${c.chart==='heatmap'?'selected':''}>🔥ヒートマップ</option>
+      </select>
+      <label class="config-pin-toggle"><input type="checkbox" ${c.pinned?'checked':''} onchange="setConfigField(${idx},'pinned',this.checked)">📌固定</label>
+      <button class="dashboard-card-btn" style="background:#fee2e2;color:#991b1b;" onclick="deleteConfigView('${c.id}')">🗑️</button>
+    `;
+    row.addEventListener('dragstart', (e) => onConfigRowDragStart(e, idx));
+    row.addEventListener('dragend', (e) => onConfigRowDragEnd(e));
+    row.addEventListener('dragover', (e) => onConfigRowDragOver(e, row));
+    row.addEventListener('dragleave', (e) => row.classList.remove('drag-over-top','drag-over-bottom'));
+    row.addEventListener('drop', (e) => onConfigRowDrop(e, idx, row));
+    listEl.appendChild(row);
+  });
+}
+
+let _configDragSrcIdx = null;
+function onConfigRowDragStart(e, idx) {
+  _configDragSrcIdx = idx;
+  e.dataTransfer.effectAllowed = 'move';
+  e.target.classList.add('dragging');
+}
+function onConfigRowDragEnd(e) {
+  e.target.classList.remove('dragging');
+  document.querySelectorAll('.config-row').forEach(r => r.classList.remove('drag-over-top','drag-over-bottom'));
+  _configDragSrcIdx = null;
+}
+function onConfigRowDragOver(e, row) {
+  if (_configDragSrcIdx === null) return;
+  e.preventDefault();
+  e.dataTransfer.dropEffect = 'move';
+  const rect = row.getBoundingClientRect();
+  const isTop = (e.clientY - rect.top) < rect.height / 2;
+  row.classList.toggle('drag-over-top', isTop);
+  row.classList.toggle('drag-over-bottom', !isTop);
+}
+function onConfigRowDrop(e, tgtIdx, row) {
+  e.preventDefault();
+  row.classList.remove('drag-over-top','drag-over-bottom');
+  const srcIdx = _configDragSrcIdx;
+  if (srcIdx === null || srcIdx === tgtIdx) return;
+  const rect = row.getBoundingClientRect();
+  const isTop = (e.clientY - rect.top) < rect.height / 2;
+  let insertAt = tgtIdx + (isTop ? 0 : 1);
+  if (srcIdx < insertAt) insertAt -= 1;
+  const [moved] = _configDraft.splice(srcIdx, 1);
+  _configDraft.splice(insertAt, 0, moved);
+  renderConfigList();
+}
+
+function moveConfig(idx, delta) {
+  const newIdx = idx + delta;
+  if (newIdx < 0 || newIdx >= _configDraft.length) return;
+  const tmp = _configDraft[idx];
+  _configDraft[idx] = _configDraft[newIdx];
+  _configDraft[newIdx] = tmp;
+  renderConfigList();
+}
+
+function setConfigField(idx, key, val) {
+  _configDraft[idx][key] = val;
+  if (key === 'pinned') {
+    document.getElementsByClassName('config-row')[idx].classList.toggle('pinned', val);
+  }
+}
+
+function deleteConfigView(viewId) {
+  const v = savedViews.find(x => x.id === viewId);
+  if (!v) return;
+  if (!confirm(`ビュー「${v.name}」を完全に削除しますか?`)) return;
+  savedViews = savedViews.filter(x => x.id !== viewId);
+  _configDraft = _configDraft.filter(x => x.id !== viewId);
+  renderConfigList();
+  renderDashboard();
+  showToast(`🗑️ 「${v.name}」を削除`);
+}
+
+function applyDashboardConfig() {
+  // _configDraft の内容と表示順を savedViews に反映
+  _configDraft.forEach((c, idx) => {
+    const v = savedViews.find(x => x.id === c.id);
+    if (v) {
+      v.pinned = c.pinned;
+      v.order = idx + 1;
+      v.size = c.size;
+      v.screen = c.screen;
+      v.config.chart = c.chart;
+    }
+  });
+  document.getElementById('dashboardConfigModal').classList.remove('show');
+  renderDashboard();
+  showToast(`⚙️ ダッシュボード設定を反映しました`);
+}
+
+function openViewListModal() {
+  const listEl = document.getElementById('savedViewsList');
+  if (savedViews.length === 0) {
+    listEl.innerHTML = `<div style="text-align:center;padding:40px 20px;color:#94a3b8;">
+      📭 保存済みビューはありません<br>
+      <span style="font-size:11px;">「💾 保存」ボタンで現在の設定を保存できます</span>
+    </div>`;
+  } else {
+    listEl.innerHTML = '';
+    savedViews.forEach((v, idx) => {
+      const card = document.createElement('div');
+      card.style = 'background:#f8fafc; border:1.5px solid #e2e8f0; border-radius:6px; padding:12px 14px; margin-bottom:8px; transition:all 0.15s; cursor:pointer;';
+      card.onmouseenter = () => { card.style.borderColor = '#10b981'; card.style.background = '#ecfdf5'; };
+      card.onmouseleave = () => { card.style.borderColor = '#e2e8f0'; card.style.background = '#f8fafc'; };
+      const cfg = v.config;
+      const summary = [
+        cfg.row ? `📐${cfg.row.name}` : '',
+        cfg.col ? `➡️${cfg.col.name}` : '',
+        (cfg.vals && cfg.vals.length > 0) ? `📊${cfg.vals.length > 1 ? cfg.vals.length + '指標: ' : ''}${cfg.vals.map(x=>x.name).join(' / ')}` : (cfg.val ? `📊${cfg.val.name}` : ''),
+      ].filter(Boolean).join(' × ');
+      const screenLabel = v.screen === 'both' ? '🟢🟠 両方' : (v.screen === 'store' ? '🟠 店舗' : '🟢 会社');
+      const pinnedBadge = v.pinned ? '<span style="background:#10b981;color:white;font-size:9px;padding:2px 6px;border-radius:3px;">📌固定中</span>' : '';
+      card.innerHTML = `
+        <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+          <strong style="font-size:13px; color:#1f3a4d; flex:1;">📌 ${v.name}</strong>
+          ${pinnedBadge}
+          <span style="font-size:9px; color:#64748b;">${screenLabel}</span>
+          <button class="btn" style="background:#10b981;color:white;font-size:10px;padding:4px 10px;" onclick="event.stopPropagation();loadView(${idx})">📂 開く</button>
+          <button class="btn" style="background:#fee2e2;color:#991b1b;font-size:10px;padding:4px 10px;" onclick="event.stopPropagation();deleteView(${idx})">🗑️ 削除</button>
+        </div>
+        <div style="font-size:11px; color:#475569; margin-bottom:4px;">${summary}</div>
+        ${v.desc ? `<div style="font-size:10px; color:#64748b; margin-bottom:4px;">📝 ${v.desc}</div>` : ''}
+        <div style="font-size:9px; color:#94a3b8;">🕐 ${v.savedAt}</div>
+      `;
+      card.onclick = () => loadView(idx);
+      listEl.appendChild(card);
+    });
+  }
+  document.getElementById('viewListModal').classList.add('show');
+}
+
+function loadView(idx) {
+  const v = savedViews[idx];
+  if (!v) return;
+  zones.row = v.config.row;
+  zones.col = v.config.col;
+  // v3.10: vals配列対応 (旧 val 単一形式は migrateViews() で吸収済み)
+  zones.vals = v.config.vals ? v.config.vals.map(x => ({...x})) : (v.config.val ? [{...v.config.val}] : []);
+  zones.filter = v.config.filter ? [...v.config.filter] : [];
+  dimFilters = {...v.config.dimFilters};
+  currentChart = v.config.chart || 'table';
+  resetTableCache();
+  renderZoneContent();
+  renderFilterContent();
+  document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
+  const cb = document.querySelector(`[data-chart="${currentChart}"]`);
+  if (cb) cb.classList.add('active');
+  updateTable();
+  document.getElementById('viewListModal').classList.remove('show');
+  switchMode('edit');
+  showToast(`📂 ビュー「${v.name}」を読み込みました`);
+}
+
+function deleteView(idx) {
+  const v = savedViews[idx];
+  if (!confirm(`ビュー「${v.name}」を削除しますか?`)) return;
+  savedViews.splice(idx, 1);
+  openViewListModal();
+  renderDashboard();
+  showToast(`🗑️ ビュー「${v.name}」を削除`);
+}
+
+function askAI(text) {
+  if (!text.trim()) return;
+  showToast(`🤖 分析中: "${text}"`);
+  setTimeout(() => {
+    if (text.includes('シフト')||text.includes('スタッフ')) applyAI('スタッフ','時間帯','客数');
+    else if (text.includes('売上')) applyAI('店舗','月','売上(税抜)');
+    else applyAI('店舗','月','売上(税抜)');
+  }, 600);
+}
+
+function applyAI(rowName, colName, valName) {
+  const findAny = name => {
+    if (!name) return null;
+    for (const t of ['dim','tag','metric']) {
+      const list = t === 'tag' ? [...ITEMS.tag, ...customTags] : ITEMS[t];
+      const r = list.find(i => i.name === name);
+      if (r) return { ...r, type: t };
+    }
+    return null;
+  };
+  zones.row = findAny(rowName);
+  zones.col = findAny(colName);
+  const v = findAny(valName);
+  zones.vals = v ? [v] : [];
+  resetTableCache();
+  renderZoneContent();
+  updateTable();
+  showToast(`✅ AI提案を適用`);
+}
+
+// === ディメンメンバー選択モーダル ===
+function openDimModal(item) {
+  currentEditingDim = item;
+  const members = DIM_MEMBERS[item.id] || [];
+  document.getElementById('dimModalTitle').textContent = `📐 「${item.name}」のメンバー選択`;
+  const listEl = document.getElementById('dimMemberList');
+  listEl.innerHTML = '';
+  const selected = dimFilters[item.id] || [...members]; // デフォルト全選択
+
+  members.forEach(m => {
+    const isChecked = selected.includes(m);
+    const row = document.createElement('label');
+    row.className = `member-row${isChecked ? ' checked' : ''}`;
+    row.innerHTML = `<input type="checkbox" value="${m}"${isChecked ? ' checked' : ''} onchange="updateDimSelectCount(this)"><span>${m}</span>`;
+    listEl.appendChild(row);
+  });
+
+  document.getElementById('dimSelectAll').checked = (selected.length === members.length);
+  updateDimSelectCount();
+  document.getElementById('dimModal').classList.add('show');
+}
+
+function closeDimModal() {
+  document.getElementById('dimModal').classList.remove('show');
+  currentEditingDim = null;
+}
+
+function toggleAllMembers() {
+  const allCheckbox = document.getElementById('dimSelectAll');
+  const checks = document.querySelectorAll('#dimMemberList input[type="checkbox"]');
+  checks.forEach(c => {
+    c.checked = allCheckbox.checked;
+    c.parentElement.classList.toggle('checked', c.checked);
+  });
+  updateDimSelectCount();
+}
+
+function updateDimSelectCount(triggerEl) {
+  if (triggerEl) {
+    triggerEl.parentElement.classList.toggle('checked', triggerEl.checked);
+  }
+  const checks = document.querySelectorAll('#dimMemberList input[type="checkbox"]');
+  const total = checks.length;
+  const checked = Array.from(checks).filter(c => c.checked).length;
+  document.getElementById('dimSelectCount').textContent = `${checked} / ${total} 件選択中`;
+  document.getElementById('dimSelectAll').checked = (checked === total);
+  document.getElementById('dimSelectAll').indeterminate = (checked > 0 && checked < total);
+}
+
+function applyDimFilter() {
+  if (!currentEditingDim) return;
+  const checks = document.querySelectorAll('#dimMemberList input[type="checkbox"]');
+  const selected = Array.from(checks).filter(c => c.checked).map(c => c.value);
+  if (selected.length === 0) {
+    showToast('⚠️ 1つ以上のメンバーを選択してください');
+    return;
+  }
+  const total = DIM_MEMBERS[currentEditingDim.id]?.length || 0;
+  if (selected.length === total) {
+    delete dimFilters[currentEditingDim.id];
+    showToast(`✅ 「${currentEditingDim.name}」全メンバー選択`);
+  } else {
+    dimFilters[currentEditingDim.id] = selected;
+    showToast(`✅ 「${currentEditingDim.name}」${selected.length}/${total} 件選択 (フィルタ適用)`);
+  }
+  closeDimModal();
+  renderPalette();
+  renderFilterContent();
+  updateTable();
+}
+
+// === タグモーダル: 新規作成 / 編集 ===
+function openTagModal() {
+  editingTagId = null;
+  groupOrderedMembers = [];
+  groupSortMode = 'custom';
+  // 安全策: customTags が空ならデモタグを自動ロード
+  if (customTags.length === 0) {
+    customTags = [...PREP_CUSTOM_TAGS];
+    console.log('[openTagModal] Auto-loaded demo tags:', customTags.length);
+  }
+  document.getElementById('tagModalTitle').textContent = '🏷️ カスタムタグ作成';
+  document.getElementById('tagDeleteBtn').style.display = 'none';
+  document.getElementById('tagSaveBtn').textContent = '作成';
+  document.getElementById('tagName').value = '';
+  document.getElementById('tagType').value = 'indicator';
+  document.getElementById('tagModal').classList.add('show');
+  updateTagMembers();
+}
+
+function openTagCreateFromTemplate(template) {
+  // ビルトインタグをテンプレートとして新規作成
+  editingTagId = null;
+  document.getElementById('tagModalTitle').textContent = `🏷️ ${template.name} を作成`;
+  document.getElementById('tagDeleteBtn').style.display = 'none';
+  document.getElementById('tagSaveBtn').textContent = '作成';
+  document.getElementById('tagName').value = '';
+  // タグタイプを自動選択
+  const typeMap = {
+    'tag_indicator': 'indicator', 'tag_shop': 'shop', 'tag_product': 'product',
+    'tag_supplier': 'supplier', 'tag_period': 'period', 'tag_label_group': 'label_group',
+    'tag_time_slot': 'time_slot', 'tag_staff': 'staff',
+  };
+  document.getElementById('tagType').value = typeMap[template.id] || 'indicator';
+  document.getElementById('tagModal').classList.add('show');
+  updateTagMembers();
+}
+
+function openTagEditModal(item) {
+  editingTagId = item.id;
+  document.getElementById('tagModalTitle').textContent = `🏷️ カスタムタグ編集: ${item.rawName || item.name}`;
+  document.getElementById('tagDeleteBtn').style.display = 'inline-block';
+  document.getElementById('tagSaveBtn').textContent = '保存';
+  document.getElementById('tagName').value = item.rawName || item.name.split(' (')[0];
+  document.getElementById('tagType').value = item.tagType || 'indicator';
+  // グルーピングタグの場合、順序付きメンバーを復元
+  if (item.tagType === 'group' && item.orderedMembers) {
+    groupOrderedMembers = [...item.orderedMembers];
+    groupSortMode = item.sortMode || 'custom';
+  } else {
+    groupOrderedMembers = [];
+    groupSortMode = 'custom';
+  }
+  document.getElementById('tagModal').classList.add('show');
+  updateTagMembers(item.selectedMembers);
+  // 編集モードの場合、ソートモードボタンを反映
+  if (item.tagType === 'group') {
+    setTimeout(() => {
+      document.querySelectorAll('.sort-mode-btn').forEach(b => b.classList.remove('active'));
+      const btn = document.querySelector(`.sort-mode-btn[data-sort="${groupSortMode}"]`);
+      if (btn) btn.classList.add('active');
+    }, 50);
+  }
+}
+
+function closeTagModal() {
+  document.getElementById('tagModal').classList.remove('show');
+  document.getElementById('tagName').value = '';
+  editingTagId = null;
+}
+
+function updateTagMembers(preChecked) {
+  const type = document.getElementById('tagType').value;
+  const list = document.getElementById('tagMembers');
+  const allRow = document.getElementById('tagSelectAllRow');
+  const labelEl = document.getElementById('tagMembersLabel');
+
+  // グルーピングタグの場合: 専用UI
+  if (type === 'group') {
+    // 安全策: 既存カスタムタグが空なら自動でデモロード
+    if (customTags.filter(t => t.tagType !== 'group').length === 0) {
+      customTags = [...PREP_CUSTOM_TAGS, ...customTags.filter(t => t.tagType === 'group')];
+      console.log('[updateTagMembers/group] Auto-loaded demo tags');
+      renderPalette();
+    }
+    if (allRow) allRow.style.display = 'none';
+    if (labelEl) labelEl.textContent = '構成タグ (既存タグから選択)';
+    list.classList.add('group-mode'); // ★ 高さ制限を解除
+    list.innerHTML = `
+      <div class="group-help">
+        💡 <strong>グルーピングタグ</strong>: 既存のカスタムタグを束ねて、表示順を設定できます。
+        例: 「関東ブロック」 = 渋谷店&田中店長 + 池袋店&佐藤店長 + 新宿店&鈴木店長
+      </div>
+      <div style="margin-top: 14px; font-size: 13px; font-weight: bold; color: #475569; padding-bottom: 4px; border-bottom: 2px solid #fce7f3;">📋 既存のカスタムタグから選択</div>
+      <div id="groupTagSelector" style="margin: 8px 0; max-height: 180px; overflow-y: auto; padding: 8px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 6px;"></div>
+
+      <div style="margin-top: 16px; font-size: 13px; font-weight: bold; color: #475569; padding-bottom: 4px; border-bottom: 2px solid #fce7f3;">🔢 選択中のタグ (表示順)</div>
+
+      <div class="sort-toolbar">
+        <span class="sort-toolbar-label">📊 並び順:</span>
+        <button class="sort-mode-btn active" data-sort="custom" onclick="setGroupSort('custom')" title="人名・テキストはこれが推奨"><span class="sort-mode-icon">⠿</span>カスタム順 <span style="font-size:9px;opacity:0.7;">(人名向け)</span></button>
+        <button class="sort-mode-btn" data-sort="member_desc" onclick="setGroupSort('member_desc')" title="数値・個数の降順"><span class="sort-mode-icon">↓</span>メンバー数 多い順 <span style="font-size:9px;opacity:0.7;">(数値)</span></button>
+        <button class="sort-mode-btn" data-sort="member_asc" onclick="setGroupSort('member_asc')" title="数値・個数の昇順"><span class="sort-mode-icon">↑</span>メンバー数 少ない順 <span style="font-size:9px;opacity:0.7;">(数値)</span></button>
+        <button class="sort-mode-btn" data-sort="created" onclick="setGroupSort('created')" title="作成タイムスタンプ順"><span class="sort-mode-icon">🕐</span>作成順</button>
+        <span class="sort-help-tip" id="sortHelpTip">💡 行をドラッグして並び替えできます (人名・テキスト系はカスタム順がおすすめ)</span>
+      </div>
+
+      <div class="ordered-member-list" id="orderedMemberList"></div>
+    `;
+    renderGroupTagSelector(preChecked || []);
+    renderOrderedMembers(preChecked || []);
+    updateTagSelectCount();
+    return;
+  }
+
+  if (allRow) allRow.style.display = 'flex';
+  if (labelEl) labelEl.textContent = 'メンバー (複数選択可)';
+  list.classList.remove('group-mode'); // 通常モード: 高さ制限復活
+
+  const opts = {
+    indicator: ITEMS.metric.map(m => ({ name: m.name })),
+    shop: [{name:'THE ATTACHMENT 渋谷店'},{name:'Japan dining Mr.gentleman'},{name:'Attachment 2nd'},{name:'あなたに会えてよかった。'},{name:'THE ATTACHMENT 池袋店'},{name:'THE ATTACHMENT 新宿店'},{name:'カフェ千葉店'}],
+    product: [{name:'マルゲリータ'},{name:'カルボナーラ'},{name:'シーザーサラダ'},{name:'ティラミス'},{name:'クリームパスタ'},{name:'ピザマリナーラ'}],
+    period: [{name:'GW (4/29-5/5)'},{name:'お盆 (8/13-16)'},{name:'年末年始 (12/29-1/3)'},{name:'夏休み (7/20-8/31)'},{name:'シルバーウィーク'}],
+    time_slot: [{name:'11-13時 (ランチ)'},{name:'13-15時 (アイドル)'},{name:'17-19時 (ディナー前)'},{name:'19-21時 (ディナー)'},{name:'21-23時 (深夜)'}],
+    staff: [{name:'山田太郎 (社員)'},{name:'佐藤花子 (社員)'},{name:'鈴木一郎 (バイト)'},{name:'田中二郎 (バイト)'},{name:'高橋三郎 (店長)'}],
+    supplier: [{name:'仕入先A (食材)'},{name:'仕入先B (酒類)'},{name:'仕入先C (備品)'},{name:'仕入先D (青果)'}],
+    label_group: [{name:'担当者軸'},{name:'エリア軸'},{name:'業態軸'},{name:'ステータス軸'}],
+  };
+  list.innerHTML = '';
+  (opts[type] || []).forEach(o => {
+    const isChecked = preChecked ? preChecked.includes(o.name) : false;
+    const span = document.createElement('span');
+    span.className = 'tag-member';
+    span.innerHTML = `<input type="checkbox" value="${o.name}" style="margin:0;"${isChecked ? ' checked' : ''} onchange="updateTagSelectCount()"> ${o.name}`;
+    list.appendChild(span);
+  });
+  updateTagSelectCount();
+}
+
+// === グルーピングタグ専用UI ===
+let groupOrderedMembers = []; // 順序保持
+let groupSortMode = 'custom'; // custom / asc / desc / created
+let dragSourceIdx = null; // ドラッグ元インデックス (グローバル状態で管理)
+let tableSort = { axis: null, key: null, dir: null }; // axis: 'rows-by-col' | 'cols-by-row' | 'rows-by-total', key: idx, dir: 'asc'|'desc'
+let cachedTableData = null; // ソート用にデータをキャッシュ
+
+function setGroupSort(mode) {
+  groupSortMode = mode;
+  const memberCount = (id) => {
+    const t = customTags.find(x => x.id === id);
+    return t?.memberCount || 0;
+  };
+  // 並び替え実行
+  if (mode === 'member_desc') {
+    groupOrderedMembers.sort((a, b) => memberCount(b.id) - memberCount(a.id));
+  } else if (mode === 'member_asc') {
+    groupOrderedMembers.sort((a, b) => memberCount(a.id) - memberCount(b.id));
+  } else if (mode === 'created') {
+    groupOrderedMembers.sort((a, b) => {
+      const ai = customTags.findIndex(t => t.id === a.id);
+      const bi = customTags.findIndex(t => t.id === b.id);
+      return ai - bi;
+    });
+  }
+  // ボタンUI更新
+  document.querySelectorAll('.sort-mode-btn').forEach(b => b.classList.remove('active'));
+  const activeBtn = document.querySelector(`.sort-mode-btn[data-sort="${mode}"]`);
+  if (activeBtn) activeBtn.classList.add('active');
+  // ヘルプテキスト
+  const tip = document.getElementById('sortHelpTip');
+  if (tip) {
+    tip.textContent = mode === 'custom' ? '💡 行をドラッグして並び替え (人名・テキスト系におすすめ)' :
+                      mode === 'member_desc' ? '💡 メンバー数の多い順 (数値ソート、ドラッグロック)' :
+                      mode === 'member_asc' ? '💡 メンバー数の少ない順 (数値ソート、ドラッグロック)' :
+                      '💡 作成タイムスタンプ順 (ドラッグロック)';
+  }
+  renderOrderedMembers();
+  const labels = { custom: 'カスタム', member_desc: 'メンバー数 多い順', member_asc: 'メンバー数 少ない順', created: '作成順' };
+  showToast(`📊 並び順: ${labels[mode] || mode}`);
+}
+
+function renderGroupTagSelector(preCheckedIds) {
+  const sel = document.getElementById('groupTagSelector');
+  if (!sel) return;
+  // 通常のカスタムタグのみ (group以外)
+  const availableTags = customTags.filter(t => t.tagType !== 'group');
+  if (availableTags.length === 0) {
+    sel.innerHTML = `<div style="text-align:center; padding:24px 16px; color:#94a3b8; font-size:12px; line-height:1.6;">
+      ⚠️ <strong style="color:#475569;">既存のカスタムタグがありません</strong><br>
+      先に通常のカスタムタグを作成してください<br>
+      <button class="btn" style="background:#ec4899; color:white; font-size:11px; padding:6px 12px; margin-top:8px;" onclick="loadDemoTags()">📦 デモタグを追加 (4件)</button>
+    </div>`;
+    return;
+  }
+  // 編集モードの初期化
+  if (preCheckedIds.length > 0 && groupOrderedMembers.length === 0) {
+    groupOrderedMembers = preCheckedIds.map(id => {
+      const t = customTags.find(x => x.id === id);
+      return t ? { id: t.id, name: t.rawName || t.name } : null;
+    }).filter(Boolean);
+  }
+
+  // 全選択ボタン (グループ用)
+  sel.innerHTML = `
+    <div style="display:flex; gap:8px; margin-bottom:8px; padding-bottom:8px; border-bottom:1px solid #e2e8f0;">
+      <button class="btn" style="background:#ec4899;color:white;font-size:11px;padding:5px 10px;" onclick="selectAllGroupTags()">✓ 全件追加</button>
+      <button class="btn" style="background:#f1f5f9;color:#475569;font-size:11px;padding:5px 10px;" onclick="clearAllGroupTags()">× 全件解除</button>
+      <span style="margin-left:auto; font-size:11px; color:#94a3b8; align-self:center;">利用可能: ${availableTags.length}件</span>
+    </div>
+    <div id="groupTagSelectorList"></div>
+  `;
+  const listEl = document.getElementById('groupTagSelectorList');
+  availableTags.forEach(t => {
+    const isSelected = groupOrderedMembers.some(m => m.id === t.id);
+    const row = document.createElement('label');
+    row.style = 'display:flex; align-items:center; gap:8px; padding:7px 10px; background:white; border:1.5px solid #e2e8f0; border-radius:4px; font-size:12px; cursor:pointer; margin-bottom:4px;' + (isSelected ? ' background:#fce7f3; border-color:#ec4899;' : '');
+    row.innerHTML = `<input type="checkbox" value="${t.id}"${isSelected ? ' checked' : ''} onchange="toggleGroupMember('${t.id}', '${(t.rawName || t.name).replace(/'/g, "\\'")}', this.checked)"><span>🏷️ <strong>${t.rawName || t.name}</strong> <span style="color:#94a3b8; font-size:10px;">(${t.tagType}, ${t.memberCount}件)</span></span>`;
+    listEl.appendChild(row);
+  });
+}
+
+function loadDemoTags() {
+  // 既存のデモタグと重複しないよう追加
+  PREP_CUSTOM_TAGS.forEach(t => {
+    if (!customTags.find(c => c.id === t.id)) customTags.push({...t});
+  });
+  renderPalette();
+  renderGroupTagSelector([]);
+  showToast(`📦 デモタグ${PREP_CUSTOM_TAGS.length}件を追加しました`);
+}
+
+function selectAllGroupTags() {
+  const availableTags = customTags.filter(t => t.tagType !== 'group');
+  groupOrderedMembers = availableTags.map(t => ({ id: t.id, name: t.rawName || t.name }));
+  renderGroupTagSelector([]);
+  renderOrderedMembers();
+  showToast(`✅ ${availableTags.length}件すべて追加しました`);
+}
+
+function clearAllGroupTags() {
+  groupOrderedMembers = [];
+  renderGroupTagSelector([]);
+  renderOrderedMembers();
+  showToast('🗑️ 全件解除しました');
+}
+
+function toggleGroupMember(tagId, tagName, checked) {
+  if (checked) {
+    if (!groupOrderedMembers.find(m => m.id === tagId)) {
+      groupOrderedMembers.push({ id: tagId, name: tagName });
+    }
+  } else {
+    groupOrderedMembers = groupOrderedMembers.filter(m => m.id !== tagId);
+  }
+  renderOrderedMembers(groupOrderedMembers.map(m => m.id));
+  updateTagSelectCount();
+}
+
+function renderOrderedMembers() {
+  const list = document.getElementById('orderedMemberList');
+  if (!list) return;
+  if (groupOrderedMembers.length === 0) {
+    list.innerHTML = '<div class="group-empty-hint">↑ 上のリストからタグを選択</div>';
+    return;
+  }
+  const isCustom = groupSortMode === 'custom';
+  list.innerHTML = '';
+  groupOrderedMembers.forEach((m, idx) => {
+    const t = customTags.find(x => x.id === m.id);
+    const memberCount = t?.memberCount || 0;
+    const row = document.createElement('div');
+    row.className = 'ordered-member-row';
+    row.draggable = isCustom; // カスタム順時のみドラッグ可
+    row.dataset.idx = idx;
+    row.innerHTML = `
+      <span class="drag-handle" style="${isCustom ? '' : 'opacity:0.3;cursor:not-allowed;'}" title="${isCustom ? 'ドラッグして並び替え' : 'カスタム順モードでドラッグ可能'}">⠿</span>
+      <span class="order-num">${idx + 1}</span>
+      <span class="ordered-member-name">🏷️ ${m.name} <span style="font-size:10px;color:#94a3b8;font-weight:normal;">(${memberCount}件)</span></span>
+      <button class="order-btn" onclick="moveGroupMember(${idx}, -1)" ${(!isCustom || idx === 0) ? 'disabled' : ''} title="上へ">▲</button>
+      <button class="order-btn" onclick="moveGroupMember(${idx}, 1)" ${(!isCustom || idx === groupOrderedMembers.length - 1) ? 'disabled' : ''} title="下へ">▼</button>
+      <button class="order-btn" onclick="removeGroupMember(${idx})" title="削除" style="color:#ef4444;">✕</button>
+    `;
+
+    if (isCustom) {
+      row.addEventListener('dragstart', e => {
+        e.stopPropagation();
+        dragSourceIdx = idx;  // グローバル状態に保存
+        e.dataTransfer.setData('text/plain', String(idx));
+        e.dataTransfer.effectAllowed = 'move';
+        row.classList.add('dragging');
+        console.log('[dragstart] from idx:', idx);
+      });
+      row.addEventListener('dragend', () => {
+        row.classList.remove('dragging');
+        // 全ての drag-over クラスをクリア
+        document.querySelectorAll('.ordered-member-row').forEach(r => r.classList.remove('drag-over-row'));
+      });
+      row.addEventListener('dragover', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        e.dataTransfer.dropEffect = 'move';
+        if (dragSourceIdx !== null && dragSourceIdx !== idx) {
+          row.classList.add('drag-over-row');
+        }
+      });
+      row.addEventListener('dragleave', () => row.classList.remove('drag-over-row'));
+      row.addEventListener('drop', e => {
+        e.preventDefault();
+        e.stopPropagation();
+        row.classList.remove('drag-over-row');
+        const fromIdx = dragSourceIdx;
+        const toIdx = parseInt(row.dataset.idx);
+        console.log('[drop] from:', fromIdx, 'to:', toIdx);
+        dragSourceIdx = null;
+        if (fromIdx === null || isNaN(fromIdx) || fromIdx === toIdx) return;
+        const [moved] = groupOrderedMembers.splice(fromIdx, 1);
+        groupOrderedMembers.splice(toIdx, 0, moved);
+        renderOrderedMembers();
+        showToast(`✅ 順序変更: ${moved.name} を ${toIdx + 1} 番目へ`);
+      });
+    }
+    list.appendChild(row);
+  });
+  // リスト全体にも drop 受け入れ (空エリアへのドロップ用)
+  list.ondragover = e => { e.preventDefault(); };
+  list.ondrop = e => { e.preventDefault(); dragSourceIdx = null; };
+}
+
+function moveGroupMember(idx, dir) {
+  // カスタムモード以外では並び替え不可
+  if (groupSortMode !== 'custom') {
+    showToast('⚠️ 「カスタム順」モードに切り替えてから並び替えてください');
+    return;
+  }
+  const newIdx = idx + dir;
+  if (newIdx < 0 || newIdx >= groupOrderedMembers.length) return;
+  [groupOrderedMembers[idx], groupOrderedMembers[newIdx]] = [groupOrderedMembers[newIdx], groupOrderedMembers[idx]];
+  renderOrderedMembers();
+}
+
+function removeGroupMember(idx) {
+  const removed = groupOrderedMembers.splice(idx, 1)[0];
+  renderOrderedMembers();
+  // チェックボックスもOFFに
+  const cb = document.querySelector(`#groupTagSelector input[value="${removed.id}"]`);
+  if (cb) cb.checked = false;
+  updateTagSelectCount();
+}
+
+function toggleAllTagMembers() {
+  const allCheckbox = document.getElementById('tagSelectAll');
+  const checks = document.querySelectorAll('#tagMembers input[type="checkbox"]');
+  checks.forEach(c => { c.checked = allCheckbox.checked; });
+  updateTagSelectCount();
+}
+
+function updateTagSelectCount() {
+  const checks = document.querySelectorAll('#tagMembers input[type="checkbox"]');
+  const total = checks.length;
+  const checked = Array.from(checks).filter(c => c.checked).length;
+  document.getElementById('tagSelectCount').textContent = `${checked} / ${total} 件選択中`;
+  const allBox = document.getElementById('tagSelectAll');
+  allBox.checked = (checked === total && total > 0);
+  allBox.indeterminate = (checked > 0 && checked < total);
+}
+
+function createCustomTag() {
+  const name = document.getElementById('tagName').value.trim();
+  if (!name) { showToast('⚠️ タグ名を入力'); return; }
+  const tagType = document.getElementById('tagType').value;
+
+  let members, count, tagData;
+  if (tagType === 'group') {
+    // グルーピングタグ
+    if (groupOrderedMembers.length === 0) { showToast('⚠️ 既存タグを1つ以上選択'); return; }
+    members = groupOrderedMembers.map(m => m.id);
+    count = groupOrderedMembers.length;
+    tagData = {
+      name: `📂 ${name} (${count}タグ)`,
+      rawName: name,
+      memberCount: count,
+      selectedMembers: members,
+      orderedMembers: [...groupOrderedMembers],
+      sortMode: groupSortMode,
+      tagType: 'group',
+    };
+  } else {
+    // 通常タグ
+    members = Array.from(document.querySelectorAll('#tagMembers input:checked')).map(c => c.value);
+    if (members.length === 0) { showToast('⚠️ メンバーを選択'); return; }
+    count = members.length;
+    tagData = {
+      name: `${name} (${count}件)`,
+      rawName: name,
+      memberCount: count,
+      selectedMembers: members,
+      tagType: tagType,
+    };
+  }
+
+  if (editingTagId) {
+    const idx = customTags.findIndex(t => t.id === editingTagId);
+    if (idx >= 0) {
+      customTags[idx] = { id: editingTagId, ...tagData };
+      showToast(`✅ タグ「${name}」更新`);
+    }
+  } else {
+    customTags.push({ id: `tag_custom_${Date.now()}`, ...tagData });
+    showToast(`✅ タグ「${name}」作成`);
+  }
+  closeTagModal();
+  switchTab('tag');
+}
+
+function deleteCustomTag() {
+  if (!editingTagId) return;
+  const tag = customTags.find(t => t.id === editingTagId);
+  if (!tag) return;
+  if (!confirm(`タグ「${tag.rawName || tag.name}」を削除しますか?`)) return;
+  customTags = customTags.filter(t => t.id !== editingTagId);
+  // もしこのタグがドロップエリアに配置されていたら除去
+  ['row','col','val'].forEach(z => { if (zones[z]?.id === editingTagId) zones[z] = null; });
+  zones.filter = zones.filter.filter(f => f.id !== editingTagId);
+  closeTagModal();
+  renderPalette();
+  renderZoneContent();
+  updateTable();
+  showToast(`🗑️ タグ「${tag.rawName || tag.name}」削除`);
+}
+
+init();
+</script>
+</body>
+</html>
