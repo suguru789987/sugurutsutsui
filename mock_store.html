@@ -624,34 +624,38 @@ const ITEMS = {
     { id: 'dim_expense_cat', name: '費目' },
   ],
   metric: [
-    // === 予実対比 共通メジャー (費目ディメンション等と組合せ) ===
+    // === 予実対比 (費目ディメン × 費用_xxxx と組合せて使う仮想メジャー) ===
     { id: 'M_COST_ACT', name: '費用（実績）' },
     { id: 'M_COST_BUD', name: '費用予算' },
     { id: 'M_COST_DIFF', name: '費用予実差' },
     { id: 'M_COST_RATE', name: '費用達成率' },
     { id: 'M_COST_SHARE', name: '費用構成比' },
-    { id: 'M_COST_YOY', name: '費用前年比' },
-    // === 売上 予実ペア ===
-    { id: 'M_SALES_ACT', name: '売上実績' },
-    { id: 'M_SALES_BUD', name: '売上予算' },
-    { id: 'M_SALES_DIFF', name: '売上予実差' },
-    { id: 'M_SALES_RATE', name: '売上達成率' },
-    { id: 'M_SALES_YOY', name: '売上前年比' },
+    // === 売上 予実ペア (CSV ID 直接マッピング) ===
+    { id: 'S100', name: '売上（税抜）' },              // 店舗版: S100が売上(税抜)
+    { id: 'C209', name: '売上予算' },
+    { id: 'C262', name: '月次予算_総売上 計' },
+    { id: 'C280', name: '予実差額_総売上 計' },
+    { id: 'C210', name: '売上達成率' },
+    { id: 'C298', name: '構成比_総売上 計' },
     // === 人件費 予実ペア ===
-    { id: 'M_LABOR_ACT', name: '人件費実績' },
-    { id: 'M_LABOR_BUD', name: '人件費予算' },
-    { id: 'M_LABOR_DIFF', name: '人件費予実差' },
-    { id: 'M_LABOR_RATE', name: '人件費達成率' },
+    { id: 'C62',  name: '人件費' },
+    { id: 'C101', name: '人件費 計' },
+    { id: 'C268', name: '月次予算_人件費 計' },
+    { id: 'C286', name: '予実差額_人件費 計' },
+    { id: 'C304', name: '構成比_人件費 計' },
     // === 原価 (FD仕入) 予実ペア ===
-    { id: 'M_MATERIAL_ACT', name: '原価実績' },
-    { id: 'M_MATERIAL_BUD', name: '原価予算' },
-    { id: 'M_MATERIAL_DIFF', name: '原価予実差' },
-    { id: 'M_MATERIAL_RATE', name: '原価達成率' },
-    // === 利益 予実ペア ===
-    { id: 'M_PROFIT_ACT', name: '営業利益実績' },
-    { id: 'M_PROFIT_BUD', name: '営業利益予算' },
-    { id: 'M_PROFIT_DIFF', name: '営業利益予実差' },
-    { id: 'M_PROFIT_RATE', name: '営業利益達成率' },
+    { id: 'C59',  name: 'FD仕入' },
+    { id: 'C100', name: 'FD仕入 計' },
+    { id: 'C267', name: '月次予算_FD仕入 計' },
+    { id: 'C285', name: '予実差額_FD仕入 計' },
+    { id: 'C303', name: '構成比_FD仕入 計' },
+    // === 営業利益 予実ペア ===
+    { id: 'C87',  name: '営業利益' },
+    { id: 'C207', name: '営業利益予算' },
+    { id: 'C270', name: '月次予算_営業利益' },
+    { id: 'C288', name: '予実差額_営業利益' },
+    { id: 'C208', name: '営業利益達成率' },
+    { id: 'C306', name: '構成比_営業利益' },
     // === 売上・原価系 (旧来のトランザクション) ===
     { id: 'S100', name: '売上（税抜）' },
     { id: 'S102', name: '販売点数' },
@@ -813,7 +817,7 @@ function preloadDemoViews() {
     config: {
       row: { id:'dim_expense_cat', name:'費目', type:'dim' },
       col: null,
-      val: { id:'M_COST_RATE', name:'予実達成率', type:'metric' },
+      val: { id:'M_COST_RATE', name:'費用達成率', type:'metric' },
       filter: [], chart: 'table', dimFilters: {}
     }
   });
@@ -1264,8 +1268,8 @@ function renderZoneContent() {
         html += `<span style="color:#92400e;font-size:10px;margin-left:8px;">💡 推奨:</span>
           <button class="btn" style="background:#f59e0b;color:white;font-size:10px;padding:3px 8px;" onclick="quickSetVal('M_COST_ACT','費用（実績）')">+ 費用(実績)</button>
           <button class="btn" style="background:#f59e0b;color:white;font-size:10px;padding:3px 8px;" onclick="quickSetVal('M_COST_BUD','費用予算')">+ 費用予算</button>
-          <button class="btn" style="background:#f59e0b;color:white;font-size:10px;padding:3px 8px;" onclick="quickSetVal('M_COST_DIFF','予実差')">+ 予実差</button>
-          <button class="btn" style="background:#f59e0b;color:white;font-size:10px;padding:3px 8px;" onclick="quickSetVal('M_COST_RATE','予実達成率')">+ 達成率</button>`;
+          <button class="btn" style="background:#f59e0b;color:white;font-size:10px;padding:3px 8px;" onclick="quickSetVal('M_COST_DIFF','費用予実差')">+ 費用予実差</button>
+          <button class="btn" style="background:#f59e0b;color:white;font-size:10px;padding:3px 8px;" onclick="quickSetVal('M_COST_RATE','費用達成率')">+ 費用達成率</button>`;
       }
     }
     cc.innerHTML = html;
