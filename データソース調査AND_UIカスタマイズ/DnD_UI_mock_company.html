@@ -60,6 +60,14 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
 .palette-search { width: 100%; padding: 5px 8px; border: 1px solid #cbd5e0; border-radius: 4px; font-size: 11px; margin-bottom: 8px; background: white; }
 
 .palette-list { display: flex; flex-direction: column; gap: 3px; }
+.palette-group-header { display: flex; align-items: center; gap: 4px; padding: 6px 4px 3px; font-size: 10px; font-weight: 700; color: #475569; border-bottom: 1px dashed #cbd5e0; margin-top: 6px; cursor: pointer; user-select: none; }
+.palette-group-header:first-child { margin-top: 0; }
+.palette-group-header:hover { color: #10b981; }
+.palette-group-header .group-icon { font-size: 12px; }
+.palette-group-header .group-count { margin-left: auto; background: #f1f5f9; color: #64748b; font-size: 9px; padding: 1px 6px; border-radius: 8px; font-weight: 600; }
+.palette-group-header .toggle-icon { font-size: 9px; color: #94a3b8; transition: transform 0.15s; }
+.palette-group.collapsed .palette-card { display: none; }
+.palette-group.collapsed .palette-group-header .toggle-icon { transform: rotate(-90deg); }
 .palette-card { background: white; border: 1px solid #e2e8f0; border-radius: 4px; padding: 6px 8px; cursor: grab; font-size: 11px; font-weight: 500; color: #1f3a4d; display: flex; align-items: center; gap: 5px; transition: all 0.15s; user-select: none; }
 .palette-card:hover { border-color: #10b981; background: #ecfdf5; transform: translateX(2px); box-shadow: 0 2px 4px rgba(16,185,129,0.12); }
 .palette-card:active { cursor: grabbing; opacity: 0.5; }
@@ -614,13 +622,34 @@ const ITEMS = {
     { id: 'dim_expense_cat', name: '費目' },
   ],
   metric: [
-    // === 予実対比 共通メジャー (費目ディメンション/店舗ディメンション等と組合せ可) ===
+    // === 予実対比 共通メジャー (費目ディメンション等と組合せ) ===
     { id: 'M_COST_ACT', name: '費用（実績）' },
     { id: 'M_COST_BUD', name: '費用予算' },
-    { id: 'M_COST_DIFF', name: '予実差' },
-    { id: 'M_COST_RATE', name: '予実達成率' },
-    { id: 'M_COST_SHARE', name: '構成比' },
-    { id: 'M_COST_YOY', name: '前年比' },
+    { id: 'M_COST_DIFF', name: '費用予実差' },
+    { id: 'M_COST_RATE', name: '費用達成率' },
+    { id: 'M_COST_SHARE', name: '費用構成比' },
+    { id: 'M_COST_YOY', name: '費用前年比' },
+    // === 売上 予実ペア ===
+    { id: 'M_SALES_ACT', name: '売上実績' },
+    { id: 'M_SALES_BUD', name: '売上予算' },
+    { id: 'M_SALES_DIFF', name: '売上予実差' },
+    { id: 'M_SALES_RATE', name: '売上達成率' },
+    { id: 'M_SALES_YOY', name: '売上前年比' },
+    // === 人件費 予実ペア ===
+    { id: 'M_LABOR_ACT', name: '人件費実績' },
+    { id: 'M_LABOR_BUD', name: '人件費予算' },
+    { id: 'M_LABOR_DIFF', name: '人件費予実差' },
+    { id: 'M_LABOR_RATE', name: '人件費達成率' },
+    // === 原価 (FD仕入) 予実ペア ===
+    { id: 'M_MATERIAL_ACT', name: '原価実績' },
+    { id: 'M_MATERIAL_BUD', name: '原価予算' },
+    { id: 'M_MATERIAL_DIFF', name: '原価予実差' },
+    { id: 'M_MATERIAL_RATE', name: '原価達成率' },
+    // === 利益 予実ペア ===
+    { id: 'M_PROFIT_ACT', name: '営業利益実績' },
+    { id: 'M_PROFIT_BUD', name: '営業利益予算' },
+    { id: 'M_PROFIT_DIFF', name: '営業利益予実差' },
+    { id: 'M_PROFIT_RATE', name: '営業利益達成率' },
     // === 売上・粗利系 (旧来からのトランザクション) ===
     { id: 'C45', name: '売上（税抜）' },
     { id: 'C46', name: '売上構成比率' },
@@ -796,51 +825,117 @@ function switchTab(tab) {
   renderPalette();
 }
 
+// パレットアイテムのグループ判定
+function getPaletteGroup(tab, item) {
+  if (tab === 'tag') return item.id?.startsWith('tag_custom_') ? 'custom' : 'template';
+  if (tab === 'dim') {
+    const id = item.id;
+    if (['dim_date','dim_week','dim_month','dim_quarter','dim_year','dim_time_slot','dim_dow'].includes(id)) return 'time';
+    if (['dim_shop','dim_label','dim_label_group','dim_business_type','dim_format'].includes(id)) return 'org';
+    if (['dim_product','dim_product_group','dim_supplier','dim_supplier_label'].includes(id)) return 'product';
+    if (['dim_staff','dim_staff_label'].includes(id)) return 'staff';
+    if (['dim_expense_cat','dim_expense_item'].includes(id)) return 'expense';
+    return 'other';
+  }
+  // metric: inferMetricSystem ベース
+  return inferMetricSystem(item.name);
+}
+
+// グループ表示順とラベル
+const PALETTE_GROUP_META = {
+  dim: {
+    time:    { order: 1, icon: '📅', label: '時間軸' },
+    org:     { order: 2, icon: '🏪', label: '組織・店舗' },
+    product: { order: 3, icon: '🛒', label: '商品・仕入' },
+    staff:   { order: 4, icon: '👥', label: 'スタッフ' },
+    expense: { order: 5, icon: '💰', label: '費目' },
+    other:   { order: 9, icon: '📐', label: 'その他' },
+  },
+  metric: {
+    'budget':         { order: 1, icon: '📊', label: '予実共通 (費目用)' },
+    'sales':          { order: 2, icon: '💰', label: '売上系' },
+    'cost-material':  { order: 3, icon: '🍱', label: '原価系' },
+    'labor':          { order: 4, icon: '👥', label: '人件費系' },
+    'cost-other':     { order: 5, icon: '🏠', label: '経費系' },
+    'profit':         { order: 6, icon: '💎', label: '収益系' },
+    'volume':         { order: 7, icon: '📈', label: '客数・点数系' },
+    'efficiency':     { order: 8, icon: '⚡', label: '効率系' },
+    'other':          { order: 9, icon: '📊', label: 'その他' },
+  },
+  tag: {
+    custom:   { order: 1, icon: '🏷️', label: 'カスタムタグ' },
+    template: { order: 2, icon: '✨', label: 'テンプレート' },
+  },
+};
+
 function renderPalette(filter='') {
   const list = document.getElementById('paletteList');
   list.innerHTML = '';
-  const items = currentTab === 'tag' ? [...ITEMS.tag, ...customTags] : ITEMS[currentTab];
+  const items = currentTab === 'tag' ? [...customTags, ...ITEMS.tag] : ITEMS[currentTab];
   const filtered = items.filter(i => i.name.toLowerCase().includes(filter.toLowerCase()));
+
+  // グループ別に分類
+  const groups = {};
   filtered.forEach(item => {
-    const card = document.createElement('div');
-    const filterCount = dimFilters[item.id]?.length;
-    const totalCount = DIM_MEMBERS[item.id]?.length;
-    const hasFilter = filterCount !== undefined && filterCount < totalCount;
-    card.className = `palette-card ${currentTab}${hasFilter ? ' has-filter' : ''}`;
-    card.draggable = true;
-    const icon = currentTab === 'tag' ? '🏷️' : (currentTab === 'dim' ? '📐' : '📊');
-    let displayName = item.name;
-    if (hasFilter) displayName += ` <span class="member-count-badge">${filterCount}/${totalCount}</span>`;
-
-    if (currentTab === 'dim' && DIM_MEMBERS[item.id]) {
-      card.innerHTML = `<span class="card-icon">${icon}</span><span style="flex:1;">${displayName}</span><span class="filter-btn" title="メンバー選択">⋯</span>`;
-      card.querySelector('.filter-btn').onclick = (e) => { e.stopPropagation(); openDimModal(item); };
-      card.onclick = () => openDimModal(item);
-    } else if (currentTab === 'tag' && item.id.startsWith('tag_custom_')) {
-      // 編集可能なカスタムタグ
-      if (item.tagType === 'group') card.classList.add('group');
-      const groupBadge = item.tagType === 'group' ? '<span class="member-count-badge" style="background:#ec4899;">📂GRP</span> ' : '';
-      const cardIcon = item.tagType === 'group' ? '📂' : icon;
-      card.innerHTML = `<span class="card-icon">${cardIcon}</span><span style="flex:1;">${groupBadge}${item.rawName || item.name}</span><span class="filter-btn" title="編集">⋯</span>`;
-      card.querySelector('.filter-btn').onclick = (e) => { e.stopPropagation(); openTagEditModal(item); };
-      card.onclick = () => openTagEditModal(item);
-    } else if (currentTab === 'tag') {
-      // ビルトインタグ (テンプレート) - クリックで新規作成
-      card.innerHTML = `<span class="card-icon">${icon}</span><span style="flex:1;">${item.name}</span><span class="filter-btn" title="このタイプで新規作成">+</span>`;
-      card.onclick = () => openTagCreateFromTemplate(item);
-    } else {
-      card.innerHTML = `<span class="card-icon">${icon}</span>${displayName}`;
-    }
-
-    card.addEventListener('dragstart', e => {
-      e.dataTransfer.setData('itemId', item.id);
-      e.dataTransfer.setData('itemName', item.name);
-      e.dataTransfer.setData('itemType', currentTab);
-      card.classList.add('dragging');
-    });
-    card.addEventListener('dragend', () => card.classList.remove('dragging'));
-    list.appendChild(card);
+    const g = getPaletteGroup(currentTab, item);
+    (groups[g] = groups[g] || []).push(item);
   });
+  const meta = PALETTE_GROUP_META[currentTab] || {};
+  const orderedGroups = Object.keys(groups).sort((a, b) => (meta[a]?.order || 99) - (meta[b]?.order || 99));
+
+  orderedGroups.forEach(groupKey => {
+    const groupItems = groups[groupKey];
+    const groupMeta = meta[groupKey] || { icon: '•', label: groupKey };
+    const groupEl = document.createElement('div');
+    groupEl.className = `palette-group group-${groupKey}`;
+    const header = document.createElement('div');
+    header.className = 'palette-group-header';
+    header.innerHTML = `<span class="group-icon">${groupMeta.icon}</span><span>${groupMeta.label}</span><span class="group-count">${groupItems.length}</span><span class="toggle-icon">▼</span>`;
+    header.onclick = () => groupEl.classList.toggle('collapsed');
+    groupEl.appendChild(header);
+
+    groupItems.forEach(item => {
+      const card = document.createElement('div');
+      const filterCount = dimFilters[item.id]?.length;
+      const totalCount = DIM_MEMBERS[item.id]?.length;
+      const hasFilter = filterCount !== undefined && filterCount < totalCount;
+      card.className = `palette-card ${currentTab}${hasFilter ? ' has-filter' : ''}`;
+      card.draggable = true;
+      const icon = currentTab === 'tag' ? '🏷️' : (currentTab === 'dim' ? '📐' : '📊');
+      let displayName = item.name;
+      if (hasFilter) displayName += ` <span class="member-count-badge">${filterCount}/${totalCount}</span>`;
+
+      if (currentTab === 'dim' && DIM_MEMBERS[item.id]) {
+        card.innerHTML = `<span class="card-icon">${icon}</span><span style="flex:1;">${displayName}</span><span class="filter-btn" title="メンバー選択">⋯</span>`;
+        card.querySelector('.filter-btn').onclick = (e) => { e.stopPropagation(); openDimModal(item); };
+        card.onclick = () => openDimModal(item);
+      } else if (currentTab === 'tag' && item.id.startsWith('tag_custom_')) {
+        if (item.tagType === 'group') card.classList.add('group');
+        const groupBadge = item.tagType === 'group' ? '<span class="member-count-badge" style="background:#ec4899;">📂GRP</span> ' : '';
+        const cardIcon = item.tagType === 'group' ? '📂' : icon;
+        card.innerHTML = `<span class="card-icon">${cardIcon}</span><span style="flex:1;">${groupBadge}${item.rawName || item.name}</span><span class="filter-btn" title="編集">⋯</span>`;
+        card.querySelector('.filter-btn').onclick = (e) => { e.stopPropagation(); openTagEditModal(item); };
+        card.onclick = () => openTagEditModal(item);
+      } else if (currentTab === 'tag') {
+        card.innerHTML = `<span class="card-icon">${icon}</span><span style="flex:1;">${item.name}</span><span class="filter-btn" title="このタイプで新規作成">+</span>`;
+        card.onclick = () => openTagCreateFromTemplate(item);
+      } else {
+        card.innerHTML = `<span class="card-icon">${icon}</span>${displayName}`;
+      }
+
+      card.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('itemId', item.id);
+        e.dataTransfer.setData('itemName', item.name);
+        e.dataTransfer.setData('itemType', currentTab);
+        card.classList.add('dragging');
+      });
+      card.addEventListener('dragend', () => card.classList.remove('dragging'));
+      groupEl.appendChild(card);
+    });
+
+    list.appendChild(groupEl);
+  });
+
   if (currentTab === 'tag') {
     const btn = document.createElement('div');
     btn.className = 'tag-create-btn';
@@ -881,19 +976,19 @@ function inferDimSystem(dimId) {
 // budget : 予実系
 function inferMetricSystem(name) {
   const n = name || '';
-  // 予実共通メジャー (費目ディメンと組合せ可) - 早期判定
-  if (n.includes('予算') || n.includes('達成率') || n.includes('進捗率') ||
-      n.includes('予実') || n.includes('構成比') || n.includes('前年') ||
-      n === '費用（実績）' || n === '費用') return 'budget';
+  // 本系統優先判定 (実績/予算/達成率等のサフィックス付きでも本系統で扱う)
+  if (n.includes('売上') || n.includes('価格')) return 'sales';
   if (n.includes('PA人件費') || n.includes('人件費') || n.includes('シフト')) return 'labor';
   if (n.includes('FD仕入') || n.includes('原価') || n.includes('棚卸') || n.includes('仕入')) return 'cost-material';
   if (n.includes('光熱費') || n.includes('賃料') || n.includes('通信費') || n.includes('保険料') ||
       n.includes('広告宣伝費') || n.includes('消耗品') || n.includes('その他経費') || n.includes('経費') ||
       n.includes('地代') || n.includes('資材費') || n.includes('減価償却')) return 'cost-other';
-  if (n.includes('FL率') || n.includes('FD率') || n.includes('効率') || n.includes('坪月商') || n.includes('ROI')) return 'efficiency';
   if (n.includes('営業利益') || n.includes('粗利') || n.includes('利益')) return 'profit';
+  if (n.includes('FL率') || n.includes('FD率') || n.includes('効率') || n.includes('坪月商') || n.includes('ROI')) return 'efficiency';
   if (n.includes('客数') || n.includes('客単価') || n.includes('販売点数')) return 'volume';
-  if (n.includes('売上') || n.includes('価格')) return 'sales';
+  // 費目汎用 (M_COST_*) や数値計算系のみ予実系として残す
+  if (n.includes('費用') || n.includes('構成比') || n.includes('前年') ||
+      n.includes('予算') || n.includes('達成率') || n.includes('進捗率') || n.includes('予実')) return 'budget';
   return 'other';
 }
 
