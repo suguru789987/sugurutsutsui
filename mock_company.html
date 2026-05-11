@@ -80,10 +80,9 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
 .pivot-frame {
   display: grid;
   grid-template-columns: 130px 1fr;
-  grid-template-rows: 36px 42px auto;
+  grid-template-rows: 56px auto;
   grid-template-areas:
     "corner col"
-    "corner value"
     "row    table";
   gap: 4px;
 }
@@ -120,15 +119,18 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
   background: white;
   border: 2px dashed #cbd5e0;
   border-radius: 4px;
-  padding: 4px 8px;
-  min-height: 36px;
+  padding: 6px 10px;
+  min-height: 52px;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 6px;
   transition: all 0.2s;
 }
 .pivot-col-zone.has-item { border-style: solid; border-color: #10b981; background: #ecfdf5; }
 .pivot-col-zone.drag-over { border-color: #10b981; background: #ecfdf5; transform: scale(1.01); border-style: solid; }
+.zone-section-divider { width: 1px; height: 20px; background: #cbd5e0; margin: 0 4px; }
+.zone-section-label { font-size: 9px; color: #64748b; font-weight: 600; padding: 1px 6px; background: #f1f5f9; border-radius: 8px; }
 .zone-label-tag { font-size: 10px; font-weight: bold; color: #94a3b8; background: white; padding: 1px 5px; border-radius: 3px; border: 1px solid #e2e8f0; flex-shrink: 0; }
 
 .pivot-row-zone {
@@ -157,44 +159,7 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
   min-height: 320px;
 }
 
-.pivot-value-zone {
-  grid-area: value;
-  background: linear-gradient(90deg, #fef3c7 0%, #fffbeb 100%);
-  border: 2.5px dashed #f59e0b;
-  border-radius: 4px;
-  padding: 4px 10px;
-  min-height: 42px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px;
-  transition: all 0.2s;
-  box-shadow: inset 0 0 0 1px rgba(245,158,11,0.15);
-  position: relative;
-}
-.pivot-value-zone::before {
-  content: "★";
-  position: absolute;
-  top: -6px;
-  right: 8px;
-  background: #ef4444;
-  color: white;
-  font-size: 9px;
-  font-weight: bold;
-  padding: 1px 5px;
-  border-radius: 3px;
-  letter-spacing: 0.3px;
-}
-.pivot-value-zone.has-item {
-  border-style: solid;
-  border-color: #10b981;
-  background: linear-gradient(90deg, #ecfdf5 0%, #f0fdf4 100%);
-  box-shadow: inset 0 0 0 1px rgba(16,185,129,0.2);
-}
-.pivot-value-zone.has-item::before { background: #10b981; content: "✓"; }
-.pivot-value-zone.drag-over { border-color: #10b981; background: #ecfdf5; transform: scale(1.005); border-style: solid; }
-.value-label { font-size: 12px; font-weight: 800; color: #92400e; flex-shrink: 0; padding: 5px 11px; background: #fde68a; border-radius: 4px; letter-spacing: 0.3px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-.pivot-value-zone.has-item .value-label { background: #10b981; color: white; }
+/* v3.12: 値スロット廃止 - 列にメジャーを直接ドロップ */
 
 .empty-hint { color: #94a3b8; font-size: 10px; font-style: italic; text-align: center; flex: 1; line-height: 1.3; }
 
@@ -427,7 +392,7 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
         <!-- 中央ピボット -->
         <section class="pivot-main">
           <div class="help-bar">
-            💡 <strong>使い方</strong>: 左のパレットからカードをドラッグして、配置先（行/列/値）にドロップ。テーブルが自動表示されます。
+            💡 <strong>使い方</strong>: 左のパレットからカードをドラッグ → ディメン/タグは「行・列・フィルタ」へ、メジャー(トラ) は「列」へドロップ。値は行×列の組合せで自動算出されます。
           </div>
 
           <div class="pivot-frame">
@@ -438,11 +403,11 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
               </div>
             </div>
 
-            <!-- 上 = 列ドロップエリア -->
+            <!-- 上 = 列ドロップエリア (ディメン/タグ + メジャー兼用) -->
             <div class="pivot-col-zone" id="zone-col" data-zone="col">
               <span class="zone-label-tag">➡️ 列</span>
-              <div class="zone-content" id="content-col" style="flex:1; display: flex; align-items: center; gap: 6px;">
-                <span class="empty-hint">ここにディメン/タグをドロップ → 横軸に表示</span>
+              <div class="zone-content" id="content-col" style="flex:1; display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+                <span class="empty-hint">ディメン/タグ → 列軸 / メジャー(トラ) → 値として展開 (複数可)</span>
               </div>
             </div>
 
@@ -458,15 +423,7 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
             <div class="pivot-table-area" id="tableArea">
               <div style="text-align: center; padding: 60px 20px; color: #94a3b8;">
                 <div style="font-size: 42px; margin-bottom: 8px;">📊</div>
-                <div style="font-size: 13px;">行・列・値をドロップすると<br>クロス集計表が表示されます</div>
-              </div>
-            </div>
-
-            <!-- 値ドロップエリア (列の下、視覚強調) -->
-            <div class="pivot-value-zone" id="zone-val" data-zone="val">
-              <span class="value-label">📊 値 (Value)</span>
-              <div class="zone-content" id="content-val" style="flex:1; display: flex; align-items: center; gap: 8px;">
-                <span class="empty-hint" style="color: #92400e; font-weight: 600; font-size: 11px;">トランザクションをドロップ →集計値として表示</span>
+                <div style="font-size: 13px;">行・列をドロップすると<br>クロス集計表が表示されます<br><span style="font-size:10px;">(メジャーは列にドロップ)</span></div>
               </div>
             </div>
           </div>
@@ -1010,13 +967,13 @@ function setupZone(name) {
     const itemId = e.dataTransfer.getData('itemId');
     const itemName = e.dataTransfer.getData('itemName');
 
-    // === タイプチェック ===
-    if (name === 'val' && itemType !== 'metric') {
-      showAlert(`⚠️ タイプ不一致`, `「値」スロットにはトランザクション(指標)のみドロップ可能です。\n「${itemName}」は ${itemType === 'dim' ? 'ディメンション' : 'カスタムタグ'} なので配置できません。`);
+    // === タイプチェック (v3.12: 値スロット廃止、メジャーは列スロットへ) ===
+    if (name === 'row' && itemType === 'metric') {
+      showAlert(`⚠️ タイプ不一致`, `「行」スロットにはディメンション/タグのみドロップ可能です。\nメジャー (トランザクション) は「列」スロットへドロップしてください。`);
       return;
     }
-    if ((name === 'row' || name === 'col' || name === 'filter') && itemType === 'metric') {
-      showAlert(`⚠️ タイプ不一致`, `「${zoneLabel(name)}」スロットにはディメンション/タグのみドロップ可能です。\nトランザクション「${itemName}」は「値」スロットへ配置してください。`);
+    if (name === 'filter' && itemType === 'metric') {
+      showAlert(`⚠️ タイプ不一致`, `「フィルタ」スロットにはディメンション/タグのみドロップ可能です。\nメジャー (トランザクション) は「列」スロットへドロップしてください。`);
       return;
     }
 
@@ -1043,41 +1000,36 @@ function setupZone(name) {
 
     // === 重複チェック ===
     if (name === 'row' && zones.col?.id === itemId) {
-      showAlert(`🚫 重複配置エラー`, `「${itemName}」は既に「列」に配置されています。\n同じ指標を「行」と「列」の両方には配置できません。`);
+      showAlert(`🚫 重複配置エラー`, `「${itemName}」は既に「列」に配置されています。`);
       return;
     }
-    if (name === 'col' && zones.row?.id === itemId) {
-      showAlert(`🚫 重複配置エラー`, `「${itemName}」は既に「行」に配置されています。\n同じ指標を「行」と「列」の両方には配置できません。`);
+    if (name === 'col' && itemType === 'dim' && zones.row?.id === itemId) {
+      showAlert(`🚫 重複配置エラー`, `「${itemName}」は既に「行」に配置されています。`);
       return;
     }
-    if ((name === 'row' || name === 'col') && zones.vals.some(v => v.id === itemId)) {
-      showAlert(`🚫 重複配置エラー`, `「${itemName}」は既に「値」に配置されています。`);
+    if (name === 'row' && zones.vals.some(v => v.id === itemId)) {
+      showAlert(`🚫 重複配置エラー`, `「${itemName}」は既に「列」のメジャーに配置されています。`);
       return;
     }
-    if (name === 'val' && (zones.row?.id === itemId || zones.col?.id === itemId)) {
-      showAlert(`🚫 重複配置エラー`, `「${itemName}」は既に「${zones.row?.id === itemId ? '行' : '列'}」に配置されています。`);
-      return;
-    }
-    if (name === 'val' && zones.vals.some(v => v.id === itemId)) {
-      showAlert(`🚫 重複配置エラー`, `「${itemName}」は既に「値」に追加されています。`);
+    if (name === 'col' && itemType === 'metric' && zones.vals.some(v => v.id === itemId)) {
+      showAlert(`🚫 重複配置エラー`, `「${itemName}」は既に列のメジャーに追加されています。`);
       return;
     }
 
     // === 系統互換チェック ===
-    // (1) 値ドロップ時: 既存 row/col/filter ディメンとの互換性
-    if (name === 'val' && itemType === 'metric') {
+    // (1) 列にメジャードロップ時: 既存 row/col/filter ディメンとの互換性 + 既存メジャーの系統一致
+    if (name === 'col' && itemType === 'metric') {
       const otherDims = [zones.row, zones.col, ...zones.filter].filter(d => d && d.type === 'dim');
       for (const d of otherDims) {
         const r = validateCombination(d.id, d.name, itemName);
         if (!r.ok) { showAlert(r.msg, r.detail); return; }
         if (r.severity === 'warn') showToast(r.msg);
       }
-      // (1b) 既存メジャーとの系統一致チェック (異系統併記をブロック)
       if (zones.vals.length > 0) {
         const newSys = inferMetricSystem(itemName);
         const existingSys = inferMetricSystem(zones.vals[0].name);
         if (newSys !== existingSys) {
-          showAlert('🚫 メジャー系統不一致', `「${itemName}」(${metSysLabel(newSys)}) と既存「${zones.vals[0].name}」(${metSysLabel(existingSys)}) は系統が異なるため併記できません。\n\n理由: 粒度・日付制約・更新タイミングが異なる可能性があります。\n\n同じ系統 (例: 費用実績/費用予算/予実差/達成率) で揃えてください。`);
+          showAlert('🚫 メジャー系統不一致', `「${itemName}」(${metSysLabel(newSys)}) と既存「${zones.vals[0].name}」(${metSysLabel(existingSys)}) は系統が異なるため併記できません。\n\n理由: 粒度・日付制約・更新タイミングが異なる可能性があります。`);
           return;
         }
       }
@@ -1102,7 +1054,8 @@ function setupZone(name) {
       }
     }
 
-    if (name === 'val') {
+    // 配置: メジャーは vals に、ディメン/タグは row/col 直接代入
+    if (name === 'col' && itemType === 'metric') {
       zones.vals.push({ id: itemId, name: itemName, type: itemType });
     } else {
       zones[name] = { id: itemId, name: itemName, type: itemType };
@@ -1110,7 +1063,8 @@ function setupZone(name) {
     resetTableCache();
     renderZoneContent();
     updateTable();
-    showToast(`✅ "${itemName}" を「${zoneLabel(name)}」に配置`);
+    const zoneLbl = (name === 'col' && itemType === 'metric') ? '列 (メジャー)' : zoneLabel(name);
+    showToast(`✅ "${itemName}" を「${zoneLbl}」に配置`);
   };
 }
 
@@ -1209,47 +1163,48 @@ function renderZoneContent() {
     zr.classList.remove('has-item');
     cr.innerHTML = `<span class="empty-hint">ここに<br>ドロップ<br>→ 縦軸に表示</span>`;
   }
-  // Col
+  // Col (v3.12: ディメン+メジャー兼用)
   const cc = document.getElementById('content-col');
   const zc = document.getElementById('zone-col');
-  if (zones.col) {
+  const hasColDim = !!zones.col;
+  const hasMeasures = zones.vals.length > 0;
+  if (hasColDim || hasMeasures) {
     zc.classList.add('has-item');
-    let sortBtnHTML = '';
-    // 列のソートボタン (日付系で特に意味あり、全タイプで利用可)
-    const colIsDate = ['dim_date','dim_month','dim_year','dim_quarter','dim_week','dim_dow','dim_time_slot'].includes(zones.col.id) ||
-                      ['日','月','年','四半期','週','曜日','時間帯'].includes(zones.col.name);
-    const isSorted = tableSort.axis === 'cols-by-label';
-    const dirIcon = isSorted ? (tableSort.dir === 'asc' ? '🕐 古い→新' : '🆕 新→古い') : '⇅';
-    const btnLabel = colIsDate ? '📅 列の並び順' : '🔤 列の並び順';
-    sortBtnHTML = `<button onclick="sortTableBy('cols-by-label','')" style="margin-left:8px;padding:4px 10px;background:${isSorted?'#10b981':'#f1f5f9'};color:${isSorted?'white':'#475569'};border:1px solid ${isSorted?'#10b981':'#cbd5e0'};border-radius:4px;cursor:pointer;font-size:10px;font-weight:600;" title="列の並び順を切替">${btnLabel}: ${dirIcon}</button>`;
-    cc.innerHTML = `<span class="dropped-tag">${typeIcon(zones.col.type)} ${zones.col.name} <span class="remove" onclick="removeZone('col')">✕</span></span>${sortBtnHTML}`;
+    let html = '';
+    if (hasColDim) {
+      const colIsDate = ['dim_date','dim_month','dim_year','dim_quarter','dim_week','dim_dow','dim_time_slot'].includes(zones.col.id) ||
+                        ['日','月','年','四半期','週','曜日','時間帯'].includes(zones.col.name);
+      const isSorted = tableSort.axis === 'cols-by-label';
+      const dirIcon = isSorted ? (tableSort.dir === 'asc' ? '🕐 古い→新' : '🆕 新→古い') : '⇅';
+      const btnLabel = colIsDate ? '📅 並び' : '🔤 並び';
+      const sortBtn = `<button onclick="sortTableBy('cols-by-label','')" style="padding:3px 8px;background:${isSorted?'#10b981':'#f1f5f9'};color:${isSorted?'white':'#475569'};border:1px solid ${isSorted?'#10b981':'#cbd5e0'};border-radius:4px;cursor:pointer;font-size:10px;font-weight:600;" title="列の並び順を切替">${btnLabel}: ${dirIcon}</button>`;
+      html += `<span class="zone-section-label">軸</span>
+        <span class="dropped-tag">${typeIcon(zones.col.type)} ${zones.col.name} <span class="remove" onclick="removeZone('col')">✕</span></span>
+        ${sortBtn}`;
+    }
+    if (hasColDim && hasMeasures) html += `<span class="zone-section-divider"></span>`;
+    if (hasMeasures) {
+      const chips = zones.vals.map((v, i) =>
+        `<span class="dropped-tag" style="border-color:#f59e0b;color:#92400e;">${typeIcon(v.type)} ${v.name} <span class="remove" onclick="removeValAt(${i})">✕</span></span>`
+      ).join(' ');
+      const countBadge = zones.vals.length > 1 ? `<span style="background:#f59e0b;color:white;font-size:9px;padding:1px 6px;border-radius:8px;">📊 ${zones.vals.length}指標</span>` : `<span class="zone-section-label" style="background:#fef3c7;color:#92400e;">値</span>`;
+      html += countBadge + ' ' + chips;
+    }
+    // 値推奨ボタン (費目があるが値が無い時)
+    if (!hasMeasures) {
+      const hasExpenseCat = (zones.row && zones.row.id === 'dim_expense_cat') || (zones.col && zones.col.id === 'dim_expense_cat');
+      if (hasExpenseCat) {
+        html += `<span style="color:#92400e;font-size:10px;margin-left:8px;">💡 推奨:</span>
+          <button class="btn" style="background:#10b981;color:white;font-size:10px;padding:3px 8px;" onclick="quickSetVal('M_COST_ACT','費用（実績）')">+ 費用(実績)</button>
+          <button class="btn" style="background:#10b981;color:white;font-size:10px;padding:3px 8px;" onclick="quickSetVal('M_COST_BUD','費用予算')">+ 費用予算</button>
+          <button class="btn" style="background:#10b981;color:white;font-size:10px;padding:3px 8px;" onclick="quickSetVal('M_COST_DIFF','予実差')">+ 予実差</button>
+          <button class="btn" style="background:#10b981;color:white;font-size:10px;padding:3px 8px;" onclick="quickSetVal('M_COST_RATE','予実達成率')">+ 達成率</button>`;
+      }
+    }
+    cc.innerHTML = html;
   } else {
     zc.classList.remove('has-item');
-    cc.innerHTML = `<span class="empty-hint">ここにディメン/タグをドロップ → 横軸に表示</span>`;
-  }
-  // Val (複数メジャー対応)
-  const cv = document.getElementById('content-val');
-  const zv = document.getElementById('zone-val');
-  if (zones.vals.length > 0) {
-    zv.classList.add('has-item');
-    const chips = zones.vals.map((v, i) =>
-      `<span class="dropped-value">${typeIcon(v.type)} ${v.name} <span class="remove" onclick="removeValAt(${i})">✕</span></span>`
-    ).join(' ');
-    const countBadge = zones.vals.length > 1 ? `<span style="background:#10b981;color:white;font-size:9px;padding:1px 6px;border-radius:8px;margin-right:6px;">📊 ${zones.vals.length}指標</span>` : '';
-    cv.innerHTML = countBadge + chips;
-  } else {
-    zv.classList.remove('has-item');
-    const hasExpenseCat = (zones.row && zones.row.id === 'dim_expense_cat') || (zones.col && zones.col.id === 'dim_expense_cat');
-    if (hasExpenseCat) {
-      cv.innerHTML = `<span class="empty-hint" style="color:#92400e;">💡 費目には予実メジャーを推奨 (複数追加可):<br>
-        <button class="btn" style="background:#10b981;color:white;font-size:10px;padding:3px 8px;margin:2px 2px 0 0;" onclick="quickSetVal('M_COST_ACT','費用（実績）')">+ 費用(実績)</button>
-        <button class="btn" style="background:#10b981;color:white;font-size:10px;padding:3px 8px;margin:2px 2px 0 0;" onclick="quickSetVal('M_COST_BUD','費用予算')">+ 費用予算</button>
-        <button class="btn" style="background:#10b981;color:white;font-size:10px;padding:3px 8px;margin:2px 2px 0 0;" onclick="quickSetVal('M_COST_DIFF','予実差')">+ 予実差</button>
-        <button class="btn" style="background:#10b981;color:white;font-size:10px;padding:3px 8px;margin:2px 2px 0 0;" onclick="quickSetVal('M_COST_RATE','予実達成率')">+ 達成率</button>
-      </span>`;
-    } else {
-      cv.innerHTML = `<span class="empty-hint">ここにトランザクションをドロップ → 集計値として表示 (複数追加可)</span>`;
-    }
+    cc.innerHTML = `<span class="empty-hint">ディメン/タグ → 列軸 / メジャー(トラ) → 値として展開 (複数可)</span>`;
   }
 }
 
@@ -1282,8 +1237,7 @@ function removeValAt(idx) {
 function typeIcon(t) { return t === 'tag' ? '🏷️' : (t === 'dim' ? '📐' : '📊'); }
 
 function removeZone(name) {
-  if (name === 'val') zones.vals = [];
-  else zones[name] = null;
+  zones[name] = null;
   resetTableCache();
   tableSort = { axis: null, key: null, dir: null };
   renderZoneContent();
