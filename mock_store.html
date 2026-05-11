@@ -839,7 +839,7 @@ function getPaletteGroup(tab, item) {
   if (tab === 'tag') return item.id?.startsWith('tag_custom_') ? 'custom' : 'template';
   if (tab === 'dim') {
     const id = item.id;
-    if (['dim_date','dim_week','dim_month','dim_quarter','dim_year','dim_time_slot','dim_dow'].includes(id)) return 'time';
+    if (['dim_date','dim_week','dim_month','dim_quarter','dim_year','dim_time_slot','dim_dow','dim_weekday'].includes(id)) return 'time';
     if (['dim_shop','dim_label','dim_label_group','dim_business_type','dim_format'].includes(id)) return 'org';
     if (['dim_product','dim_product_group','dim_supplier','dim_supplier_label'].includes(id)) return 'product';
     if (['dim_staff','dim_staff_label'].includes(id)) return 'staff';
@@ -1249,7 +1249,7 @@ function renderZoneContent() {
     zc.classList.add('has-item');
     let html = '';
     if (hasColDim) {
-      const colIsDate = ['dim_date','dim_month','dim_year','dim_quarter','dim_week','dim_dow','dim_time_slot'].includes(zones.col.id) ||
+      const colIsDate = ['dim_date','dim_month','dim_year','dim_quarter','dim_week','dim_dow','dim_weekday','dim_time_slot'].includes(zones.col.id) ||
                         ['日','月','年','四半期','週','曜日','時間帯'].includes(zones.col.name);
       const isSorted = tableSort.axis === 'cols-by-label';
       const dirIcon = isSorted ? (tableSort.dir === 'asc' ? '🕐 古い→新' : '🆕 新→古い') : '⇅';
@@ -1471,7 +1471,7 @@ function renderTable() {
   // 日付/時間系ディメン判定
   const isDateLike = (zone) => {
     if (!zone) return false;
-    if (['dim_date','dim_month','dim_year','dim_quarter','dim_week','dim_dow','dim_time_slot'].includes(zone.id)) return true;
+    if (['dim_date','dim_month','dim_year','dim_quarter','dim_week','dim_dow','dim_weekday','dim_time_slot'].includes(zone.id)) return true;
     if (['日','月','年','四半期','週','曜日','時間帯'].includes(zone.name)) return true;
     return false;
   };
