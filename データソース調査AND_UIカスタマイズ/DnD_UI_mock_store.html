@@ -931,6 +931,21 @@ function preloadDemoViews() {
       filter: [], chart: 'table', dimFilters: {}
     }
   });
+  // ビュー4: 日次 売上予実 (2軸 + 複数メジャー併記の検証用)
+  savedViews.push({
+    id: 'view_demo4', name: '日次 売上予実', desc: '日付軸 × [売上実績/予算/予実差] の予実トラッキング',
+    savedAt: now, screen: 'store', pinned: true, order: 4, size: 'half',
+    config: {
+      row: { id:'dim_date', name:'日', type:'dim' },
+      col: null,
+      vals: [
+        { id:'S100', name:'売上（税抜）', type:'metric' },
+        { id:'S495', name:'売上予算',     type:'metric' },
+        { id:'S212', name:'予実差額_総売上 計', type:'metric' }
+      ],
+      filter: [], chart: 'table', dimFilters: {}
+    }
+  });
 }
 
 function switchTab(tab) {
