@@ -27,12 +27,24 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
 .kpi-value { font-size: 22px; font-weight: bold; color: #1f3a4d; }
 .kpi-unit { font-size: 12px; color: #718096; margin-left: 2px; }
 
-/* === モード切替 (ダッシュボード / 編集) === */
-.mode-edit .section, .mode-edit .dashboard-area { display: none !important; }
-.mode-dashboard .dnd-section { display: none !important; }
+/* === v3.15: 3モード構成 (dashboard / detail / edit) === */
+.mode-edit .section, .mode-edit .dashboard-area, .mode-edit .detail-section { display: none !important; }
+.mode-dashboard .dnd-section, .mode-dashboard .detail-section { display: none !important; }
+.mode-detail .section, .mode-detail .dashboard-area, .mode-detail .dnd-section { display: none !important; }
 .mode-dashboard .page-action-edit { display: inline-flex; }
-.mode-edit .page-action-edit { display: none; }
+.mode-edit .page-action-edit, .mode-detail .page-action-edit { display: none; }
 .mode-edit .page-title::before { content: "✏️ "; color: #f59e0b; }
+.mode-detail .page-title::before { content: "🔍 "; color: #6366f1; }
+.detail-section { background: white; border-radius: 10px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 12px; overflow: hidden; }
+.detail-header { background: linear-gradient(90deg, #6366f1 0%, #818cf8 100%); color: white; padding: 10px 20px; display: flex; align-items: center; gap: 8px; }
+.detail-header-title { flex: 1; font-weight: bold; font-size: 14px; text-align: center; }
+.detail-body { padding: 14px 18px; max-height: 70vh; overflow: auto; }
+.detail-meta-row { display: flex; gap: 10px; font-size: 11px; color: #475569; padding: 8px 12px; background: #f8fafc; border-radius: 6px; margin-bottom: 10px; flex-wrap: wrap; }
+.detail-meta-row .meta-chip { background: white; padding: 3px 8px; border-radius: 4px; border: 1px solid #e2e8f0; }
+.detail-body .cross-table { width: 100%; }
+.detail-body .cross-table th { background: #eef2ff; color: #4338ca; padding: 6px 8px; font-size: 11px; }
+.detail-body .cross-table td { padding: 4px 8px; font-size: 11px; }
+.detail-body .cross-table td.total { background: #fef3c7; font-weight: bold; }
 .page-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
 .page-header .page-title { margin: 0; }
 .dashboard-area-empty { text-align: center; padding: 36px 20px; color: #94a3b8; font-size: 12px; background: white; border-radius: 6px; line-height: 1.8; }
@@ -372,6 +384,16 @@ body { background: #f5f6f8; color: #2d3748; font-size: 13px; }
         <button class="btn btn-secondary" style="font-size:11px;padding:5px 10px;background:#e2e8f0;color:#475569;" onclick="openDashboardConfigModal()">⚙️ ダッシュボード設定</button>
       </div>
       <div class="dashboard-grid" id="dashboardGrid"></div>
+    </div>
+
+    <!-- v3.15: 詳細表示モード (単一ビューを全データ表示) -->
+    <div class="detail-section">
+      <div class="detail-header">
+        <button class="btn" style="background:rgba(255,255,255,0.2);color:white;border:1px solid rgba(255,255,255,0.4);font-size:11px;padding:5px 10px;" onclick="switchMode('dashboard')">← ダッシュボードに戻る</button>
+        <div class="detail-header-title" id="detailHeaderTitle">🔍 詳細表示</div>
+        <button class="btn" style="background:white;color:#4338ca;font-size:11px;padding:5px 12px;font-weight:700;" onclick="openEditFromDetail()">✏️ このウィジェットを編集</button>
+      </div>
+      <div class="detail-body" id="detailBody"></div>
     </div>
 
     <div class="dnd-section">
@@ -783,11 +805,102 @@ function init() {
   renderDashboard();
 }
 
-// === モード切替 (dashboard: 表示専用 / edit: D&D編集) ===
+// === モード切替 (v3.15: dashboard / detail / edit の3モード) ===
+let _currentDetailViewId = null;
 function switchMode(mode) {
   document.body.className = 'mode-' + mode;
   if (mode === 'dashboard') renderDashboard();
   window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// 詳細表示モードを開く (ダッシュボードカードからの遷移)
+function openDetailView(viewId) {
+  const view = savedViews.find(v => v.id === viewId);
+  if (!view) return;
+  _currentDetailViewId = viewId;
+  renderDetailView(view);
+  switchMode('detail');
+}
+
+// 詳細表示モードからエディタへ遷移
+function openEditFromDetail() {
+  if (!_currentDetailViewId) { switchMode('edit'); return; }
+  loadViewById(_currentDetailViewId);
+}
+
+function renderDetailView(view) {
+  const titleEl = document.getElementById('detailHeaderTitle');
+  const bodyEl = document.getElementById('detailBody');
+  if (!titleEl || !bodyEl) return;
+  titleEl.textContent = '🔍 ' + view.name;
+  const cfg = view.config;
+  const vals = cfg.vals && cfg.vals.length > 0 ? cfg.vals : (cfg.val ? [cfg.val] : []);
+  // メタ情報
+  const metaParts = [];
+  if (cfg.row) metaParts.push('<span class="meta-chip">📐 行: ' + cfg.row.name + '</span>');
+  if (cfg.col) metaParts.push('<span class="meta-chip">➡️ 列: ' + cfg.col.name + '</span>');
+  if (vals.length > 0) metaParts.push('<span class="meta-chip">📊 値: ' + vals.map(v => v.name).join(' / ') + '</span>');
+  if (cfg.filter && cfg.filter.length > 0) metaParts.push('<span class="meta-chip">🔍 フィルタ: ' + cfg.filter.map(f => f.name).join(', ') + '</span>');
+  metaParts.push('<span class="meta-chip">📈 ' + ({table:'表',bar:'棒',line:'折れ線',heatmap:'ヒート'})[cfg.chart || 'table'] + '</span>');
+  if (view.desc) metaParts.push('<span class="meta-chip">📝 ' + view.desc + '</span>');
+  // フルテーブルレンダー (省略なし)
+  const fullTable = renderViewFull(cfg);
+  bodyEl.innerHTML = '<div class="detail-meta-row">' + metaParts.join('') + '</div>' + fullTable;
+}
+
+// 詳細表示用: 全行・全列をレンダー (省略なし)
+function renderViewFull(cfg) {
+  const rowListAll = cfg.row ? getZoneMembersFromCfg(cfg, cfg.row) : ['(集計)'];
+  const vals = cfg.vals && cfg.vals.length > 0 ? cfg.vals : (cfg.val ? [cfg.val] : []);
+  const isMultiMeasure = vals.length > 1;
+  const colDimList = cfg.col ? getZoneMembersFromCfg(cfg, cfg.col) : null;
+  const useCrossLayout = isMultiMeasure && colDimList;
+  const colList = isMultiMeasure ? (colDimList ? colDimList : vals.map(v => v.name)) : colDimList;
+  const cellMeasureName = (idx) => {
+    if (useCrossLayout) return vals[idx % vals.length].name;
+    if (isMultiMeasure) return vals[idx].name;
+    return vals[0]?.name || '';
+  };
+  const totalCellCount = useCrossLayout ? colDimList.length * vals.length : (colList ? colList.length : 0);
+  const valName = vals[0]?.name || '';
+  const isRatio = valName.includes('率') || valName.includes('達成') || valName.includes('構成比') || valName.includes('前年比');
+  // データ生成
+  const data = rowListAll.map(rowName => {
+    let total = 0, cells = [];
+    if (totalCellCount > 0) {
+      for (let i = 0; i < totalCellCount; i++) {
+        const v = generateValue(cellMeasureName(i));
+        cells.push(v); total += v;
+      }
+    } else if (vals.length > 0) {
+      total = generateValue(valName);
+    }
+    const totalDisp = isRatio && totalCellCount > 0 && !isMultiMeasure ? total / totalCellCount : total;
+    return { rowName, cells, total: totalDisp };
+  });
+  // ヘッダー
+  let head = '';
+  if (useCrossLayout) {
+    head += '<tr><th rowspan="2">' + (cfg.row?.name || '項目') + '</th>';
+    colDimList.forEach(c => { head += '<th colspan="' + vals.length + '" style="text-align:center;">' + c + '</th>'; });
+    head += '</tr><tr>';
+    colDimList.forEach(() => { vals.forEach(m => { head += '<th>' + m.name + '</th>'; }); });
+    head += '</tr>';
+  } else {
+    head += '<tr><th>' + (cfg.row?.name || '項目') + '</th>';
+    if (colList) colList.forEach(c => { head += '<th>' + c + '</th>'; });
+    if (!isMultiMeasure) head += '<th class="total">' + (valName ? valName + '合計' : '値') + '</th>';
+    head += '</tr>';
+  }
+  // ボディ
+  let body = '';
+  data.forEach(d => {
+    let cells = '<td class="row-header">' + d.rowName + '</td>';
+    d.cells.forEach((v, i) => { cells += '<td>' + formatValue(cellMeasureName(i), v) + '</td>'; });
+    if (!isMultiMeasure) cells += '<td class="total">' + formatValue(valName, d.total) + '</td>';
+    body += '<tr>' + cells + '</tr>';
+  });
+  return '<table class="cross-table">' + head + body + '</table>';
 }
 
 function preloadDemoViews() {
@@ -2079,7 +2192,7 @@ function renderViewTable(cfg, viewId) {
   const onClick = (key) => viewId ? `onclick="event.stopPropagation();previewSortBy('${viewId}','${key}')" style="cursor:pointer;"` : '';
   const moreColsCount = colListAll ? (colListAll.length - colVisible.length) : 0;
   const moreMarkerHead = moreColsCount > 0 ? `<th class="more-col-marker" title="他${moreColsCount}列が省略されています">⋯</th>` : '';
-  const moreMarkerCell = moreColsCount > 0 ? `<td class="more-col-marker" onclick="event.stopPropagation();loadViewById('${viewId}')" title="エディタで全列を表示">⋯</td>` : '';
+  const moreMarkerCell = moreColsCount > 0 ? `<td class="more-col-marker" onclick="event.stopPropagation();openDetailView('${viewId}')" title="詳細表示で全列を表示">⋯</td>` : '';
   // 日付列の圧縮メタ (複数メジャー時は適用しない)
   const dateMeta = (!isMultiMeasure && colVisible) ? buildDateColMeta(colVisible) : null;
   let head = `<tr><th ${onClick('row')}>${truncLabel(cfg.row?.name || '項目', 16)}${sortIcon(sortKey==='row', sortDir)}</th>`;
@@ -2106,7 +2219,7 @@ function renderViewTable(cfg, viewId) {
     const dotRow = (label) => {
       let cells = `<td class="row-header">${label}</td>`;
       for (let i = 0; i < totalDataCols; i++) cells += `<td>⋮</td>`;
-      return `<tr class="more-rows-marker" onclick="event.stopPropagation();loadViewById('${viewId}')" title="エディタで全行を表示">${cells}</tr>`;
+      return `<tr class="more-rows-marker" onclick="event.stopPropagation();openDetailView('${viewId}')" title="詳細表示で全行を表示">${cells}</tr>`;
     };
     body += dotRow('⋮');
     body += dotRow('⋮');
@@ -2127,7 +2240,7 @@ function renderViewTable(cfg, viewId) {
   // 末尾「もっと見る」リンク (エディタへ誘導)
   let moreLink = '';
   if (moreRows > 0 || moreCols > 0) {
-    moreLink = `<div class="preview-more-link" onclick="event.stopPropagation();loadViewById('${viewId}')">💡 ${moreRows>0?`他${moreRows}行`:''}${moreRows>0&&moreCols>0?' / ':''}${moreCols>0?`他${moreCols}列`:''} … エディタで全表示 →</div>`;
+    moreLink = `<div class="preview-more-link" onclick="event.stopPropagation();openDetailView('${viewId}')">🔍 ${moreRows>0?`他${moreRows}行`:''}${moreRows>0&&moreCols>0?' / ':''}${moreCols>0?`他${moreCols}列`:''} … 詳細表示で全件を見る →</div>`;
   }
   const fadeClasses = moreRows > 0 ? 'has-row-fade' : '';
   const dateBanner = (dateMeta && dateMeta.bannerText)
@@ -2179,7 +2292,7 @@ function renderViewBar(cfg, viewId) {
     html += `<div class="bar-row"><div class="bar-label">${truncLabel(p.label, 16)}</div><div class="bar-track"><div class="bar-fill" style="width:${widthPct}%"></div></div><div class="bar-value">${formatValue(valName, p.value)}</div></div>`;
   });
   html += '</div></div>';
-  if (more > 0) html += `<div class="preview-more-link" onclick="event.stopPropagation();loadViewById('${viewId}')">💡 他${more}件 … エディタで全表示 →</div>`;
+  if (more > 0) html += `<div class="preview-more-link" onclick="event.stopPropagation();openDetailView('${viewId}')">🔍 他${more}件 … 詳細表示で全件を見る →</div>`;
   return html;
 }
 
